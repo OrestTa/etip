@@ -1,0 +1,143 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Assembler Aufgaben</title>
+  </head>
+
+  <body>
+    <h1>1.35 Matrix-Vektor-Operationen auf Band-Matrizen: y = <FONT FACE=Symbol>a</FONT>Ax + <FONT FACE=Symbol>b</FONT>y</h1>
+    Dokumentation der Routine: <br>
+    <br>
+    SUBROUTINE DGBMV ( TRANS, M, N, KL, KU, ALPHA, A, LDA, X, INCX, BETA, Y, INCY ) <br>
+    * .. Scalar Arguments .. <br>
+    DOUBLE PRECISION ALPHA, BETA <br>
+    INTEGER INCX, INCY, KL, KU, LDA, M, N <br>
+    CHARACTER*1 TRANS <br>
+    * .. Array Arguments .. <br>
+    DOUBLE PRECISION A( LDA, * ), X( * ), Y( * ) <br>
+    * .. <br>
+    * <br>
+    * Purpose <br>
+    * ======= <br>
+    * <br>
+    * DGBMV performs one of the matrix-vector operations <br>
+    * <br>
+    * y := alpha*A*x + beta*y, or y := alpha*A'*x + beta*y, <br>
+    * <br>
+    * where alpha and beta are scalars, x and y are vectors and A is an <br>
+    * m by n band matrix, with kl sub-diagonals and ku super-diagonals. <br>
+    * <br>
+    * Parameters <br>
+    * ========== <br>
+    * <br>
+    * TRANS - CHARACTER*1. <br>
+    * On entry, TRANS specifies the operation to be performed as <br>
+    * follows: <br>
+    * <br>
+    * TRANS = 'N' or 'n' y := alpha*A*x + beta*y. <br>
+    * <br>
+    * TRANS = 'T' or 't' y := alpha*A'*x + beta*y. <br>
+    * <br>
+    * TRANS = 'C' or 'c' y := alpha*A'*x + beta*y. <br>
+    * <br>
+    * Unchanged on exit. <br>
+    * <br>
+    * M - INTEGER. <br>
+    * On entry, M specifies the number of rows of the matrix A. <br>
+    * M must be at least zero. <br>
+    * Unchanged on exit. <br>
+    * <br>
+    * N - INTEGER. <br>
+    * On entry, N specifies the number of columns of the matrix A. <br>
+    * N must be at least zero. <br>
+    * Unchanged on exit. <br>
+    * <br>
+    * KL - INTEGER. <br>
+    * On entry, KL specifies the number of sub-diagonals of the <br>
+    * matrix A. KL must satisfy 0 .le. KL. <br>
+    * Unchanged on exit. <br>
+    * <br>
+    * KU - INTEGER. <br>
+    * On entry, KU specifies the number of super-diagonals of the <br>
+    * matrix A. KU must satisfy 0 .le. KU. <br>
+    * Unchanged on exit. <br>
+    * <br>
+    * ALPHA - DOUBLE PRECISION. <br>
+    * On entry, ALPHA specifies the scalar alpha. <br>
+    * Unchanged on exit. <br>
+    * <br>
+    * A - DOUBLE PRECISION array of DIMENSION ( LDA, n ). <br>
+    * Before entry, the leading ( kl + ku + 1 ) by n part of the <br>
+    * array A must contain the matrix of coefficients, supplied <br>
+    * column by column, with the leading diagonal of the matrix in <br>
+    * row ( ku + 1 ) of the array, the first super-diagonal <br>
+    * starting at position 1 in row ( ku + 2 ), and so on. <br>
+    * Elements in the array A that do not correspond to elements <br>
+    * in the band matrix (such as the top left ku by ku triangle) <br>
+    * are not referenced. <br>
+    * The following program segment will transfer a band matrix <br>
+    * from conventional full matrix storage to band storage: <br>
+    * <br>
+    * DO 20, J = 1, N <br>
+    * K = KU + 1 - J <br>
+    * DO 10, I = MAX( 1, J - KU ), MIN( M, J + KL ) <br>
+    * A( K + I, J ) = matrix( I, J ) <br>
+    * 10 CONTINUE <br>
+    * 20 CONTINUE <br>
+    * <br>
+    * Unchanged on exit. <br>
+    * <br>
+    * LDA - INTEGER. <br>
+    * On entry, LDA specifies the first dimension of A as declared <br>
+    * in the calling (sub) program. LDA must be at least <br>
+    * ( kl + ku + 1 ). <br>
+    * Unchanged on exit. <br>
+    * <br>
+    * X - DOUBLE PRECISION array of DIMENSION at least <br>
+    * ( 1 + ( n - 1 )*abs( INCX ) ) when TRANS = 'N' or 'n' <br>
+    * and at least <br>
+    * ( 1 + ( m - 1 )*abs( INCX ) ) otherwise. <br>
+    * Before entry, the incremented array X must contain the <br>
+    * vector x. <br>
+    * Unchanged on exit. <br>
+    * <br>
+    * INCX - INTEGER. <br>
+    * On entry, INCX specifies the increment for the elements of <br>
+    * X. INCX must not be zero. <br>
+    * Unchanged on exit. <br>
+    * <br>
+    * BETA - DOUBLE PRECISION. <br>
+    * On entry, BETA specifies the scalar beta. When BETA is <br>
+    * supplied as zero then Y need not be set on input. <br>
+    * Unchanged on exit. <br>
+    * <br>
+    * Y - DOUBLE PRECISION array of DIMENSION at least <br>
+    * ( 1 + ( m - 1 )*abs( INCY ) ) when TRANS = 'N' or 'n' <br>
+    * and at least <br>
+    * ( 1 + ( n - 1 )*abs( INCY ) ) otherwise. <br>
+    * Before entry, the incremented array Y must contain the <br>
+    * vector y. On exit, Y is overwritten by the updated vector y. <br>
+    * <br>
+    * INCY - INTEGER. <br>
+    * On entry, INCY specifies the increment for the elements of <br>
+    * Y. INCY must not be zero. <br>
+    * Unchanged on exit. <br>
+    * <br>
+    * <br>
+    * Level 2 Blas routine. <br>
+    * <br>
+    * -- Written on 22-October-1986. <br>
+    * Jack Dongarra, Argonne National Lab. <br>
+    * Jeremy Du Croz, Nag Central Office. <br>
+    * Sven Hammarling, Nag Central Office. <br>
+    * Richard Hanson, Sandia National Labs. <br>
+    * <br>
+
+    <hr>
+    <address><a href="mailto:czornack@in.tum.de">Jantho</a></address>
+<!-- Created: Fri Sep 20 15:05:34 Westeuropäische Sommerzeit 2002 -->
+<!-- hhmts start -->
+Last modified: Mon Nov 04 15:52:05 Westeuropäische Normalzeit 2002
+<!-- hhmts end -->
+  </body>
+</html>
