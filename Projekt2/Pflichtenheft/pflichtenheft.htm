@@ -37,8 +37,8 @@
 <hr width="100%" size="1">
 <h4><a name="Aufgabenkurzbeschreibung">Aufgabenkurzbeschreibung:</a></h4>
 <p>Es ist eine Funktion DGBMV zu entwickeln, welche Matrix-Vektor-Operationen nach einer der folgenden Formeln durchführt.<br>
-Y := &#945;*A*Y + &#946;*Y oder Y := &#945;*A'*Y + &#946;*Y<br>
-&#945;, &#946; seien Skalare, X, X seien Vektoren, A sei eine Matrix, A' sei transponiertes A.</p>
+Y := ALPHA*A*X + BETA*Y oder Y := ALPHA*A'*X + BETA*Y<br>
+ALPHA, BETA; seien Skalare, X, Y seien Vektoren, A sei eine Matrix, A' sei transponiertes A.</p>
 <br>
 <br>
 <hr width="100%" size="1">
@@ -49,12 +49,42 @@ Y := &#945;*A*Y + &#946;*Y oder Y := &#945;*A'*Y + &#946;*Y<br>
 
 <hr width="100%" size="1">
 <h4><a name="Black-Box-Sicht">Black-Box-Sicht:</a></h4>
+
 <p>Die Funktion DGBMV hat 13 Argumente und liefert eine Ausgabe Y. Ihre Argumente folgen.<br/>
 Skalar, Double: ALPHA, BETA<br/>
 Skalar, Integer: INCX, INCY, KL, KU, LDA, M, N<br/>
 Skalar, Char: TRANS<br/>
 Array, Double: A( LDA, * ), X( * ), Y( * )<br/><br>
-TRANS spezifiziert, welche Formel verwendet wird:
+
+TRANS spezifiziert, welche Formel verwendet wird:<br/>
+N, n -> Y := ALPHA*A*Y + BETA*Y<br/>
+T, t, C, c -> Y := ALPHA*A'*Y + BETA*Y<br/>
+Sein Inhalt wird nicht modifiziert.<br/><br/>
+
+M gibt die Anzahl der Zeilen von A an; es beträgt mindestens 0; sein Inhalt wird nicht modifiziert.<br/><br/>
+
+N gibt die Anzahl der Spalten von A an; es beträgt mindestens 0; sein Inhalt wird nicht modifiziert.<br/><br/>
+
+KL gibt die Anzahl der Subdiagonalen von A an; es beträgt mindestens 0; sein Inhalt wird nicht modifiziert.<br/><br/>
+
+KU gibt die Anzahl der Superdiagonalen von A an; es beträgt mindestens 0; sein Inhalt wird nicht modifiziert.<br/><br/>
+
+ALPHA spezifiziert den Wert des Skalars ALPHA; sein Inhalt wird nicht modifiziert.<br/><br/>
+
+A XXXXXXXXXXXXXXXXXXX<br/><br/>
+
+LDA gibt die erste Dimension von A an (wie durch das Subprogramm ermittelt); es beträgt mindestens KL + KU + 1; sein Inhalt wird nicht modifiziert.<br/><br/>
+
+X XXXXXXXXXX; sein Inhalt wird nicht modifiziert.<br/><br/>
+
+INCX gibt das Inkrement für die Elemente von X an; es darf nicht 0 betragen; sein Inhalt wird nicht modifiziert.<br/><br/>
+
+BETA spezifiziert den Wert des Skalars BETA; wenn es 0 beträgt, muss Y nicht als Eingabewert spezifiziert werden; sein Inhalt wird nicht modifiziert.<br/><br/>
+
+Y xxxxxxxxxxxx; sein Inhalt wird nicht modifiziert.<br/><br/>
+
+INCY gibt das Inkrement für die Elemente von Y an; es darf nicht 0 betragen; sein Inhalt wird nicht modifiziert.<br/><br/>
+
 
 </p>
 <br>
