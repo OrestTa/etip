@@ -36,9 +36,9 @@
 <br>
 <hr width="100%" size="1">
 <h4><a name="Aufgabenkurzbeschreibung">Aufgabenkurzbeschreibung:</a></h4>
-<p>Es ist eine Funktion DGBMV zu entwickeln, welche Matrix-Vektor-Operationen nach folgender Formel durchführt:<br>
-y := &#945;*A*x + &#946;*y<br>
-&#945;, &#946; seien Skalare, x, y Vektoren und A eine Matrix.</p>
+<p>Es ist eine Funktion DGBMV zu entwickeln, welche Matrix-Vektor-Operationen nach einer der folgenden Formeln durchführt.<br>
+Y := &#945;*A*Y + &#946;*Y oder Y := &#945;*A'*Y + &#946;*Y<br>
+&#945;, &#946; seien Skalare, X, X seien Vektoren, A sei eine Matrix, A' sei transponiertes A.</p>
 <br>
 <br>
 <hr width="100%" size="1">
@@ -49,11 +49,14 @@ y := &#945;*A*x + &#946;*y<br>
 
 <hr width="100%" size="1">
 <h4><a name="Black-Box-Sicht">Black-Box-Sicht:</a></h4>
-<p>Die Funktion DGBMV hat 13 Argumente und liefert eine Ausgabe y. Ihre Argumente folgen:<br/>
+<p>Die Funktion DGBMV hat 13 Argumente und liefert eine Ausgabe Y. Ihre Argumente folgen.<br/>
+Skalar, Double: ALPHA, BETA<br/>
+Skalar, Integer: INCX, INCY, KL, KU, LDA, M, N<br/>
+Skalar, Char: TRANS<br/>
+Array, Double: A( LDA, * ), X( * ), Y( * )<br/><br>
+TRANS spezifiziert, welche Formel verwendet wird:
 
- hat 17 Eingänge und 21 Ausgänge.<br><br>
-Wird an die Eingänge eine 17 stellige, positive Binärzahl im Bereich von 0 bis 99999 angelegt, so wird eine ensprechende BCD Zahl an den 5 x 4 Ausgängen ausgegeben. Der 21. Ausgang - das Überlaufbit - gibt in diesem Fall 0 aus.<br><br>
-Wird an die Eingänge fälschlicherweise eine Zahl, welche nicht im Definitionsbereich liegt angelegt, so wird der 21. Ausgang - das Überlaufbit - auf 1 gesetzt.</p>
+</p>
 <br>
 <br>
 <hr width="100%" size="1">
