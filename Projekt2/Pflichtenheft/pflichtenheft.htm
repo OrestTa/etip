@@ -56,7 +56,7 @@ ALPHA, BETA; seien Skalare, X, Y seien Vektoren, A sei eine Matrix, A' sei trans
 Skalar, Double: ALPHA, BETA<br/>
 Skalar, Integer: INCX, INCY, KL, KU, LDA, M, N<br/>
 Skalar, Char: TRANS<br/>
-Array, Double: A( LDA, * ), X( * ), Y( * )<br/><br>
+Array, Double: A(LDA, *), X(*), Y(*)<br/><br>
 
 TRANS spezifiziert, welche Formel verwendet wird:<br/>
 N, n -> Y := ALPHA*A*Y + BETA*Y<br/>
@@ -73,7 +73,7 @@ KU gibt die Anzahl der Superdiagonalen von A an; es beträgt mindestens 0; sein 
 
 ALPHA spezifiziert den Wert des Skalars ALPHA; sein Inhalt wird nicht modifiziert.<br/><br/>
 
-A XXXXXXXXXXXXXXXXXXX<br/><br/>
+A ist ein Array der Dimension (LDA, n); anfänglich beinhaltet der führende (KL+KU+1)-mal-n-Teil die Matrix<br/><br/>
 
 LDA gibt die erste Dimension von A an (wie durch das Subprogramm ermittelt); es beträgt mindestens KL + KU + 1; sein Inhalt wird nicht modifiziert.<br/><br/>
 
