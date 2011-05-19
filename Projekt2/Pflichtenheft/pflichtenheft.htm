@@ -82,7 +82,19 @@ KU gibt die Anzahl der Superdiagonalen von A an; es beträgt mindestens 0; sein 
 
 ALPHA spezifiziert den Wert des Skalars ALPHA; sein Inhalt wird nicht modifiziert.<br/><br/>
 
-A ist ein Array der Dimension (LDA, n); anfänglich beinhaltet der führende (KL+KU+1)-mal-n-Teil die Matrixkoeffizienten, spaltenweise, mit der führenden Diagonale der Matrix in der Zeile KU+1<br/><br/>
+A ist ein Array der Dimension (LDA, N); anfänglich beinhaltet der führende (KL+KU+1)-mal-N-Teil die Matrixkoeffizienten, spaltenweise, mit der führenden Diagonale der Matrix in der Zeile KU+1 des Arrays, der ersten Superdiagonale beginnend an Stelle 1 der Zeile KU+2 des Arrays usw.
+<br/><br/>Elemente des Arrays A, die mit den Elementen der Bandmatrix nicht korrespondieren (z. B. das oben-linke KU-mal-KU-Dreieck), werden nicht referenziert.
+<br/><br/>Der folgende Programmabschnitt konvertiert eine Bandmatrix von der konventinellen Matrixlagerung in eine Bandmatrixlagerung.<br/><br/>
+DO 20, J = 1, N<br/>
+K = KU + 1 - J<br/>
+DO 10, I = MAX( 1, J - KU ), MIN( M, J + KL )<br/>
+A( K + I, J ) = matrix( I, J )<br/>
+10 CONTINUE<br/>
+20 CONTINUE<br/>
+
+Der Inhalt von A wird nicht modifiziert.
+
+<br/><br/>
 
 LDA gibt die erste Dimension von A an (wie durch das Subprogramm ermittelt); es beträgt mindestens KL + KU + 1; sein Inhalt wird nicht modifiziert.<br/><br/>
 
