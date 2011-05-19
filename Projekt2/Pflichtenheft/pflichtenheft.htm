@@ -53,16 +53,15 @@ ALPHA, BETA seien Skalare; X, Y seien Vektoren; A sei eine Matrix; A' sei transp
 <p>
 <li><i>Das Buch</i></li>
 <li>Unterlagen der ETI-Vorlesung</li>
-<li>PCs</li>
-<li>Assembler-Dokumentation</li>
-<li>Jasmin</li></p>
+<li>Assemblerdokumentation</li>
+<li>PCs, Jasmin</li></p>
 <br>
 <br>
 
 <hr width="100%" size="1">
-<h4><a name="Black-Box-Sicht">Black-Box-Sicht:</a></h4>
+<h4><a name="Black-Box-Sicht">Black-Box-Sicht</a></h4>
 
-<p>Die Funktion DGBMV hat 13 Argumente und liefert eine Ausgabe Y. Ihre Argumente folgen.<br/>
+<p>Die Funktion DGBMV hat 13 Argumente und liefert ein Ergebnis Y. Ihre Argumente folgen.<br/>
 Skalar, Double: ALPHA, BETA<br/>
 Skalar, Integer: INCX, INCY, KL, KU, LDA, M, N<br/>
 Skalar, Char: TRANS<br/>
@@ -83,7 +82,7 @@ KU gibt die Anzahl der Superdiagonalen von A an; es beträgt mindestens 0; sein 
 
 ALPHA spezifiziert den Wert des Skalars ALPHA; sein Inhalt wird nicht modifiziert.<br/><br/>
 
-A ist ein Array der Dimension (LDA, n); anfänglich beinhaltet der führende (KL+KU+1)-mal-n-Teil die Matrix<br/><br/>
+A ist ein Array der Dimension (LDA, n); anfänglich beinhaltet der führende (KL+KU+1)-mal-n-Teil die Matrixkoeffizienten, spaltenweise, mit der führenden Diagonale der Matrix in der Zeile KU+1<br/><br/>
 
 LDA gibt die erste Dimension von A an (wie durch das Subprogramm ermittelt); es beträgt mindestens KL + KU + 1; sein Inhalt wird nicht modifiziert.<br/><br/>
 
@@ -91,13 +90,11 @@ X ist ein Array einer Dimension von mindestens ( 1 + ( n - 1 )*abs( INCX ) ), fa
 
 INCX gibt das Inkrement für die Elemente von X an; es darf nicht 0 betragen; sein Inhalt wird nicht modifiziert.<br/><br/>
 
-BETA spezifiziert den Wert des Skalars BETA; wenn es 0 beträgt, muss Y nicht als Eingabewert spezifiziert werden; sein Inhalt wird nicht modifiziert.<br/><br/>
+BETA spezifiziert den Wert des Skalars BETA; wenn es 0 beträgt, muss Y nicht als Eingabewert spezifiziert werden. Der Inhalt von BETA wird nicht modifiziert.<br/><br/>
 
 Y ist ein Array einer Dimension von mindestens ( 1 + ( m - 1 )*abs( INCY ) ), falls TRANS 'N' oder 'n' ist; anderenfalls ein Array einer Dimension von mindestens ( 1 + ( n - 1 )*abs( INCY ) ); zu Beginn beinhaltet das inkrementierte Array Y den Vektor Y; bei Beendingung wird Y mit dem aktualisierten Vektor überschrieben.<br/><br/>
 
-INCY gibt das Inkrement für die Elemente von Y an; es darf nicht 0 betragen; sein Inhalt wird nicht modifiziert.<br/><br/>
-
-
+INCY gibt das Inkrement für die Elemente von Y an; es darf nicht 0 betragen; sein Inhalt wird nicht modifiziert.
 </p>
 <br>
 <br>
