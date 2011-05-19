@@ -77,13 +77,13 @@ A ist ein Array der Dimension (LDA, n); anfänglich beinhaltet der führende (KL
 
 LDA gibt die erste Dimension von A an (wie durch das Subprogramm ermittelt); es beträgt mindestens KL + KU + 1; sein Inhalt wird nicht modifiziert.<br/><br/>
 
-X ist ein Array einer Dimension von mindestens ( 1 + ( n - 1 )*abs( INCX ) ), falls TRANS 'N' oder 'n' ist; anderenfalls ein Array einer Dimension von mindestens ( 1 + ( m - 1 )*abs( INCX ) ); anfänglich beinhaltet es den Vektor X; sein Inhalt wird nicht modifiziert.<br/><br/>
+X ist ein Array einer Dimension von mindestens ( 1 + ( n - 1 )*abs( INCX ) ), falls TRANS 'N' oder 'n' ist; anderenfalls ein Array einer Dimension von mindestens ( 1 + ( m - 1 )*abs( INCX ) ); zu Beginn beinhaltet das inkrementierte Array X den Vektor X; sein Inhalt wird nicht modifiziert.<br/><br/>
 
 INCX gibt das Inkrement für die Elemente von X an; es darf nicht 0 betragen; sein Inhalt wird nicht modifiziert.<br/><br/>
 
 BETA spezifiziert den Wert des Skalars BETA; wenn es 0 beträgt, muss Y nicht als Eingabewert spezifiziert werden; sein Inhalt wird nicht modifiziert.<br/><br/>
 
-Y ist ein Array einer Dimension von mindestens ( 1 + ( m - 1 )*abs( INCY ) ), falls TRANS 'N' oder 'n' ist; anderenfalls ein Array einer Dimension von mindestens ( 1 + ( n - 1 )*abs( INCY ) ); anfänglich beinhaltet es den Vektor Y; bei Beendingung wird Y mit dem aktuallisierten Vektor überschrieben.<br/><br/>
+Y ist ein Array einer Dimension von mindestens ( 1 + ( m - 1 )*abs( INCY ) ), falls TRANS 'N' oder 'n' ist; anderenfalls ein Array einer Dimension von mindestens ( 1 + ( n - 1 )*abs( INCY ) ); zu Beginn beinhaltet das inkrementierte Array Y den Vektor Y; bei Beendingung wird Y mit dem aktualisierten Vektor überschrieben.<br/><br/>
 
 INCY gibt das Inkrement für die Elemente von Y an; es darf nicht 0 betragen; sein Inhalt wird nicht modifiziert.<br/><br/>
 
