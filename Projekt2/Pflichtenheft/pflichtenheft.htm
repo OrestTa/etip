@@ -83,28 +83,26 @@ KU gibt die Anzahl der Superdiagonalen von A an; es beträgt mindestens 0; sein 
 ALPHA spezifiziert den Wert des Skalars ALPHA; sein Inhalt wird nicht modifiziert.<br/><br/>
 
 A ist ein Array der Dimension (LDA, N); anfänglich beinhaltet der führende (KL+KU+1)-mal-N-Teil die Matrixkoeffizienten, spaltenweise, mit der führenden Diagonale der Matrix in der Zeile KU+1 des Arrays, der ersten Superdiagonale beginnend an Stelle 1 der Zeile KU+2 des Arrays usw.
-<br/><br/>Elemente des Arrays A, die mit den Elementen der Bandmatrix nicht korrespondieren (z. B. das oben-linke KU-mal-KU-Dreieck), werden nicht referenziert.
-<br/><br/>Der folgende Programmabschnitt konvertiert eine Bandmatrix von der konventinellen Matrixlagerung in eine Bandmatrixlagerung.<br/><br/>
-DO 20, J = 1, N<br/>
-K = KU + 1 - J<br/>
-DO 10, I = MAX( 1, J - KU ), MIN( M, J + KL )<br/>
-A( K + I, J ) = matrix( I, J )<br/>
-10 CONTINUE<br/>
-20 CONTINUE<br/>
-
+<br/>Elemente des Arrays A, die mit den Elementen der Bandmatrix nicht korrespondieren (z. B. das oben-linke KU-mal-KU-Dreieck), werden nicht referenziert.
+<br/>Der folgende Programmabschnitt konvertiert eine Bandmatrix von der konventinellen Matrixlagerung in eine Bandmatrixlagerung.<br/>
+&nbsp;&nbsp;&nbsp; DO 20, J = 1, N<br/>
+&nbsp;&nbsp;&nbsp; K = KU + 1 - J<br/>
+&nbsp;&nbsp;&nbsp; DO 10, I = MAX(1, J - KU), MIN(M, J + KL)<br/>
+&nbsp;&nbsp;&nbsp; A(K + I, J) = matrix(I, J)<br/>
+&nbsp;&nbsp;&nbsp; 10 CONTINUE<br/>
+&nbsp;&nbsp;&nbsp; 20 CONTINUE<br/>
 Der Inhalt von A wird nicht modifiziert.
-
 <br/><br/>
 
-LDA gibt die erste Dimension von A an (wie durch das Subprogramm ermittelt); es beträgt mindestens KL + KU + 1; sein Inhalt wird nicht modifiziert.<br/><br/>
+LDA gibt die erste Dimension von A an (wie im Subprogramm deklariert); es beträgt mindestens KL + KU + 1; sein Inhalt wird nicht modifiziert.<br/><br/>
 
-X ist ein Array einer Dimension von mindestens ( 1 + ( n - 1 )*abs( INCX ) ), falls TRANS 'N' oder 'n' ist; anderenfalls ein Array einer Dimension von mindestens ( 1 + ( m - 1 )*abs( INCX ) ); zu Beginn beinhaltet das inkrementierte Array X den Vektor X; sein Inhalt wird nicht modifiziert.<br/><br/>
+X ist ein Array einer Dimension von mindestens (1 + (N - 1)*abs(INCX)), falls TRANS 'N' oder 'n' ist; anderenfalls ist X ein Array einer Dimension von mindestens (1 + (M - 1)*abs(INCX)). Zu Beginn beinhaltet das inkrementierte Array X den Vektor X; sein Inhalt wird nicht modifiziert.<br/><br/>
 
 INCX gibt das Inkrement für die Elemente von X an; es darf nicht 0 betragen; sein Inhalt wird nicht modifiziert.<br/><br/>
 
 BETA spezifiziert den Wert des Skalars BETA; wenn es 0 beträgt, muss Y nicht als Eingabewert spezifiziert werden. Der Inhalt von BETA wird nicht modifiziert.<br/><br/>
 
-Y ist ein Array einer Dimension von mindestens ( 1 + ( m - 1 )*abs( INCY ) ), falls TRANS 'N' oder 'n' ist; anderenfalls ein Array einer Dimension von mindestens ( 1 + ( n - 1 )*abs( INCY ) ); zu Beginn beinhaltet das inkrementierte Array Y den Vektor Y; bei Beendingung wird Y mit dem aktualisierten Vektor überschrieben.<br/><br/>
+Y ist ein Array einer Dimension von mindestens (1 + (M - 1)*abs(INCY)), falls TRANS 'N' oder 'n' ist; anderenfalls ein Y ein Array einer Dimension von mindestens (1 + (N - 1)*abs(INCY)). Zu Beginn beinhaltet das inkrementierte Array Y den Vektor Y, bei Beendingung wird Y mit dem aktualisierten Vektor Y überschrieben.<br/><br/>
 
 INCY gibt das Inkrement für die Elemente von Y an; es darf nicht 0 betragen; sein Inhalt wird nicht modifiziert.
 </p>
