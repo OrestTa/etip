@@ -7,6 +7,7 @@
 <body>
 <div align="Center">
 <h3><a name="Pflichtenheft"></a><strong>Pflichtenheft zum Projekt Nr. 2 der Gruppe 7 (ss11-g07)</strong></h3>
+<i>Tutor: Steffen Bauereiss</i><br>
 </div>
 <ul>
 <li>
@@ -31,10 +32,10 @@
 <br>
 
 <hr width="100%" size="1">
-<h4><a name="Bearbeiter">Aufgabenverteilung</a></h4>
+<h4><a name="Bearbeiter">Aufgabenverteilung</a></h4><p>
   Maximilian Staab - Projektmanagement<br>
   Orest Tarasiuk - Vortrag<br>
-  Lukas Märdian - Dokumentation<br>
+  Lukas Märdian - Dokumentation</p>
 <br>
 <br>
 
@@ -61,15 +62,16 @@ ALPHA, BETA seien Skalare; X, Y seien Vektoren; A sei eine Matrix; A' sei transp
 <hr width="100%" size="1">
 <h4><a name="Black-Box-Sicht">Black-Box-Sicht</a></h4>
 
-<p>Die Funktion DGBMV hat 13 Argumente und liefert ein Ergebnis Y. Ihre Argumente folgen.<br/>
+<p>Die Funktion DGBMV hat 13 Argumente und liefert eine Ausgabe Y.<br/><br/>
+<u>Argumente</u>:<br/>
 Skalar, Double: ALPHA, BETA<br/>
 Skalar, Integer: INCX, INCY, KL, KU, LDA, M, N<br/>
 Skalar, Char: TRANS<br/>
 Array, Double: A(LDA, *), X(*), Y(*)<br/><br>
 
 TRANS spezifiziert, welche Formel verwendet wird:<br/>
-N, n -> Y := ALPHA*A*Y + BETA*Y<br/>
-T, t, C, c -> Y := ALPHA*A'*Y + BETA*Y<br/>
+bei einer Eingabe von N oder n wird Y := ALPHA*A*Y + BETA*Y berechnet;<br/>
+bei einer Eingabe von T, t, C oder c wird Y := ALPHA*A'*Y + BETA*Y berechnet.<br/>
 Sein Inhalt wird nicht modifiziert.<br/><br/>
 
 M gibt die Anzahl der Zeilen von A an; es beträgt mindestens 0; sein Inhalt wird nicht modifiziert.<br/><br/>
@@ -104,7 +106,13 @@ BETA spezifiziert den Wert des Skalars BETA; wenn es 0 beträgt, muss Y nicht al
 
 Y ist ein Array einer Dimension von mindestens (1 + (M - 1)*abs(INCY)), falls TRANS 'N' oder 'n' ist; anderenfalls ist Y ein Array einer Dimension von mindestens (1 + (N - 1)*abs(INCY)). Zu Beginn beinhaltet das inkrementierte Array Y den Vektor Y, bei Beendingung wird Y mit dem aktualisierten Vektor Y überschrieben.<br/><br/>
 
-INCY gibt das Inkrement für die Elemente von Y an; es darf nicht 0 betragen; sein Inhalt wird nicht modifiziert.
+INCY gibt das Inkrement für die Elemente von Y an; es darf nicht 0 betragen; sein Inhalt wird nicht modifiziert.<br/><br/>
+
+<u>Ausgabe</u>:<br/>
+Array, Double: Y(*)<br/><br/>
+
+Nach Beendingung der Funktionsausführung wird Y mit dem errechneten Vektor Y belegt.
+
 </p>
 <br>
 <br>
@@ -112,7 +120,7 @@ INCY gibt das Inkrement für die Elemente von Y an; es darf nicht 0 betragen; se
 <hr width="100%" size="1">
 <h4><a name="Zeitplanung">Zeitplanung</a>
 </h4>
-<p>Die folgende Vorgehensweise wurde geplant.</p>
+<p>Die folgende Vorgehensweise wurde geplant.<br><br>
       <table width="1000" border="0" cellspacing="1" cellpadding="2">
           <tr bgcolor="#cccccc">
             <td>Teilaufgabe</td>
@@ -144,7 +152,7 @@ INCY gibt das Inkrement für die Elemente von Y an; es darf nicht 0 betragen; se
             <td bgcolor="#ffffff">2 h</td>
             <td bgcolor="#ffffff">2 h</td>
             <td bgcolor="#ffffff">6 h</td>
-            <td bgcolor="#ffffff">20.05.2011</td>
+            <td bgcolor="#ffffff">30.05.2011</td>
           </tr>
           <tr>
             <td bgcolor="#efefef" valign="Top">Lösungsbewertung und Entscheidung für eine Lösung</td>
@@ -152,16 +160,16 @@ INCY gibt das Inkrement für die Elemente von Y an; es darf nicht 0 betragen; se
             <td bgcolor="#ffffff">1 h</td>
             <td bgcolor="#ffffff">1 h</td>
             <td bgcolor="#ffffff">3 h</td>
-            <td bgcolor="#ffffff">30.05.2011</td>
+            <td bgcolor="#ffffff">06.06.2011</td>
           </tr>
           <tr>
             <td bgcolor="#efefef" valign="Top">Implementierung</td>
-            <td bgcolor="#ffffff">3 h</td>
-            <td bgcolor="#ffffff">3 h</td>
-            <td bgcolor="#ffffff">2 h</td>
+            <td bgcolor="#ffffff">6 h</td>
+            <td bgcolor="#ffffff">5 h</td>
+            <td bgcolor="#ffffff">5 h</td>
 
-            <td bgcolor="#ffffff">8 h</td>
-            <td bgcolor="#ffffff">15.06.2011</td>
+            <td bgcolor="#ffffff">16 h</td>
+            <td bgcolor="#ffffff">04.07.2011</td>
           </tr>
           <tr>
             <td bgcolor="#efefef" valign="Top">Systemtests</td>
@@ -169,43 +177,43 @@ INCY gibt das Inkrement für die Elemente von Y an; es darf nicht 0 betragen; se
             <td bgcolor="#ffffff">2 h</td>
             <td bgcolor="#ffffff">1 h</td>
             <td bgcolor="#ffffff">5 h</td>
-            <td bgcolor="#ffffff">20.06.2011</td>
+            <td bgcolor="#ffffff">08.07.2011</td>
           </tr>
           <tr>
             <td bgcolor="#efefef" valign="Top">Übersicht über den Projektverlauf</td>
-            <td bgcolor="#ffffff">3 h</td>
+            <td bgcolor="#ffffff">4 h</td>
             <td bgcolor="#ffffff">0 h</td>
             <td bgcolor="#ffffff">0 h</td>
-            <td bgcolor="#ffffff">3 h</td>
-            <td bgcolor="#ffffff">30.06.2011</td>
+            <td bgcolor="#ffffff">4 h</td>
+            <td bgcolor="#ffffff">11.07.2011</td>
           </tr>
           <tr>
             <td bgcolor="#efefef" valign="Top">Dokumentation</td>
             <td bgcolor="#ffffff">0 h </td>
             <td bgcolor="#ffffff">0 h</td>
-            <td bgcolor="#ffffff">5 h</td>
-            <td bgcolor="#ffffff">5 h</td>
-            <td bgcolor="#ffffff">03.07.2011</td>
+            <td bgcolor="#ffffff">6 h</td>
+            <td bgcolor="#ffffff">6 h</td>
+            <td bgcolor="#ffffff">11.07.2011</td>
           </tr>
           <tr>
             <td bgcolor="#efefef" valign="Top">Vortrag</td>
             <td bgcolor="#ffffff">0 h</td>
-            <td bgcolor="#ffffff">3 h</td>
+            <td bgcolor="#ffffff">5 h</td>
             <td bgcolor="#ffffff">0 h</td>
-            <td bgcolor="#ffffff">3 h</td>
+            <td bgcolor="#ffffff">5 h</td>
             <td bgcolor="#ffffff">15.07.2011</td>
           </tr>
           <tr>
           </tr>
           <tr>
             <td bgcolor="#efefef" valign="Top"><b>Gesamt</b></td>
-            <td bgcolor="#ffffff"><b>15 h</b></td>
-            <td bgcolor="#ffffff"><b>15 h</b></td>
-            <td bgcolor="#ffffff"><b>15 h</b></td>
-            <td bgcolor="#ffffff"><b>45 h</b></td>
+            <td bgcolor="#ffffff"><b>19 h</b></td>
+            <td bgcolor="#ffffff"><b>19 h</b></td>
+            <td bgcolor="#ffffff"><b>19 h</b></td>
+            <td bgcolor="#ffffff"><b>57 h</b></td>
             <td bgcolor="#ffffff"><b>15.07.2011</b></td>
           </tr>
-      </table>
+      </table></p>
 <br>
 <br>
 
