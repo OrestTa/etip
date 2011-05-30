@@ -55,7 +55,7 @@ end BINBCD;
 Diese Alternative sieht es vor, dass die Eingabe zuerst (mit Hilfe einer binären Konstanten: 11000011010011111<sub>2</sub> = 99999<sub>10</sub>) auf ihre Gültigkeit überprüft wird. Liegt die Eingabe im Definitionsbereich, wird sie nach folgendem Schema in eine dezimale Zahl umgewandelt (beginnend mit dem niedrigstwertige Bit, LSB):
 <ol>
 <li>Initialisiere eine Variable "dec" mit 0. Diese wird am Ende die dezimale Zahl enthalten.</li>
-<li>Multipliziere die Wertigkeit der aktuellen Stelle (1, 2, 4, 8, 16, ...) mit der Ziffer der aktuellen Stelle (1,0).</li>
+<li>Multipliziere die Wertigkeit der aktuellen Stelle (2<sup>0</sup>, 2<sup>1</sup>, ..., 2<sup>16</sup>) mit der Ziffer der aktuellen Stelle (1,0).</li>
 <li>Addiere das Produkt aus Schritt 2 zu dec.</li>
 <li>Wiederhole dieses Schema (ab Schritt 2) für alle Stellen der Binären Eingabe (17x).</li>
 </ol>
