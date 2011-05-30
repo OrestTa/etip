@@ -11,16 +11,17 @@
 </div>
 
 <ul>
-<li><a href="#Systemgebaeude">Das Systemgebäude</a></li>
-<li><a href="#Aktive_Elemente">Aktive Elemente (Verhalten)</a></li>
+
+<li><a href="#Kurzbeschreibung">Kurzbeschreibung</a></li>
 <li><a href="#Alternative1">Alternative 1</a></li>
 <li><a href="#Alternative2">Alternative 2</a></li>
 <li><a href="#Bewertung">Bewertung der Alternativen</a></li>
 <li><a href="#Entscheidung">Implementierungsentscheidung</a></li>
 </ul>
+<br>
 
 <hr width="100%" size="1">
-<h4><a name="Systemgebaeude">Das Systemgebäude (Architektur)</a></h4>
+<h4><a name="Kurzbeschreibung">Kurzbeschreibung</a></h4>
 <p>Was das Systemgebaeude an sich betrifft, wurden keine Alternativen
 betrachtet. Es besteht aus 5 grossen Holzbrettern (W), die als
 Waende f&uuml;r das Gebaeude (G) fungieren. 2 weitere Holzbretter
@@ -31,35 +32,6 @@ sind, passen.  Die Aussparungen (S) sind so gross, dass der groesste
 der drei Elefantenarten (rosarot, blau und tot) hindurchpasst.<br>
 Die Assemblierung der Teile bedarf keiner genauen Erlaeuterung,
 weswegen auf sie verzichtet wurde.</p>
-<br/>
-<br/>
-
-<hr width="100%" size="1">
-<h4><a name="Aktive_Elemente">Aktive Elemente (Verhalten)</a></h4>
-<p>Es wurden 2 Alternativen zur Loesung des Problems gefunden. 
-Beide werden im Folgenden betrachtet.  Zuerst wird jedoch die gemeinsame 
-Basis der Alternativen erlaeutert. <b>Gemeinsame Infrastruktur</b> In Gebaeude 
-(G) befinden sich 2 Maxwellsche Daemonen (M1 und M2) - (M1) am Eingang und 
-(M2) am Ausgang - , 1 Gewehr zum Toeten blauer Elefanten (GB) und ausreichend 
-Munition (MU) fuer das Gewehr (GB).<br>
-Die Maxwellschen Daemonen wurden in folgender Weise umtrainiert:  
-<ol>
-<li>Sie achten nicht mehr auf Teilchen bestimmter Energie.</li>
-<li>(M1) oeffnet den Eingang nur, wenn sich kein Elefant im System befindet.</li>
-<li>(M1) oeffnet den Eingang nur, wenn sich ein einziger blauer oder rosaroter Elefant vor dem Eingang befindet.</li>
-<li>(M1) holt den Gegenstand, der vor dem geoeffneten Eingang steht, in das System und schliesst den Eingang.</li>
-<li>(M2) erschiesst blaue Elefanten im System solange mit dem Gewehr zum Toeten von blauen Elefanten (GB), bis sie tot sind.</li>
-<li>(M2) oeffnet den Ausgang nur, wenn sich ein toter Elefant im System befindet.</li>
-<li>(M2) wirft bei geoeffnetem Ausgang den Gegenstand, der sich im System befindet aus dem Ausgang hinaus und schliesst den Ausgang.</li>
-</ol>
-Durch diese Vorschriften sind folgende Sachverhalte sichergestellt:  
-<ul>
-<li>Vom Eingang kommt immer nur eine korrekte Eingabe in das System</li>
-<li>Im System befindet sich immer nur ein zu bearbeitender Gegenstand</li>
-<li>Unter der Annahme, dass die Transformation eines blauen oder rosaroten Elefanten in einen toten Elefanten immer gelingt, verlaesst das System immer eine korrekte Ausgabe.</li>
-</ul>
-Oben genannte Regeln machen keine Angaben ueber die Bearbeitung von rosaroten 
-Elefanten. Alternative 1 und 2 beschaeftigen sich mit diesem Vorgang.</p>
 <br/>
 <br/>
 
@@ -109,6 +81,7 @@ Die zusaetzliche Anweisung fuer (M1) lautet:
 <p>Es wird Alternative 1 implementiert, da die Komplexitaet des Systems
 geringer ist.  Auf die eventuelle Gefaehrdung des Maxwellschen Daemons (M1)
 braucht keine Ruecksicht genommen zu werden, da es diesen sowieso nicht gibt.</p>
+
 </body>
 </html>
 
