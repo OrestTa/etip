@@ -23,7 +23,18 @@
 <hr width="100%" size="1">
 <h4><a name="Kurzbeschreibung">Kurzbeschreibung</a></h4>
 <p>
-Es ist ein System zu realisieren, das eine Binärzahl mit 17 Stellen in eine BCD-Zahl mit 5 x 4 Stellen konvertiert. Der Definitionsbereich liegt zwischen 0 und 99999.
+Es ist ein System zu realisieren, das eine Binärzahl mit 17 Stellen in eine BCD-Zahl mit 5 x 4 Stellen konvertiert. Der Definitionsbereich liegt zwischen 0 und 99999. Die VHDL-Entity des Systems folgt.<br/><br/>
+<code>
+entity BINBCD is<br/>
+<br/>
+port(<br/>
+bin : in std_logic_vector (16 downto 0);<br/>
+einer, zehner, hunderter, tausender, zehntausender : out std_logic_vector (3 downto 0);<br/>
+overflow : out std_logic<br/>
+)<br/>
+<br/>
+end BINBCD
+</code>
 </p>
 <br/>
 <br/>
