@@ -40,9 +40,8 @@ end BINBCD;
 <br/>
 
 <hr width="100%" size="1">
-<h4><a name="Alternative1">Alternative 1</a></h4>
+<h4><a name="Alternative1">Alternative 1: Double-Dabble Algorithmus</a></h4>
 <p>
-Double-Dabble-Algorithmus
 <ul>
 <li>asdf</li>
 </ul>
@@ -51,12 +50,16 @@ Double-Dabble-Algorithmus
 <br/>
 
 <hr width="100%" size="1">
-<h4><a name="Alternative2">Alternative 2</a></h4>
+<h4><a name="Alternative2">Alternative 2: Bin-Dec-BCD Algorithmus</a></h4>
 <p>
-Hardcoded
-<ul>
-<li>asdf</li>
-</ul>
+Diese Alternative sieht es vor, dass die Eingabe zuerst (mit Hilfe einer binären Konstanten: 11000011010011111<sub>2</sub> = 99999<sub>10</sub>) auf ihre Gültigkeit überprüft wird. Liegt die Eingabe im Definitionsbereich, wird sie nach folgendem Schema in eine dezimale Zahl umgewandelt (beginnend mit dem niedrigstwertige Bit, LSB):
+<ol>
+<li>Initialisiere eine Variable "dec" mit 0. Diese wird am Ende die dezimale Zahl enthalten.</li>
+<li>Multipliziere die Wertigkeit der aktuellen Stelle (1, 2, 4, 8, 16, ...) mit der Ziffer der aktuellen Stelle (1,0).</li>
+<li>Addiere das Produkt aus Schritt 2 zu dec.</li>
+<li>Wiederhole dieses Schema (ab Schritt 2) für alle Stellen der Binären Eingabe (17x).</li>
+</ol>
+Nun, da die Eingabe in dezimaler Form vorliegt, wird jede der (max. 5) Stellen mit Hilfe einer Lookup-Tabelle, welche die Werte von 0-9 je in Dezimal und Binär enthält, in Binär an den entsprechenden Ausgang gelegt.
 </p>
 <br/>
 <br/>
@@ -64,7 +67,6 @@ Hardcoded
 <hr width="100%" size="1">
 <h4><a name="Bewertung">Bewertung der Alternativen</a></h4>
 <p>
-DDA besser
 <ul>
 <li>asdf</li>
 </ul>
