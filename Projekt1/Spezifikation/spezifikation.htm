@@ -28,10 +28,10 @@ Es ist ein System zu realisieren, das eine Binärzahl mit 17 Stellen in eine BCD
 entity BINBCD is<br/>
 <br/>
 port(<br/>
-bin : in std_logic_vector (16 downto 0);<br/>
-einer, zehner, hunderter, tausender, zehntausender : out std_logic_vector (3 downto 0);<br/>
-overflow : out std_logic<br/>
-)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;bin_input : in std_logic_vector (16 downto 0);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;einer, zehner, hunderter, tausender, zehntausender : out std_logic_vector (3 downto 0);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;overflow : out std_logic<br/>
+);<br/>
 <br/>
 end BINBCD
 </code>
