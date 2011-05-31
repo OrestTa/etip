@@ -6,109 +6,85 @@
 </head>
 <body>
 <div align="Center">
-<h3><a name="Spezifikation"></a><strong>Spezifikation zum Projekt Nr. 2 der Gruppe 7 (ss11-g07)</strong></h3>
+<h3><a name="Spezifikation"></a><strong>Spezifikation zum Projekt Nr. 1 der Gruppe 7 (ss11-g07)</strong></h3>
 <i>Tutor: Steffen Bauereiss</i><br>
 </div>
 
 <ul>
-<li><a href="#Systemgebaeude">Das Systemgebäude</a></li>
-<li><a href="#Aktive_Elemente">Aktive Elemente (Verhalten)</a></li>
+
+<li><a href="#Kurzbeschreibung">Kurzbeschreibung</a></li>
 <li><a href="#Alternative1">Alternative 1</a></li>
 <li><a href="#Alternative2">Alternative 2</a></li>
 <li><a href="#Bewertung">Bewertung der Alternativen</a></li>
 <li><a href="#Entscheidung">Implementierungsentscheidung</a></li>
 </ul>
+<br>
 
 <hr width="100%" size="1">
-<h4><a name="Systemgebaeude">Das Systemgebäude (Architektur)</a></h4>
-<p>Was das Systemgebaeude an sich betrifft, wurden keine Alternativen
-betrachtet. Es besteht aus 5 grossen Holzbrettern (W), die als
-Waende f&uuml;r das Gebaeude (G) fungieren. 2 weitere Holzbretter
-(T) dienen als Tueren fuer den Eingang (E) und den Ausgang (A). 
-Die beiden Holzbretter fuer (T) sind so zuzuschneiden, dass sie in die
-Aussparungen (S), die in 2 der 5 Bretter fuer (W) vorgesehen
-sind, passen.  Die Aussparungen (S) sind so gross, dass der groesste
-der drei Elefantenarten (rosarot, blau und tot) hindurchpasst.<br>
-Die Assemblierung der Teile bedarf keiner genauen Erlaeuterung,
-weswegen auf sie verzichtet wurde.</p>
+<h4><a name="Kurzbeschreibung">Kurzbeschreibung</a></h4>
+<p>
+Es ist ein System zu realisieren, das eine Binärzahl mit 17 Stellen in eine BCD-Zahl mit 5 x 4 Stellen konvertiert. Der Definitionsbereich liegt zwischen 0 und 99999. Die VHDL-Entity des Systems folgt.<br/><br/>
+<code>
+entity BINBCD is<br/>
 <br/>
+port(<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;bin_input : in std_logic_vector (16 downto 0);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;einer, zehner, hunderter, tausender, zehntausender : out std_logic_vector (3 downto 0);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;overflow : out std_logic<br/>
+);<br/>
 <br/>
-
-<hr width="100%" size="1">
-<h4><a name="Aktive_Elemente">Aktive Elemente (Verhalten)</a></h4>
-<p>Es wurden 2 Alternativen zur Loesung des Problems gefunden. 
-Beide werden im Folgenden betrachtet.  Zuerst wird jedoch die gemeinsame 
-Basis der Alternativen erlaeutert. <b>Gemeinsame Infrastruktur</b> In Gebaeude 
-(G) befinden sich 2 Maxwellsche Daemonen (M1 und M2) - (M1) am Eingang und 
-(M2) am Ausgang - , 1 Gewehr zum Toeten blauer Elefanten (GB) und ausreichend 
-Munition (MU) fuer das Gewehr (GB).<br>
-Die Maxwellschen Daemonen wurden in folgender Weise umtrainiert:  
-<ol>
-<li>Sie achten nicht mehr auf Teilchen bestimmter Energie.</li>
-<li>(M1) oeffnet den Eingang nur, wenn sich kein Elefant im System befindet.</li>
-<li>(M1) oeffnet den Eingang nur, wenn sich ein einziger blauer oder rosaroter Elefant vor dem Eingang befindet.</li>
-<li>(M1) holt den Gegenstand, der vor dem geoeffneten Eingang steht, in das System und schliesst den Eingang.</li>
-<li>(M2) erschiesst blaue Elefanten im System solange mit dem Gewehr zum Toeten von blauen Elefanten (GB), bis sie tot sind.</li>
-<li>(M2) oeffnet den Ausgang nur, wenn sich ein toter Elefant im System befindet.</li>
-<li>(M2) wirft bei geoeffnetem Ausgang den Gegenstand, der sich im System befindet aus dem Ausgang hinaus und schliesst den Ausgang.</li>
-</ol>
-Durch diese Vorschriften sind folgende Sachverhalte sichergestellt:  
-<ul>
-<li>Vom Eingang kommt immer nur eine korrekte Eingabe in das System</li>
-<li>Im System befindet sich immer nur ein zu bearbeitender Gegenstand</li>
-<li>Unter der Annahme, dass die Transformation eines blauen oder rosaroten Elefanten in einen toten Elefanten immer gelingt, verlaesst das System immer eine korrekte Ausgabe.</li>
-</ul>
-Oben genannte Regeln machen keine Angaben ueber die Bearbeitung von rosaroten 
-Elefanten. Alternative 1 und 2 beschaeftigen sich mit diesem Vorgang.</p>
-<br/>
-<br/>
-
-<hr width="100%" size="1">
-<h4><a name="Alternative1">Alternative 1</a></h4>
-<p>Dem Maxwellschen Daemon am Eingang (M1) ist folgende zusaetzliche Aufgabe
-anzutrainieren:
-<ul>
-<li>Befindet sich ein rosaroter Elefant im System, so ist er solange zu wuergen, bis er blau ist.</li>
-</ul>
+end BINBCD;
+</code>
 </p>
 <br/>
 <br/>
 
 <hr width="100%" size="1">
-<h4><a name="Alternative2">Alternative 2</a></h4>
-<p>Im Gegensatz zu Alternative 1 muessen bei Alternative 2, ausser einer zusaetzliche
-Aufgabe fuer den Maxwellschen Daemon (M1), zwei weitere Gegenstaende in das
-System (G) eingefuehrt werden.<br>
-Diese Gegenstaende sind: 
-<ul>
-<li>Ein Pinsel (P)</li>
-<li>Ausreichend blaue Farbe (F)</li>
-</ul>
-Die zusaetzliche Anweisung fuer (M1) lautet: 
-<ul>
-<li>Befindet sich ein rosaroter Elefant im System, so ist er solange mit blauer Farbe (F) zu behandeln, bis er ganz blau ist.</li>
-</ul>
+<h4><a name="Alternative1">Alternative 1: Double-Dabble Algorithmus</a></h4>
+<p>
+Diese Alternative sieht es vor, dass die Eingabe zuerst (mit Hilfe einer binären Konstanten: 11000011010011111<sub>2</sub> = 99999<sub>10</sub>) auf ihre Gültigkeit überprüft wird. Falls die Eingabe im Definitionsbereich liegt, so wird ein 37-Bit-Vektor erstellt, der wie folgt aufgebaut ist (beginnend mit dem höchstwertigsten Bit, MSB):<br/>
+<code>4-Bit BCD Zehntausender, 4-Bit BCD Tausender, 4-Bit BCD Hunderter, 4-Bit BCD Zehner, 4-Bit BCD Einer, 17-Bit binäre Eingabe.</code>
+Danach wird nach folgendem Schema vorgegangen, um die binäre Eingabe (in den 17 niedigstwertigen Bits des Vektors) in eine BCD Zahl umzuwandeln:
+<ol>
+<li>Schiebe den Vektor um ein Bit nach links.</li>
+<li>Wenn der Binäre Wert in einer der BCD Spalten größer oder gleich 5 ist, addiere den Wert 3 zu dieser Spalte.</li>
+<li>Wiederhole dieses Schema ab Punkt 1.</li>
+</ol>
+Nach 17x schieben ist Zahl im BCD Format an den (4-Bit) Stellen der Zehntausender, Tausender, Hunderter, Zehner und Einser.
+</p>
+<br/>
+<br/>
+
+<hr width="100%" size="1">
+<h4><a name="Alternative2">Alternative 2: Bin-Dec-BCD Algorithmus</a></h4>
+<p>
+Diese Alternative sieht es vor, dass die Eingabe zuerst (mit Hilfe einer binären Konstanten: 11000011010011111<sub>2</sub> = 99999<sub>10</sub>) auf ihre Gültigkeit überprüft wird. Liegt die Eingabe im Definitionsbereich, wird sie nach folgendem Schema in eine dezimale Zahl umgewandelt (beginnend mit dem niedrigstwertige Bit, LSB):
+<ol>
+<li>Initialisiere eine Variable "dec" mit 0. Diese wird am Ende die dezimale Zahl enthalten.</li>
+<li>Multipliziere die Wertigkeit der aktuellen Stelle (2<sup>0</sup>, 2<sup>1</sup>, ..., 2<sup>16</sup>) mit der Ziffer der aktuellen Stelle (1,0).</li>
+<li>Addiere das Produkt aus Schritt 2 zu dec.</li>
+<li>Wiederhole dieses Schema (ab Schritt 2) für alle Stellen der Binären Eingabe (17x).</li>
+</ol>
+Nun, da die Eingabe in dezimaler Form vorliegt, wird jede der (max. 5) Stellen mit Hilfe einer Lookup-Tabelle, welche die Werte von 0-9 je in Dezimal und Binär enthält, in Binär an den entsprechenden Ausgang gelegt.
 </p>
 <br/>
 <br/>
 
 <hr width="100%" size="1">
 <h4><a name="Bewertung">Bewertung der Alternativen</a></h4>
-<p>Folgende Punkte ergaben sich bei der Bewertung der Alternativen: 
-<ul>
-<li>Bei Alternative 1 ist die direkte Gefahr fuer (M1) durch einen wuetenden Elefanten beim Wuergen verletzt zu werden hoch.</li>
-<li>Bei Alternative 2 ist die Gefahr fuer (M1) durch einen Fehlschuss von (M2) getroffen zu werden geringer als bei Alternative 1, wenn (M2) wartet, bis (M1) aus der Schusslinie ist (der Elefant bleibt dank der Farbe laenger blau als wenn er gewuergt worden waere).</li>
-<li>Bei Alternative 2 nimmt die Komplexitaet des Systems wegen der 2 zusaetzlichen Gegenstaende (P) und (F) betraechtlich zu.</li>
-</ul>
+<p>
+Die Alternative 1 (A1) scheint effizienter zu sein, da hier nur Schiebe und Additions Operationen benötigt werden, wogegen Alternative 2 (A2) Additions und Multiplikations Operationen benötigt. Die Multiplikation würde die Hardware unnötig komplex machen.<br/>
+Weiterhin wird die Eingabe bei A2 zwei mal in ein anderes Zahlensystem umgerechnet, was unnötige Rechenschritte darstellt. Bei A1 kann die binäre Eingabe innerhalb einer Schleife, welche über den Vektor läuft, berechnet werden.
 </p>
 <br/>
 <br/>
 
 <hr width="100%" size="1">
 <h4><a name="Entscheidung">Implementierungsentscheidung</a></h4>
-<p>Es wird Alternative 1 implementiert, da die Komplexitaet des Systems
-geringer ist.  Auf die eventuelle Gefaehrdung des Maxwellschen Daemons (M1)
-braucht keine Ruecksicht genommen zu werden, da es diesen sowieso nicht gibt.</p>
+<p>
+Wir haben uns für den Double-Dabble Algorithmus aus Alternative 1 entschieden, da die oben genannten Vorteile der Alternative 1 überwiegen.
+</p>
+
 </body>
 </html>
 
