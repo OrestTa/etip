@@ -23,26 +23,33 @@
 <hr width="100%" size="1">
 <h4><a name="Kurzbeschreibung">Kurzbeschreibung</a></h4>
 <p>
-Es ist eine Funktion DGBMV zu entwickeln, welche Matrix-Vektor-Operationen in Abhängigkeit des Inhalts von TRANS nach einer der folgenden Formeln durchführt.<br/><br/>
-<code>Y := ALPHA * A * X + BETA * Y<br/>
-Y := ALPHA * A' * X + BETA * Y</code><br/><br/>
+Es ist eine Funktion DGBMV zu entwickeln, welche Matrix-Vektor-Operationen in Abhängigkeit von TRANS durchführt. Wenn TRANS='N' oder 'n', wird die folgende Formel verwendet<br/><br/>
+<code>Y := ALPHA * A * X + BETA * Y</code>.<br/><br/>
+Wenn TRANS='T' oder 't' oder 'C' oder 'c', wird die folgende Formel verwendet<br/><br/>
+<code>Y := ALPHA * A' * X + BETA * Y</code>.<br/><br/>
 ALPHA, BETA seien Skalare; X, Y seien Vektoren; A sei eine Matrix; A' sei transponiertes A.
 </p>
 <br/>
 <br/>
 
 <hr width="100%" size="1">
-<h4><a name="Alternative1">Alternative 1: Double-Dabble Algorithmus</a></h4>
+<h4><a name="Alternative1">Alternative 1: Normalform</a></h4>
 <p>
-Diese Alternative sieht es vor, dass die Eingabe zuerst (mit Hilfe einer binären Konstanten: 11000011010011111<sub>2</sub> = 99999<sub>10</sub>) auf ihre Gültigkeit überprüft wird. Falls die Eingabe im Definitionsbereich liegt, so wird ein 37-Bit-Vektor erstellt, der wie folgt aufgebaut ist (beginnend mit dem höchstwertigsten Bit, MSB):<br/>
-<code>4-Bit BCD Zehntausender, 4-Bit BCD Tausender, 4-Bit BCD Hunderter, 4-Bit BCD Zehner, 4-Bit BCD Einer, 17-Bit binäre Eingabe.</code>
-Danach wird nach folgendem Schema vorgegangen, um die binäre Eingabe (in den 17 niedigstwertigen Bits des Vektors) in eine BCD Zahl umzuwandeln:
+A, X und Y werden jeweils als A2, X2 und Y2 gesichert. Die Matrix A in Bandmatrixform wird in eine NxM-Matrix in Normalform umgewandelt. Die Vektoren X sowie Y werden jeweils aus den inkrementierten Arrays X bzw. Y extrahiert und als X bzw. Y gespeichert.<br/><br/>
+
 <ol>
-<li>Schiebe den Vektor um ein Bit nach links.</li>
-<li>Wenn der Binäre Wert in einer der BCD Spalten größer oder gleich 5 ist, addiere den Wert 3 zu dieser Spalte.</li>
-<li>Wiederhole dieses Schema ab Punkt 1.</li>
+<li>Nun wird eine Skalarmultiplikation der Matrix A mit dem Skalar ALPHA sowie des Vektors Y mit dem Skalar BETA durchgeführt und als AA bzw. YB gespeichert.</li>
+<li>Weiter wird eine Matrixmultiplikation der Matrix AA mit dem Vektor X durchgeführt und das Ergebnis als AAX gespeichert.</li>
+<li>Nachfolgend findet eine Vektoraddition der Vektoren AAX und YB statt, deren Ergebnis als AAXYB gespeichert wird.</li>
+<li>Nun wird der Vektor AAXYB in Y2 eingesetzt und als inkrementiertes Array Y zurückgegeben.</li>
 </ol>
-Nach 17x schieben ist Zahl im BCD Format an den (4-Bit) Stellen der Zehntausender, Tausender, Hunderter, Zehner und Einser.
+<br/><br/>
+Skalarmultiplikation<br/><br/>
+
+Matrixmultiplikation<br/><br/>
+
+Vektoraddition<br/><br/>
+
 </p>
 <br/>
 <br/>
