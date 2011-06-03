@@ -35,7 +35,7 @@ ALPHA, BETA seien Skalare; X, Y seien Vektoren; A sei eine Matrix; A' sei transp
 <hr width="100%" size="1">
 <h4><a name="Alternative1">Alternative 1: Normalform</a></h4>
 <p>
-A, X und Y werden jeweils als A2, X2 und Y2 gesichert. Die Matrix A in Bandmatrixform wird in eine NxM-Matrix in Normalform umgewandelt. Die Vektoren X sowie Y werden jeweils aus den inkrementierten Arrays X bzw. Y extrahiert und als X bzw. Y gespeichert.<br/><br/>
+A, X und Y werden jeweils als A2, X2 und Y2 gesichert. Die Matrix A in Bandspeicherform wird in eine NxM-Bandmatrix in Normalform umgewandelt. Die Vektoren X sowie Y werden jeweils aus den inkrementierten Arrays X bzw. Y extrahiert und als X bzw. Y gespeichert.<br/><br/>
 
 <ol>
 <li>Nun wird eine Skalarmultiplikation der Matrix A mit dem Skalar ALPHA sowie des Vektors Y mit dem Skalar BETA durchgeführt und als AA bzw. YB gespeichert.</li>
@@ -44,12 +44,20 @@ A, X und Y werden jeweils als A2, X2 und Y2 gesichert. Die Matrix A in Bandmatri
 <li>Nun wird der Vektor AAXYB in Y2 eingesetzt und als inkrementiertes Array Y zurückgegeben.</li>
 </ol>
 <br/><br/>
-Skalarmultiplikation<br/><br/>
+Skalarmultiplikation<br/>
+AA: aa<sub>ij</sub> = (a<sub>ij</sub> &middot; ALPHA)<sub>i=1..M; j=1..N</sub>
+<br/>
+YB: yb<sub>i</sub> = (y<sub>i</sub> &middot; BETA)<sub>i=1..n</sub>
+<br/><br/>
 
-Matrixmultiplikation<br/><br/>
+Matrix-Vektor-Multiplikation<br/>
+<table><tr>
+<td>AAX: aax<sub>i</sub> = </td><td><sub>&nbsp;N</sub><br/><font size="+3">&sum;</font><br/><sup>k=1</sup></td><td>(a<sub>ik</sub> &middot; x<sub>k</sub>)<sub>i=1..M</sub></td>
+</tr></table>
+<br/>
 
-Vektoraddition<br/><br/>
-
+Vektoraddition<br/>
+AAXYB: aaxyb<sub>i</sub> = (aax<sub>i</sub> + yb<sub>i</sub>)<sub>i=1..N</sub>
 </p>
 <br/>
 <br/>
