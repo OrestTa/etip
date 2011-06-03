@@ -33,16 +33,16 @@ ALPHA, BETA seien Skalare; X, Y seien Vektoren; A sei eine Matrix; A' sei transp
 <br/>
 
 <hr width="100%" size="1">
-<h4><a name="Alternative1">Alternative 1: Normalform</a></h4>
+<h4><a name="Alternative1">Alternative 1: Berechnung in Normalform</a></h4>
 <p>
-A, X und Y werden jeweils als A2, X2 und Y2 gesichert. Die Matrix A in Bandspeicherform wird in eine NxM-Bandmatrix in Normalform umgewandelt. Die Vektoren X sowie Y werden jeweils aus den inkrementierten Arrays X bzw. Y extrahiert und als X bzw. Y gespeichert.<br/><br/>
+A, X und Y werden jeweils als A2, X2 und Y2 gesichert. Die Matrix A in Bandspeicherform wird in eine MxN-Bandmatrix in Normalform umgewandelt. Die Vektoren X sowie Y werden jeweils aus den inkrementierten Arrays X bzw. Y extrahiert und als X bzw. Y gespeichert.<br/><br/>
 
-<ol>
+<ul>
 <li>Nun wird eine Skalarmultiplikation der Matrix A mit dem Skalar ALPHA sowie des Vektors Y mit dem Skalar BETA durchgeführt und als AA bzw. YB gespeichert.</li>
-<li>Weiter wird eine Matrixmultiplikation der Matrix AA mit dem Vektor X durchgeführt und das Ergebnis als AAX gespeichert.</li>
+<li>Weiter wird eine Matrix-Vektor-Multiplikation der Matrix AA mit dem Vektor X durchgeführt und das Ergebnis als AAX gespeichert.</li>
 <li>Nachfolgend findet eine Vektoraddition der Vektoren AAX und YB statt, deren Ergebnis als AAXYB gespeichert wird.</li>
 <li>Nun wird der Vektor AAXYB in Y2 eingesetzt und als inkrementiertes Array Y zurückgegeben.</li>
-</ol>
+</ul>
 <br/><br/>
 Skalarmultiplikation<br/>
 AA: aa<sub>ij</sub> = (a<sub>ij</sub> &middot; ALPHA)<sub>i=1..M; j=1..N</sub>
@@ -63,16 +63,31 @@ AAXYB: aaxyb<sub>i</sub> = (aax<sub>i</sub> + yb<sub>i</sub>)<sub>i=1..N</sub>
 <br/>
 
 <hr width="100%" size="1">
-<h4><a name="Alternative2">Alternative 2: Bin-Dec-BCD Algorithmus</a></h4>
+<h4><a name="Alternative2">Alternative 2: Berechnung in Bandspeicherform</a></h4>
 <p>
-Diese Alternative sieht es vor, dass die Eingabe zuerst (mit Hilfe einer binären Konstanten: 11000011010011111<sub>2</sub> = 99999<sub>10</sub>) auf ihre Gültigkeit überprüft wird. Liegt die Eingabe im Definitionsbereich, wird sie nach folgendem Schema in eine dezimale Zahl umgewandelt (beginnend mit dem niedrigstwertige Bit, LSB):
-<ol>
-<li>Initialisiere eine Variable "dec" mit 0. Diese wird am Ende die dezimale Zahl enthalten.</li>
-<li>Multipliziere die Wertigkeit der aktuellen Stelle (2<sup>0</sup>, 2<sup>1</sup>, ..., 2<sup>16</sup>) mit der Ziffer der aktuellen Stelle (1,0).</li>
-<li>Addiere das Produkt aus Schritt 2 zu dec.</li>
-<li>Wiederhole dieses Schema (ab Schritt 2) für alle Stellen der Binären Eingabe (17x).</li>
-</ol>
-Nun, da die Eingabe in dezimaler Form vorliegt, wird jede der (max. 5) Stellen mit Hilfe einer Lookup-Tabelle, welche die Werte von 0-9 je in Dezimal und Binär enthält, in Binär an den entsprechenden Ausgang gelegt.
+A, X und Y werden jeweils als A2, X2 und Y2 gesichert. Die Vektoren X sowie Y werden jeweils aus den inkrementierten Arrays X bzw. Y extrahiert und als X bzw. Y gespeichert.<br/><br/>
+
+<ul>
+<li>Nun wird eine Skalarmultiplikation der Matrix A (in Bandspeicherform) mit dem Skalar ALPHA sowie des Vektors Y mit dem Skalar BETA durchgeführt und als AA bzw. YB gespeichert. Dabei werden leere Speicherstellen in der Matrix A implizit als 0 definiert.</li>
+<li>Weiter wird eine Matrix-Vektor-Multiplikation der Matrix AA mit dem Vektor X durchgeführt und das Ergebnis als AAX gespeichert.</li>
+<li>Nachfolgend findet eine Vektoraddition der Vektoren AAX und YB statt, deren Ergebnis als AAXYB gespeichert wird.</li>
+<li>Nun wird der Vektor AAXYB in Y2 eingesetzt und als inkrementiertes Array Y zurückgegeben.</li>
+</ul>
+<br/><br/>
+Skalarmultiplikation<br/>
+AA: aa<sub>ij</sub> = (a<sub>ij</sub> &middot; ALPHA)<sub>i=1..M; j=1..N</sub>
+<br/>
+YB: yb<sub>i</sub> = (y<sub>i</sub> &middot; BETA)<sub>i=1..n</sub>
+<br/><br/>
+
+Matrix-Vektor-Multiplikation<br/>
+<table><tr>
+<td>AAX: aax<sub>i</sub> = </td><td><sub>&nbsp;N</sub><br/><font size="+3">&sum;</font><br/><sup>k=1</sup></td><td>(a<sub>ik</sub> &middot; x<sub>k</sub>)<sub>i=1..M</sub></td>
+</tr></table>
+<br/>
+
+Vektoraddition<br/>
+AAXYB: aaxyb<sub>i</sub> = (aax<sub>i</sub> + yb<sub>i</sub>)<sub>i=1..N</sub>
 </p>
 <br/>
 <br/>
@@ -80,8 +95,6 @@ Nun, da die Eingabe in dezimaler Form vorliegt, wird jede der (max. 5) Stellen m
 <hr width="100%" size="1">
 <h4><a name="Bewertung">Bewertung der Alternativen</a></h4>
 <p>
-Die Alternative 1 (A1) scheint effizienter zu sein, da hier nur Schiebe und Additions Operationen benötigt werden, wogegen Alternative 2 (A2) Additions und Multiplikations Operationen benötigt. Die Multiplikation würde die Hardware unnötig komplex machen.<br/>
-Weiterhin wird die Eingabe bei A2 zwei mal in ein anderes Zahlensystem umgerechnet, was unnötige Rechenschritte darstellt. Bei A1 kann die binäre Eingabe innerhalb einer Schleife, welche über den Vektor läuft, berechnet werden.
 </p>
 <br/>
 <br/>
@@ -89,7 +102,6 @@ Weiterhin wird die Eingabe bei A2 zwei mal in ein anderes Zahlensystem umgerechn
 <hr width="100%" size="1">
 <h4><a name="Entscheidung">Implementierungsentscheidung</a></h4>
 <p>
-Wir haben uns für den Double-Dabble Algorithmus aus Alternative 1 entschieden, da die oben genannten Vorteile der Alternative 1 überwiegen.
 </p>
 
 </body>
