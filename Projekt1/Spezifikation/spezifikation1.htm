@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Spezifikation 1 ss11-g07</title>
+</head>
+<body>
+<div align="Center">
+<h3><a name="Spezifikation"></a><strong>Spezifikation zum Projekt Nr. 1 der Gruppe 7 (ss11-g07)</strong></h3>
+<i>Tutor: Steffen Bauereiss</i><br>
+</div>
+
+<ul>
+
+<li><a href="#Kurzbeschreibung">Kurzbeschreibung</a></li>
+<li><a href="#Alternative1">Alternative 1</a></li>
+<li><a href="#Alternative2">Alternative 2</a></li>
+<li><a href="#Bewertung">Bewertung der Alternativen</a></li>
+<li><a href="#Entscheidung">Implementierungsentscheidung</a></li>
+</ul>
+<br>
+
+<hr width="100%" size="1">
+<h4><a name="Kurzbeschreibung">Kurzbeschreibung</a></h4>
+<p>
+Es ist ein System zu realisieren, das eine Binärzahl mit 17 Stellen in eine BCD-Zahl mit 5 x 4 Stellen konvertiert. Der Definitionsbereich liegt zwischen 0 und 99999. Die VHDL-Entity des Systems folgt.<br/><br/>
+<code>
+entity BINBCD is<br/>
+<br/>
+port(<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;bin_input : in std_logic_vector (16 downto 0);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;einer, zehner, hunderter, tausender, zehntausender : out std_logic_vector (3 downto 0);<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;overflow : out std_logic<br/>
+);<br/>
+<br/>
+end BINBCD;
+</code>
+</p>
+<br/>
+<br/>
+
+<hr width="100%" size="1">
+<h4><a name="Alternative1">Alternative 1: Double-Dabble</a></h4>
+<p>
+Diese Alternative sieht es vor, dass die Eingabe zuerst (mit Hilfe einer binären Konstanten: 11000011010011111<sub>2</sub> = 99999<sub>10</sub>) auf ihre Gültigkeit überprüft wird. Falls die Eingabe im Definitionsbereich liegt, so wird ein 37-Bit-Vektor erstellt, der wie folgt aufgebaut ist (beginnend mit dem höchstwertigsten Bit, MSB):<br/><br/>
+<code>4-Bit BCD Zehntausender, 4-Bit BCD Tausender, 4-Bit BCD Hunderter, 4-Bit BCD Zehner, 4-Bit BCD Einer, 17-Bit binäre Eingabe</code>.<br/><br/>
+Danach wird nach folgendem Schema vorgegangen, um die binäre Eingabe (in den 17 niedigstwertigen Bits des Vektors) in eine BCD umzuwandeln:
+<ol>
+<li>Schiebe den Vektor um ein Bit nach links.</li>
+<li>Wenn der Binäre Wert in einer der BCD Spalten größer oder gleich 5 ist, addiere den Wert 3 zu dieser Spalte.</li>
+<li>Wiederhole dieses Schema 16 mal ab Punkt 1.</li>
+</ol>
+Nach 17-maligem Schieben liegt die Zahl im BCD Format an den (4-Bit-breiten) Stellen der Zehntausender, Tausender, Hunderter, Zehner und Einser.<br/><br/>
+Falls die Eingabe nicht im Definitionsbereich liegt, wird der Ausgang auf 0 und das Overflowbit auf 1 gesetzt.
+</p>
+<br/>
+<br/>
+
+<hr width="100%" size="1">
+<h4><a name="Alternative2">Alternative 2: Bin-Dec-BCD</a></h4>
+<p>
+Diese Alternative sieht es vor, dass die Eingabe zuerst (mit Hilfe einer binären Konstanten: 11000011010011111<sub>2</sub> = 99999<sub>10</sub>) auf ihre Gültigkeit überprüft wird. Liegt die Eingabe im Definitionsbereich, wird sie nach folgendem Schema in eine dezimale Zahl umgewandelt (beginnend mit dem niedrigstwertigen Bit, LSB):
+<ol>
+<li>Initialisiere eine Variable "dec" mit 0. Diese wird am Ende die dezimale Zahl enthalten.</li>
+<li>Multipliziere die Wertigkeit der aktuellen Stelle (2<sup>0</sup>, 2<sup>1</sup>, ..., 2<sup>16</sup>) mit der Ziffer der aktuellen Stelle (1,0).</li>
+<li>Addiere das Produkt aus Schritt 2 zu dec.</li>
+<li>Wiederhole dieses Schema 16 mal ab Punkt 2 (für alle Stellen der Binären Eingabe, insg. 17 mal).</li>
+</ol>
+Nun, da die Eingabe in dezimaler Form vorliegt, wird jede der (maximal fünf) Stellen mit Hilfe der untenstehenden Lookup-Tabelle in eine 4-bit-breite Binärzähl umgewandelt und an den entsprechenden Ausgang gelegt.<br/>
+<code><pre>
+ Decimal:     0     1     2     3     4     5     6     7     8     9
+ Binär  :  0000  0001  0010  0011  0100  0101  0110  0111  1000  1001
+</pre></code>
+Falls die Eingabe nicht im Definitionsbereich liegt, wird der Ausgang auf 0 und das Overflowbit auf 1 gesetzt.
+</p>
+<br/>
+<br/>
+
+<hr width="100%" size="1">
+<h4><a name="Bewertung">Bewertung der Alternativen</a></h4>
+<p>
+Bei der Alternative 1 (A1) werden nur Schiebe- und Additionsoperationen benötigt, wogegen Alternative 2 (A2) Additions- und Multiplikationsoperationen benötigt. Die Multiplikation würde die Hardware unnötig komplex machen.<br/>
+<br/>
+Weiterhin wird die Eingabe bei A2 zwei mal in ein anderes Zahlensystem konvertiert, was unnötige Rechenschritte darstellt. Bei A1 kann die binäre Eingabe innerhalb einer Schleife, welche über den Vektor läuft, direkt berechnet werden.<br/>
+<br/>
+Der Vorteil von A2 ist ihre Anschaulichkeit.<br/>
+<br/>
+Die Alternative 1 ist daher effizienter.
+</p>
+<br/>
+<br/>
+
+<hr width="100%" size="1">
+<h4><a name="Entscheidung">Implementierungsentscheidung</a></h4>
+<p>
+Wir haben uns für den Double-Dabble-Algorithmus aus Alternative 1 entschieden, da die oben genannten Vorteile der Alternative 1 über Alternative 2 deutlich überwiegen.
+</p>
+
+</body>
+</html>
+

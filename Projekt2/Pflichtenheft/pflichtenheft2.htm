@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Pflichtenheft 2 ss11-g07</title>
+</head>
+<body>
+<div align="Center">
+<h3><a name="Pflichtenheft"></a><strong>Pflichtenheft zum Projekt Nr. 2 der Gruppe 7 (ss11-g07)</strong></h3>
+<i>Tutor: Steffen Bauereiss</i><br>
+</div>
+<ul>
+<li>
+  <a href="#Bearbeiter">Aufgabenverteilung</a>
+</li>
+<li>
+  <a href="#Aufgabenkurzbeschreibung">Aufgabenkurzbeschreibung</a>
+</li>
+<li>
+  <a href="#Hilfsmittel">Hilfsmittel</a>
+</li>
+<li>
+  <a href="#Black-Box-Sicht">Black-Box-Sicht</a>
+</li>
+<li>
+  <a href="#Zeitplanung">Zeitplanung</a>
+</li>
+<li>
+  <a href="#Projektverpflichtungen">Projektverpflichtungen</a>
+</li>
+</ul>
+<br>
+
+<hr width="100%" size="1">
+<h4><a name="Bearbeiter">Aufgabenverteilung</a></h4><p>
+  Maximilian Staab - Projektmanagement<br>
+  Orest Tarasiuk - Vortrag<br>
+  Lukas Märdian - Dokumentation</p>
+<br>
+<br>
+
+<hr width="100%" size="1">
+<h4><a name="Aufgabenkurzbeschreibung">Aufgabenkurzbeschreibung</a></h4>
+<p>Es ist eine Funktion DGBMV zu entwickeln, welche Matrix-Vektor-Operationen nach einer der folgenden Formeln durchführt.<br><br>
+Y := ALPHA * A * X + BETA * Y
+<br>
+Y := ALPHA * A' * X + BETA * Y<br><br>
+ALPHA, BETA seien Skalare; X, Y seien Vektoren; A sei eine Matrix; A' sei transponiertes A.</p>
+<br>
+<br>
+
+<hr width="100%" size="1">
+<h4><a name="Hilfsmittel">Hilfsmittel</a></h4>
+<p>
+<li><i>Das Buch</i></li>
+<li>Unterlagen der ETI-Vorlesung</li>
+<li>Assemblerdokumentation</li>
+<li>PCs, Jasmin</li></p>
+<br>
+<br>
+
+<hr width="100%" size="1">
+<h4><a name="Black-Box-Sicht">Black-Box-Sicht</a></h4>
+
+<p>Die Funktion DGBMV hat 13 Argumente und liefert eine Ausgabe Y.<br/><br/>
+<u>Argumente</u>:<br/>
+Skalar, Double: ALPHA, BETA<br/>
+Skalar, Integer: INCX, INCY, KL, KU, LDA, M, N<br/>
+Skalar, Char: TRANS<br/>
+Array, Double: A(LDA, *), X(*), Y(*)<br/><br>
+
+TRANS spezifiziert, welche Formel verwendet wird:<br/>
+bei einer Eingabe von N oder n wird Y := ALPHA*A*Y + BETA*Y berechnet;<br/>
+bei einer Eingabe von T, t, C oder c wird Y := ALPHA*A'*Y + BETA*Y berechnet.<br/>
+Sein Inhalt wird nicht modifiziert.<br/><br/>
+
+M gibt die Anzahl der Zeilen von A an; es beträgt mindestens 0; sein Inhalt wird nicht modifiziert.<br/><br/>
+
+N gibt die Anzahl der Spalten von A an; es beträgt mindestens 0; sein Inhalt wird nicht modifiziert.<br/><br/>
+
+KL gibt die Anzahl der Subdiagonalen von A an; es beträgt mindestens 0; sein Inhalt wird nicht modifiziert.<br/><br/>
+
+KU gibt die Anzahl der Superdiagonalen von A an; es beträgt mindestens 0; sein Inhalt wird nicht modifiziert.<br/><br/>
+
+ALPHA spezifiziert den Wert des Skalars ALPHA; sein Inhalt wird nicht modifiziert.<br/><br/>
+
+A ist ein Array der Dimension (LDA, N); anfänglich beinhaltet der führende (KL+KU+1)-mal-N-Teil die Matrixkoeffizienten, spaltenweise, mit der führenden Diagonale der Matrix in der Zeile KU+1 des Arrays, der ersten Superdiagonale beginnend an Stelle 1 der Zeile KU+2 des Arrays usw.
+<br/>Elemente des Arrays A, die mit den Elementen der Bandmatrix nicht korrespondieren (z. B. das oben-linke KU-mal-KU-Dreieck), werden nicht referenziert.
+<br/>Der folgende Programmabschnitt konvertiert eine Bandmatrix von der konventinellen Matrixlagerung in eine Bandmatrixlagerung.<br/>
+&nbsp;&nbsp;&nbsp; DO 20, J = 1, N<br/>
+&nbsp;&nbsp;&nbsp; K = KU + 1 - J<br/>
+&nbsp;&nbsp;&nbsp; DO 10, I = MAX(1, J - KU), MIN(M, J + KL)<br/>
+&nbsp;&nbsp;&nbsp; A(K + I, J) = matrix(I, J)<br/>
+&nbsp;&nbsp;&nbsp; 10 CONTINUE<br/>
+&nbsp;&nbsp;&nbsp; 20 CONTINUE<br/>
+Der Inhalt von A wird nicht modifiziert.
+<br/><br/>
+
+LDA gibt die erste Dimension von A an (wie im Subprogramm deklariert); es beträgt mindestens KL + KU + 1; sein Inhalt wird nicht modifiziert.<br/><br/>
+
+X ist ein Array einer Dimension von mindestens (1 + (N - 1)*abs(INCX)), falls TRANS 'N' oder 'n' ist; anderenfalls ist X ein Array einer Dimension von mindestens (1 + (M - 1)*abs(INCX)). Zu Beginn beinhaltet das inkrementierte Array X den Vektor X; sein Inhalt wird nicht modifiziert.<br/><br/>
+
+INCX gibt das Inkrement für die Elemente von X an; es darf nicht 0 betragen; sein Inhalt wird nicht modifiziert.<br/><br/>
+
+BETA spezifiziert den Wert des Skalars BETA; wenn es 0 beträgt, muss Y nicht als Eingabewert spezifiziert werden. Der Inhalt von BETA wird nicht modifiziert.<br/><br/>
+
+Y ist ein Array einer Dimension von mindestens (1 + (M - 1)*abs(INCY)), falls TRANS 'N' oder 'n' ist; anderenfalls ist Y ein Array einer Dimension von mindestens (1 + (N - 1)*abs(INCY)). Zu Beginn beinhaltet das inkrementierte Array Y den Vektor Y, bei Beendingung wird Y mit dem aktualisierten Vektor Y überschrieben.<br/><br/>
+
+INCY gibt das Inkrement für die Elemente von Y an; es darf nicht 0 betragen; sein Inhalt wird nicht modifiziert.<br/><br/>
+
+<u>Ausgabe</u>:<br/>
+Array, Double: Y(*)<br/><br/>
+
+Nach Beendingung der Funktionsausführung wird Y mit dem errechneten Vektor Y belegt.
+
+</p>
+<br>
+<br>
+
+<hr width="100%" size="1">
+<h4><a name="Zeitplanung">Zeitplanung</a>
+</h4>
+<p>Die folgende Vorgehensweise wurde geplant.<br><br>
+      <table width="1000" border="0" cellspacing="1" cellpadding="2">
+          <tr bgcolor="#cccccc">
+            <td>Teilaufgabe</td>
+            <td>Maximilian Staab (Projektmanagement)</td>
+            <td>Orest Tarasiuk (Vortrag)</td>
+            <td>Lukas Märdian (Dokumentation)</td>
+            <td>Gesamt</td>
+            <td>Milestone&nbsp;Termin</td>
+          </tr>
+          <tr>
+            <td bgcolor="#efefef" valign="Top">Besprechungen</td>
+            <td bgcolor="#ffffff">3 h</td>
+            <td bgcolor="#ffffff">3 h</td>
+            <td bgcolor="#ffffff">3 h</td>
+            <td bgcolor="#ffffff">9 h</td>
+            <td bgcolor="#ffffff">wöchentlich</td>
+          </tr>
+          <tr>
+            <td bgcolor="#efefef" valign="Top">Aufgabenanalyse</td>
+            <td bgcolor="#ffffff">1 h</td>
+            <td bgcolor="#ffffff">1 h</td>
+            <td bgcolor="#ffffff">1 h</td>
+            <td bgcolor="#ffffff">3 h</td>
+            <td bgcolor="#ffffff">10.05.2011</td>
+          </tr>
+          <tr>
+            <td bgcolor="#efefef" valign="Top">Suche nach zwei Lösungen</td>
+            <td bgcolor="#ffffff">2 h</td>
+            <td bgcolor="#ffffff">2 h</td>
+            <td bgcolor="#ffffff">2 h</td>
+            <td bgcolor="#ffffff">6 h</td>
+            <td bgcolor="#ffffff">30.05.2011</td>
+          </tr>
+          <tr>
+            <td bgcolor="#efefef" valign="Top">Lösungsbewertung und Entscheidung für eine Lösung</td>
+            <td bgcolor="#ffffff">1 h</td>
+            <td bgcolor="#ffffff">1 h</td>
+            <td bgcolor="#ffffff">1 h</td>
+            <td bgcolor="#ffffff">3 h</td>
+            <td bgcolor="#ffffff">06.06.2011</td>
+          </tr>
+          <tr>
+            <td bgcolor="#efefef" valign="Top">Implementierung</td>
+            <td bgcolor="#ffffff">6 h</td>
+            <td bgcolor="#ffffff">5 h</td>
+            <td bgcolor="#ffffff">5 h</td>
+
+            <td bgcolor="#ffffff">16 h</td>
+            <td bgcolor="#ffffff">04.07.2011</td>
+          </tr>
+          <tr>
+            <td bgcolor="#efefef" valign="Top">Systemtests</td>
+            <td bgcolor="#ffffff">2 h</td>
+            <td bgcolor="#ffffff">2 h</td>
+            <td bgcolor="#ffffff">1 h</td>
+            <td bgcolor="#ffffff">5 h</td>
+            <td bgcolor="#ffffff">08.07.2011</td>
+          </tr>
+          <tr>
+            <td bgcolor="#efefef" valign="Top">Übersicht über den Projektverlauf</td>
+            <td bgcolor="#ffffff">4 h</td>
+            <td bgcolor="#ffffff">0 h</td>
+            <td bgcolor="#ffffff">0 h</td>
+            <td bgcolor="#ffffff">4 h</td>
+            <td bgcolor="#ffffff">11.07.2011</td>
+          </tr>
+          <tr>
+            <td bgcolor="#efefef" valign="Top">Dokumentation</td>
+            <td bgcolor="#ffffff">0 h </td>
+            <td bgcolor="#ffffff">0 h</td>
+            <td bgcolor="#ffffff">6 h</td>
+            <td bgcolor="#ffffff">6 h</td>
+            <td bgcolor="#ffffff">11.07.2011</td>
+          </tr>
+          <tr>
+            <td bgcolor="#efefef" valign="Top">Vortrag</td>
+            <td bgcolor="#ffffff">0 h</td>
+            <td bgcolor="#ffffff">5 h</td>
+            <td bgcolor="#ffffff">0 h</td>
+            <td bgcolor="#ffffff">5 h</td>
+            <td bgcolor="#ffffff">15.07.2011</td>
+          </tr>
+          <tr>
+          </tr>
+          <tr>
+            <td bgcolor="#efefef" valign="Top"><b>Gesamt</b></td>
+            <td bgcolor="#ffffff"><b>19 h</b></td>
+            <td bgcolor="#ffffff"><b>19 h</b></td>
+            <td bgcolor="#ffffff"><b>19 h</b></td>
+            <td bgcolor="#ffffff"><b>57 h</b></td>
+            <td bgcolor="#ffffff"><b>15.07.2011</b></td>
+          </tr>
+      </table></p>
+<br>
+<br>
+
+<hr width="100%" size="1">
+<h4><a name="Projektverpflichtungen">Projektverpflichtungen</a></h4>
+<p>
+<li>Pflichtenheft</li>
+<li>Spezifikation</li>
+<li>Implementierung</li>
+<li>Ausarbeitung bzw. Anwender- und Entwicklerdokumentation</li>
+<li>Projektvortrag</li>
+<li>Übersicht über den Projektverlauf</li></p>
+
+</body>
+</html>
+
