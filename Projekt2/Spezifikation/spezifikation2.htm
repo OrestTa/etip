@@ -35,30 +35,35 @@ ALPHA, BETA seien Skalare; X, Y seien Vektoren; A sei eine Matrix; A' sei transp
 <hr width="100%" size="1">
 <h4><a name="Alternative1">Alternative 1: Berechnung in Normalform</a></h4>
 <p>
-A, X und Y werden jeweils als A2, X2 und Y2 gesichert. Die Matrix A in Bandspeicherform wird in eine MxN-Bandmatrix in Normalform umgewandelt. Die Vektoren werden jeweils aus den inkrementierten Arrays X bzw. Y extrahiert und als x bzw. y gespeichert.<br/>
+A, X und Y werden jeweils in A2, X2 und Y2 gesichert. Die Matrix A in Bandspeicherform wird in eine MxN-Bandmatrix in Normalform umgewandelt und in A gespeichert. Die Vektoren werden jeweils aus den inkrementierten Arrays X bzw. Y extrahiert und in X bzw. Y gespeichert.<br/><br/>
 Mit diesen Variablen wird dann nach folgendem Schema vorgegangen:<br/>
 
 <ul>
-<li>Multipliziere (Skalarmultiplikation<sup>1</sup>) die Matrix A mit dem Skalar ALPHA und speichere das Ergebnis in AA.</li>
-<li>Multipliziere (Skalarmultiplikation<sup>2</sup>) den Vektor y mit dem Skalar BETA und speichere das Ergebnis in YB.</li>
-<li>Multipliziere (Matrix-Vektor-Multiplikation<sup>3</sup>) die Matrix AA mit dem Vektor x und speichere das Ergebnis in AAX.</li>
-<li>Addiere (Vektoraddition<sup>4</sup>) die Vektoren AAX und YB und speichere das Ergebnis in AAXYB.</li>
-<li>Setze den Vektor AAXYB in Y2 ein und gebe es als inkrementiertes Array Y zurück.</li>
+<li>Wenn TRANS='T' oder 't' oder 'C' oder 'c', transponiere die Matrix A (transponierte Matrix<sup>1</sup>) und speichere das Ergebnis in A.</li>
+<li>Multipliziere (Skalarmultiplikation<sup>2</sup>) die Matrix A mit dem Skalar ALPHA und speichere das Ergebnis in AA.</li>
+<li>Multipliziere (Skalarmultiplikation<sup>3</sup>) den Vektor Y mit dem Skalar BETA und speichere das Ergebnis in YB.</li>
+<li>Multipliziere (Matrix-Vektor-Multiplikation<sup>4</sup>) die Matrix AA mit dem Vektor X und speichere das Ergebnis in AAX.</li>
+<li>Addiere (Vektoraddition<sup>5</sup>) die Vektoren AAX und YB und speichere das Ergebnis in AAXYB.</li>
+<li>Setze den Vektor AAXYB entsprechend in Y2 ein und gebe es als inkrementiertes Array Y zurück.<sup> </sup></li>
 </ul>
 <br/>
-[1] Skalarmultiplikation:<br/>
-AA: aa<sub>ij</sub> = (a<sub>ij</sub> &middot; ALPHA)<sub>i=1..M; j=1..N</sub>
+
+<sup>1</sup> transponierte Matrix:<br/>
+[A]<sub>ij</sub> := [A]<sub>ji</sub>
 <br/><br/>
-[2] Skalarmultiplikation:<br/>
-YB: yb<sub>i</sub> = (y<sub>i</sub> &middot; BETA)<sub>i=1..n</sub>
+<sup>2</sup> Skalarmultiplikation:<br/>
+AA: aa<sub>ij</sub> = (a<sub>ij</sub> &middot; ALPHA) <sub>i=1..M; j=1..N</sub>
 <br/><br/>
-[3] Matrix-Vektor-Multiplikation:<br/>
+<sup>3</sup> Skalarmultiplikation:<br/>
+YB: yb<sub>i</sub> = (y<sub>i</sub> &middot; BETA) <sub>i=1..n</sub>
+<br/><br/>
+<sup>4</sup> Matrix-Vektor-Multiplikation:<br/>
 <table><tr>
-<td>AAX: aax<sub>i</sub> = </td><td><sub>&nbsp;N</sub><br/><font size="+3">&sum;</font><br/><sup>k=1</sup></td><td>(a<sub>ik</sub> &middot; x<sub>k</sub>)<sub>i=1..M</sub></td>
+<td>AAX: aax<sub>i</sub> = </td><td><sub>&nbsp;N</sub><br/><font size="+3">&sum;</font><br/><sup>k=1</sup></td><td>(a<sub>ik</sub> &middot; x<sub>k</sub>) <sub>i=1..M</sub></td>
 </tr></table>
 <br/>
-[4] Vektoraddition:<br/>
-AAXYB: aaxyb<sub>i</sub> = (aax<sub>i</sub> + yb<sub>i</sub>)<sub>i=1..N</sub>
+<sup>5</sup> Vektoraddition:<br/>
+AAXYB: aaxyb<sub>i</sub> = (aax<sub>i</sub> + yb<sub>i</sub>) <sub>i=1..N</sub>
 </p>
 <br/>
 <br/>
