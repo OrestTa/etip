@@ -35,8 +35,8 @@ ALPHA, BETA seien Skalare; X, Y seien Vektoren; A sei eine Matrix; A' sei transp
 <hr width="100%" size="1">
 <h4><a name="Alternative1">Alternative 1: Berechnung in Normalform</a></h4>
 <p>
-A, X und Y werden jeweils in A2, X2 und Y2 gesichert. Die Matrix A in Bandspeicherform wird in eine MxN-Bandmatrix in Normalform umgewandelt und in A gespeichert. Die Vektoren werden jeweils aus den inkrementierten Arrays X bzw. Y extrahiert und in X bzw. Y gespeichert.<br/><br/>
-Mit diesen Variablen wird dann nach folgendem Schema vorgegangen:<br/>
+A, X und Y werden jeweils in A2, X2 und Y2 gesichert. Die Matrix A in Bandspeicherform wird (mit Hilfe des invertierten Subprogramms aus der Aufgabenstellung) in eine MxN-Bandmatrix in Normalform umgewandelt und in A gespeichert. Die Vektoren werden jeweils aus den inkrementierten Arrays X bzw. Y (mit Hilfe der Variablen INCX bzw. INCY) extrahiert und in X bzw. Y gespeichert.<br/><br/>
+Dann wird nach folgendem Schema vorgegangen:<br/>
 
 <ul>
 <li>Wenn TRANS='T' oder 't' oder 'C' oder 'c', transponiere die Matrix A (transponierte Matrix<sup>1</sup>) und speichere das Ergebnis in A.</li>
@@ -44,13 +44,13 @@ Mit diesen Variablen wird dann nach folgendem Schema vorgegangen:<br/>
 <li>Multipliziere (Skalarmultiplikation<sup>3</sup>) den Vektor Y mit dem Skalar BETA und speichere das Ergebnis in YB.</li>
 <li>Multipliziere (Matrix-Vektor-Multiplikation<sup>4</sup>) die Matrix AA mit dem Vektor X und speichere das Ergebnis in AAX.</li>
 <li>Addiere (Vektoraddition<sup>5</sup>) die Vektoren AAX und YB und speichere das Ergebnis in AAXYB.</li>
-<li>Setze den Vektor AAXYB entsprechend in Y2 ein und gebe es als inkrementiertes Array Y zurück.<sup> </sup>
+<li>Setze den Vektor AAXYB entsprechend INCY in Y2 ein und gebe es als inkrementiertes Array Y zurück.<sup> </sup>
 <li>Überschreibe A mit A2 und X mit X2.<sup> </sup></li></li>
 </ul>
 <br/>
 
 <sup>1</sup> transponierte Matrix:<br/>
-[A]<sub>ij</sub> := [A]<sub>ji</sub>
+[A]<sub>ji</sub> wird überschrieben mit [A]<sub>ij</sub>
 <br/><br/>
 <sup>2</sup> Skalarmultiplikation:<br/>
 AA: aa<sub>ij</sub> = (a<sub>ij</sub> &middot; ALPHA) <sub>i=1..M; j=1..N</sub>
