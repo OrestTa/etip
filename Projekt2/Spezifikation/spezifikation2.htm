@@ -87,7 +87,7 @@ Dann wird nach folgendem Schema vorgegangen:<br/>
 <br/>
 
 <sup>1</sup> transponierte Matrix in Bandspeicherform:<br/>
-[A]<sub>ji</sub> wird ?????????? überschrieben mit [A]<sub>ij</sub>
+Die Zeile KU+1 wird in das neue Array in Zeile KL+1 eingefügt; die Zeile 0..KU wird jeweils in das neue Array in Zeile KU+KL+1..KL+2 eingefügt; die Zeile KU+KL+1..KU+2 wird jeweils in das neue Array in Zeile 0..KL eingefügt. Abschließend wird das alte Array A mit dem neu errechneten überschrieben.
 <br/><br/>
 <sup>2</sup> Skalarmultiplikation:<br/>
 AA: aa<sub>ij</sub> = (a<sub>ij</sub> &middot; ALPHA) <sub>i=1..M; j=1..N</sub>
