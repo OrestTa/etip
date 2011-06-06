@@ -108,10 +108,9 @@ AAXYB: aaxyb<sub>i</sub> = (aax<sub>i</sub> + yb<sub>i</sub>) <sub>i=1..N</sub>
 <hr width="100%" size="1">
 <h4><a name="Bewertung">Bewertung der Alternativen</a></h4>
 <p>
-Alternative 1 (A1) ist leichter zu durchschauen, da hier die Standard Matrix-Vektor Operationen benutzt werden. Die geringere Komplexität zieht eine geringere Fehleranfälligkeit bei der Implementierung nach sich.<br/><br/>
-Alternative 2 (A2) ist effizienter, da mit der übergebenen Matrix direkt in Bandspeicherform gerechnet wird. Dies erhöht allerdings die Komplexität der Rechnung, da eine spezielle Multiplikations-Operation für Matrizen in Bandspeicherform erforderlich ist.<br/><br/>
-A2 hat also sowohl dank besserem Cacheverhalten eine kürzere Laufzeit, als auch eine höhere Speichereffizienz, da weniger Hilfsvariablen benötigt werden als in A1. Diese Vorteile werden jedoch durch eine weit höhere Komplexität wettgemacht, weil spezielle Operationen definiert werden müssen.<br/><br/>
-A1 ist im Vergleich zu A2 etwas langsamer in der Ausführung, dafür jedoch für alle Beteiligten leicher zu verstehen und somit die bessere Wahl auf dem Weg zu einer funktionierenden Implementierung.
+Alternative 1 (A1) ist leichter zu durchschauen, da hier die üblichen Matrix-Vektor-Operationen verwendet werden. Die geringere Komplexität zieht eine geringere Fehleranfälligkeit bei der Implementierung nach sich.<br/><br/>
+Alternative 2 (A2) ist effizienter, da mit der übergebenen Matrix in Bandspeicherform gerechnet wird. Dies erhöht allerdings die Komplexität der Implementierung, da eine spezielle und nicht intuitive Multiplikations-Operation für Matrizen in Bandspeicherform erforderlich ist.<br/><br/>
+A2 verfügt also über ein besseres Cacheverhalten, eine kürzere Laufzeit und eine höhere Speichereffizienz, diese Vorteile werden jedoch durch eine weit höhere Komplexität wettgemacht. A1 ist im Vergleich zu A2 etwas langsamer in der Ausführung und benötigt etwas mehr Speicherplatz, lässt sich dafür aber wesentlich leicher verstehen und durchschauen.
 </p>
 <br/>
 <br/>
@@ -119,7 +118,7 @@ A1 ist im Vergleich zu A2 etwas langsamer in der Ausführung, dafür jedoch für
 <hr width="100%" size="1">
 <h4><a name="Entscheidung">Implementierungsentscheidung</a></h4>
 <p>
-Wir haben uns für die Berechnung in Normalform aus Alternative 1 entschieden, da die oben genannten Vorteile der Alternative 1 die der Alternative 2 überwiegen.
+Wir haben uns für die Implementierung in Normalform aus Alternative 1 entschieden, da Übersichtlichkeit und Korrektheit der Berechnung - nicht aber Effizienz - unsere Priorität sind.
 </p>
 </body>
 </html>
