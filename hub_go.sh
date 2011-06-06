@@ -1,4 +1,4 @@
 #!/bin/bash
-git pull github master
-git commit -a
-git push github master
+#git pull github master # or svn
+#git commit -a
+git push github svn
