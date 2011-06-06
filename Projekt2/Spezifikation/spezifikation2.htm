@@ -44,11 +44,7 @@ Dann wird nach folgendem Schema vorgegangen:<br/>
 <li>Multipliziere (Skalarmultiplikation<sup>3</sup>) den Vektor Y mit dem Skalar BETA und speichere das Ergebnis in YB.</li>
 <li>Multipliziere (Matrix-Vektor-Multiplikation<sup>4</sup>) die Matrix AA mit dem Vektor X und speichere das Ergebnis in AAX.</li>
 <li>Addiere (Vektoraddition<sup>5</sup>) die Vektoren AAX und YB und speichere das Ergebnis in AAXYB.</li>
-<<<<<<< HEAD
 <li>Setze den Vektor AAXYB in Y2 entsprechend INCY ein und gebe es als inkrementiertes Array Y zurück.<sup> </sup>
-=======
-<li>Setze den Vektor AAXYB entsprechend INCY in Y2 ein und gebe es als inkrementiertes Array Y zurück.<sup> </sup>
->>>>>>> p2 s2 a1 details
 <li>Überschreibe A mit A2 und X mit X2.<sup> </sup></li></li>
 </ul>
 <br/>
@@ -105,11 +101,7 @@ YB: yb<sub>i</sub> = (y<sub>i</sub> &middot; BETA) <sub>i=1..n</sub>
 </tr></table>
 <i>Sollte dabei eins der Elemente, auf die zugegriffen wird, sich nicht im Array befinden, so ist es für die Berechnung als gleich 0 zu behandeln.</i> <i>Die erste Zeile/Spalte des Arrays sei hier 1, nicht 0.</i><br/><br/>
 Beispielhaftes Schema:<br/>
-<<<<<<< HEAD
 <img src="ex.jpg"><br/><br/>
-=======
-<img src="ex.jpg"><br/>
->>>>>>> 59fe4000131bf068d0ce5b068ed193b6d43f5d5c
 Beispielhaftes Python-Skript (s. <a href="../../bandmatrix-vector-mult.py">bandmatrix-vector-mult.py</a>):
 <pre><code>
     for i in xrange(1,N+1):
