@@ -97,12 +97,18 @@ YB: yb<sub>i</sub> = (y<sub>i</sub> &middot; BETA) <sub>i=1..n</sub>
 <br/><br/>
 <sup>4</sup> Bandspeichermatrix-Vektor-Multiplikation:<br/>
 <table><tr>
-<td>AAX: aax<sub>i</sub> = </td><td><sub>&nbsp;&nbsp;KU+KL+1</sub><br/><font size="+3">&nbsp;&nbsp;&nbsp;&sum;</font><br/><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;k=0</sup></td><td>(x<sub>k+1</sub> &middot; aa<sub>KU+i-k;k+1</sub>) <sub>i=1..KU+KL+1</sub></td>
+<td>AAX: aax<sub>i</sub> = </td><td><sub>&nbsp;&nbsp;KU+KL+1</sub><br/><font size="+3">&nbsp;&nbsp;&nbsp;&sum;</font><br/><sup>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;k=0</sup></td><td>(x<sub>k+1</sub> &middot; aa<sub>KU+i-k;k+1</sub>) <sub>i=1..N</sub></td>
 </tr></table>
 <i>Sollte dabei eins der Elemente, auf die zugegriffen wird, sich nicht im Array befinden, so ist es für die Berechnung als gleich 0 zu behandeln.</i> <i>Die erste Zeile/Spalte des Arrays sei hier 1, nicht 0.</i><br/><br/>
 Beispielhaftes Schema:<br/>
-<img src="ex.jpg">
-<br/><br/>
+<img src="ex.jpg"><br/>
+Beispielhaftes Python-Skript (s. <a href="../../bandmatrix-vector-mult.py">bandmatrix-vector-mult.py</a>):
+<pre><code>
+    for i in xrange(1,N+1):
+        for k in xrange(0,KU+KL+1+1):
+            AAX[i-1] = AAX[i-1] + (X[k+1-1] * AA[KU+i-k-1][k+1-1])
+</code></pre>
+<br/>
 <sup>5</sup> Vektoraddition:<br/>
 AAXYB: aaxyb<sub>i</sub> = (aax<sub>i</sub> + yb<sub>i</sub>) <sub>i=1..N</sub>
 </p>
