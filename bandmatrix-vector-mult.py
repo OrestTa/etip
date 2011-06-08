@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 #
-#The following programme will multiply a band matrix
-#in band storage form and a supplied vector:
-#
+# The following programme multiplies a band matrix in band storage form and a supplied vector.
 #
 
 # Test as string or double?
@@ -40,7 +38,6 @@ X_S = ["x1","x2","x3","x4","x5"]
 
 AAX_S = ["nix","nix","nix","nix","nix"]
 
-
 # Test values as doubles
 
 M_D = 5
@@ -65,13 +62,11 @@ KL_D = 1
 #8: 0.0 0.0 0.0 0.0 0.0
 #9: 0.0 0.0 0.0 0.0 0.0
 
-
 AA_D = [[0.0,0.0,1.0,1.0,9.0],[0.0,7.0,9.0,2.0,1.0],[3.0,2.0,1.0,5.0,6.0],[1.0,6.0,8.0,1.0,0.0],[0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0,0.0]]
 
 X_D = [12.0,3.0,1.0,0.0,8.0]
 
 AAX_D = [0.0,0.0,0.0,0.0,0.0]
-
 
 if TYPE == "D":
     M = M_D
