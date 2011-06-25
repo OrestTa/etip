@@ -4,7 +4,7 @@ global test
 
 ; The dgbmv function
 dgbmv:
-                push ebp
+                push ebp                ; Prolog
                 mov ebp, esp
 ; Check which operation we have to do
 transcheck:
@@ -38,7 +38,13 @@ bsmvectmult:
 vectoradd:
 
 finish:
-                pop ebp
+                MOV EAX, [EBP+28]       ; ALPHA pointer - some testing for now...
+                FLD qword [EAX]         ; push ALPHA to the FPU
+                FLD qword [EAX]         ; push ALPHA to the FPU again
+                FADD                    ; add upper 2 doubles on the FPU stack
+                FST qword [EAX]         ; store top double on the FPU stack
+                MOV EAX, 0x0            ; return 0 - everything OK!
+                pop ebp                 ; Epilog
                 ret
 ; Error cases
 transerror:                             ; TRANS is neither N,n,T,t,C nor c
