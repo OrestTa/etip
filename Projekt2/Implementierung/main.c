@@ -44,18 +44,45 @@ int main(int argc, char *argv[]) {
 
     /* define the INPUT parameters here */
     char trans   = 'n';
-    int  m       = 5;
-    int  n       = 5;
-    int  kl      = 3;
+    int  m       = 9;
+    int  n       = 9;
+    int  kl      = 1;
     int  ku      = 3;
-    double alpha = 1.0;
-    double a[]   = {1.0, 2.0}; 
+    double alpha = 2.0;
+    // The Bandmatrix - row by row
+    double a[]   = {0.0, 0.0, 0.0, 1.4, 2.5, 3.6, 6.5, 4.3, 3.2, \
+                    0.0, 0.0, 1.3, 2.4, 3.5, 4.6, 6.5, 4.2, 2.7, \
+                    0.0, 1.2, 2.3, 3.4, 4.5, 5.6, 7.7, 8.8, 5.5, \
+                    1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 1.1, 2.2, 3.3, \
+                    2.1, 3.2, 4.3, 5.4, 6.5, 0.0, 0.0, 0.0, 0.0}; 
     int lda      = 5;
-    double x[]   = {1.0,2.0,3.0,4.0,5.0};
+    double x[]   = {1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0};
     int incx     = 1;
-    double beta  = 2.0;
-    double y[]   = {6.598687,0.0,7.0,0.0,8.0,0.0,9.0,0.0,0.0,0.0};
-    int incy     = 2;
+    double beta  = 3.0;
+    double y[]   = {6.0,0.0,0.0,7.0,0.0,0.0,8.0,0.0,0.0, \
+                    9.0,0.0,0.0,0.0,0.0,0.0,6.0,0.0,0.0, \
+                    7.1,0.0,0.0,8.2,0.0,0.0,3.0,0.0,0.0};
+    int incy     = 3;
+
+    /* define the INPUT parameters here */
+/*    char trans   = 'n';
+    int  m       = 6;
+    int  n       = 6;
+    int  kl      = 1;
+    int  ku      = 3;
+    double alpha = 2.0;
+    // The Bandmatrix - row by row
+    double a[]   = {0.0, 0.0, 0.0, 1.4, 2.5, 3.6, \
+                    0.0, 0.0, 1.3, 2.4, 3.5, 4.6, \
+                    0.0, 1.2, 2.3, 3.4, 4.5, 5.6, \
+                    1.1, 2.2, 3.3, 4.4, 5.5, 6.6, \
+                    2.1, 3.2, 4.3, 5.4, 6.5, 0.0}; 
+    int lda      = 5;
+    double x[]   = {1.0,2.0,3.0,4.0,5.0,6.0};
+    int incx     = 1;
+    double beta  = 3.0;
+    double y[]   = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
+    int incy     = 1;*/
 
     /* print the INPUT paramters */
     printf("\n");

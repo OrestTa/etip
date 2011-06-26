@@ -24,9 +24,9 @@ global dgbmv
 ;               CALL scalarmult
 scalarmult:
                 FLD qword [EAX]
-                FLD qword [EDX+ECX*8]
+                FLD qword [EDX]
                 FMUL
-                FSTP qword [EDX+ECX*8]
+                FSTP qword [EDX]
 
                 ADD EDX, EBX
                 ADD EDX, EBX
@@ -68,29 +68,51 @@ transcheck:
 ; Transpose the matrix
 transpose:
                 mov eax, 10             ; EAX = 10 (just for testing)
-                ;JMP finish 
+                JMP finish 
 notranspose:
-                mov eax, 20             ; EAX = 20 (just for testing)
-                ;JMP finish
+                MOV EAX, LDA            ; LDA muss in 16 Bit passen.
+                MUL word N              ; N muss in 16 Bit passen.
+                ADD EAX, EAX
+                PUSH EAX                ; Fehler ausgeben, falls zu groß.
+alloc:
+                PUSH dword 0x0
+                DEC EAX
+                JNZ alloc
+                MOV EAX, [EBP-4]
+
+; Copy matrix
+                MOV EDX, EBP
+                SUB EDX, EAX
+                SUB EDX, 4              ; EDX = neue Matrix*
+                MOV EBX, _A             ; EBX = alte Matrix*
+                PUSH dword 0x0
+copy_loop:
+                MOV ECX, [EBX]
+                MOV [EBP-8], ECX
+                ADD EBX, 4
+                ADD EDX, 4
+                DEC EAX
+                JNE copy_loop
 ; Beta*Y
+BETA_Y:
                 MOV ECX, 0
                 MOV EDX, _Y
                 MOV EAX, _BETA
                 MOV EBX, INCY
                 CALL scalarmult
+                JMP finish
+; Alpha*A
+ALPHA_A:
+
 bsmvectmult:
 
 vectoradd:
 
 finish:
-                ;MOV EAX, [EBP+52]       ; ALPHA pointer - some testing for now...
-                ;FLD qword [EAX]         ; push ALPHA to the FPU
-                ;FLD qword [EAX+4]       ; push ALPHA to the FPU again
-                ;FADD                    ; add upper 2 doubles on the FPU stack
-                ;FSTP qword [EAX]        ; store top double on the FPU stack
-                ;MOV EAX, 0x0            ; return 0 - everything OK!
-                ;MOV EAX, _Y
-                ;MOV dword [EAX+4], 0x40000000
+                POP EBX                 ; Cleanup stack
+                CMP EBP, ESP
+                JNE finish
+
                 MOV EAX, 0x0
                 pop ebp                 ; Epilog
                 ret
