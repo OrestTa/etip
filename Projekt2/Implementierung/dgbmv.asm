@@ -23,7 +23,8 @@ global dgbmv
 ;               MOV EBX, INCY   = inc
 ;               MOV ESI, N      = length
 ;               CALL scalarmult
-scalarmult:
+%macro scalarmult 1
+%1:
                 FLD qword [EAX]
                 FLD qword [EDX]
                 FMUL
@@ -40,9 +41,10 @@ scalarmult:
 
                 INC ECX
                 CMP ECX, ESI
-                JNE scalarmult
+                JNE %1
                 
-                RET
+                ;RET
+%endmacro
 
 ; The dgbmv function
 dgbmv:
@@ -101,7 +103,7 @@ BETA_Y:
                 MOV EAX, _BETA
                 MOV EBX, INCY
                 MOV ESI, N
-                CALL scalarmult
+                scalarmult scalarmult_b
 ; Alpha*A
 ALPHA_A:
                 MOV ECX, 0
@@ -111,7 +113,7 @@ ALPHA_A:
                 MOV EBX, 1
                 MOV ESI, [EBP-4]
                 SHR ESI, 1
-                CALL scalarmult
+                scalarmult scalarmult_a
 
 bsmvectmult:
 
