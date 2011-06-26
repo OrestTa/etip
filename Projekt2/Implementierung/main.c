@@ -19,7 +19,7 @@ void printv(char name, double vector[], int inc, int size) {
     printf("%c    : (", name);
     for(i=0; i<length; i=i+inc) {
         printf("%f", vector[i]);
-        if( i < length-1 ) printf(", ");
+        if( i < length-inc ) printf(", ");
         }
     printf(")\n");
     }
@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
     double x[]   = {1.0,2.0,3.0,4.0,5.0};
     int incx     = 1;
     double beta  = 2.0;
-    double y[]   = {6.0,0.0,7.0,0.0,8.0,0.0,9.0,0.0,0.0};
+    double y[]   = {6.598687,0.0,7.0,0.0,8.0,0.0,9.0,0.0,0.0,0.0};
     int incy     = 2;
 
     /* print the INPUT paramters */
