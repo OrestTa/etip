@@ -21,6 +21,7 @@ global dgbmv
 ;               MOV EDX, _Y     = vector*
 ;               MOV EAX, _BETA  = scalar*
 ;               MOV EBX, INCY   = inc
+;               MOV ESI, N      = length
 ;               CALL scalarmult
 scalarmult:
                 FLD qword [EAX]
@@ -38,7 +39,7 @@ scalarmult:
                 ADD EDX, EBX
 
                 INC ECX
-                CMP ECX, N
+                CMP ECX, ESI
                 JNE scalarmult
                 
                 RET
@@ -99,10 +100,18 @@ BETA_Y:
                 MOV EDX, _Y
                 MOV EAX, _BETA
                 MOV EBX, INCY
+                MOV ESI, N
                 CALL scalarmult
-                JMP finish
 ; Alpha*A
 ALPHA_A:
+                MOV ECX, 0
+                ;MOV EDX, [ESP]
+                MOV EDX, _A
+                MOV EAX, _ALPHA
+                MOV EBX, 1
+                MOV ESI, [EBP-4]
+                SHR ESI, 1
+                CALL scalarmult
 
 bsmvectmult:
 
