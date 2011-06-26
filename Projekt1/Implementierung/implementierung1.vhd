@@ -1,5 +1,5 @@
-library ieee;
-use ieee.numeric_std.all;
+LIBRARY ieee;
+USE ieee.numeric_std.all;
 
 ENTITY BINBCD IS
 
@@ -13,7 +13,7 @@ END BINBCD;
 
 
 
-ARCHITECTURE v1 OF BINBCD IS
+ARCHITECTURE DoubleDabbleV1 OF BINBCD IS
 
 	signal const : std_logic_vector (16 DOWNTO 0) := "11000011010011111";
 	signal vector : std_logic_vector (36 DOWNTO 0) := "0000000000000000000000000000000000000";
@@ -42,6 +42,7 @@ BEGIN
 			-- Hierhin muss noch:
 			-- -Prüfen, ob vector(0to3), oder vector(4to7), oder vector(8to11), oder vector(12to15), oder vector(16to19) >= 5 sind
 			-- -Zu den jeweiligen Abschnitten von vector 3 addieren.
+			-- -Siehe hierfür architecture DoubleDabbleV2.
 		END LOOP
 		vector sll 1;
 		
@@ -56,15 +57,16 @@ BEGIN
 	END IF
 	
 	
-END v1
+END DoubleDabbleV1
 
 
 
-ARCHITECTURE v2 OF BINBCD IS
+ARCHITECTURE DoubleDabbleV2 OF BINBCD IS
 
 	signal int_input : integer := 0;
 	signal vector : std_logic_vector (36 DOWNTO 0);
 	signal i : integer := 0;
+	signal int_bcd_seg : integer := 0;
 	
 BEGIN
 	
@@ -77,9 +79,37 @@ BEGIN
 		
 		FOR i IN 0 TO 15 LOOP
 			vector sll 1;
-			-- Hierhin muss noch:
-			-- -Prüfen, ob vector(0to3), oder vector(4to7), oder vector(8to11), oder vector(12to15), oder vector(16to19) >= 5 sind
-			-- -Zu den jeweiligen Abschnitten von vector 3 addieren.
+			-- WENN MÖGLICH sollte folgender Block bis zum nächsten Kommentar noch mit einer FOR-Schleife, o. ä. zusammengefasst werden:
+			int_bcd_seg <= to_integer(unsigned(vector(3 DOWNTO 0)));
+			IF (int_bcd_seg >= 5) THEN
+				int_bcd_seg <= int_bcd_seg + 3;
+			END IF
+			vector(3 DOWNTO 0) <= std_logic_vector(to_unsigned(int_bcd_seg));
+			
+			int_bcd_seg <= to_integer(unsigned(vector(7 DOWNTO 4)));
+			IF (int_bcd_seg >= 5) THEN
+				int_bcd_seg <= int_bcd_seg + 3;
+			END IF
+			vector(7 DOWNTO 4) <= std_logic_vector(to_unsigned(int_bcd_seg));
+			
+			int_bcd_seg <= to_integer(unsigned(vector(11 DOWNTO 8)));
+			IF (int_bcd_seg >= 5) THEN
+				int_bcd_seg <= int_bcd_seg + 3;
+			END IF
+			vector(11 DOWNTO 8) <= std_logic_vector(to_unsigned(int_bcd_seg));
+			
+			int_bcd_seg <= to_integer(unsigned(vector(15 DOWNTO 12)));
+			IF (int_bcd_seg >= 5) THEN
+				int_bcd_seg <= int_bcd_seg + 3;
+			END IF
+			vector(15 DOWNTO 12) <= std_logic_vector(to_unsigned(int_bcd_seg));
+			
+			int_bcd_seg <= to_integer(unsigned(vector(19 DOWNTO 16)));
+			IF (int_bcd_seg >= 5) THEN
+				int_bcd_seg <= int_bcd_seg + 3;
+			END IF
+			vector(19 DOWNTO 16) <= std_logic_vector(to_unsigned(int_bcd_seg));
+			-- Block Ende
 		END LOOP
 		vector sll 1;
 		
@@ -96,7 +126,7 @@ BEGIN
 	END IF
 	
 	
-END v2
+END DoubleDabbleV2
 
 
 
