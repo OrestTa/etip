@@ -1,6 +1,5 @@
 section .text
 global dgbmv
-global test
 
 ; The dgbmv function
 dgbmv:
@@ -42,7 +41,7 @@ finish:
                 FLD qword [EAX]         ; push ALPHA to the FPU
                 FLD qword [EAX]         ; push ALPHA to the FPU again
                 FADD                    ; add upper 2 doubles on the FPU stack
-                FST qword [EAX]         ; store top double on the FPU stack
+                FSTP qword [EAX]        ; store top double on the FPU stack
                 MOV EAX, 0x0            ; return 0 - everything OK!
                 pop ebp                 ; Epilog
                 ret

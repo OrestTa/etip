@@ -91,7 +91,6 @@ int main(int argc, char *argv[]) {
     printf("\n");
 
     /* print the result (EAX) - for testing purposes only */
-    printf("%i\n", sizeof(y[0]));
     printf("Result for testing\n");
     printf("hex: %x\n",result);
     printf("int: %i\n",result);
