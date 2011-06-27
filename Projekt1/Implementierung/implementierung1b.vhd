@@ -1,5 +1,6 @@
 LIBRARY ieee;
 USE ieee.numeric_std.all;
+USE ieee.std_logic_1164.all;
 
 ENTITY BINBCD IS
 
