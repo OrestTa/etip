@@ -22,7 +22,7 @@ global dgbmv
 ;               MOV EAX, _BETA  : scalar*
 ;               MOV EBX, INCY   : increment of the vector
 ;               MOV ESI, N      : length of the vector
-;               CALL scalarmult
+;               scalarmult foo
 
 %macro scalarmult 1
 %1:
@@ -49,6 +49,9 @@ global dgbmv
 dgbmv:
                 PUSH EBP
                 MOV EBP, ESP
+
+; Check whether all parameters are legal
+; TODO!
 
 ; Check which operation to execute
 transcheck:
@@ -99,28 +102,32 @@ copy_loop:
                 ADD EDX, 4
                 DEC EAX
                 JNE copy_loop
-; Beta*Y
-BETA_Y:
-                MOV ECX, 0
-                MOV EDX, _Y
-                MOV EAX, _BETA
-                MOV EBX, INCY
-                MOV ESI, N
-                scalarmult scalarmult_b
-; Alpha*A
-ALPHA_A:
-                MOV ECX, 0
-                ;MOV EDX, [ESP]
-                MOV EDX, _A
-                MOV EAX, _ALPHA
-                MOV EBX, 1
-                MOV ESI, [EBP-4]
-                SHR ESI, 1
-                scalarmult scalarmult_a
 
-bsmvectmult:
+; [ALPHA * A or ALPHA * A'] = AA
+aa:
+                MOV ECX, 0              ; counter = 0 ; ESP points to the address of A's duplicate
+                ;MOV EDX, [ESP]         ; EDX now points to A's duplicate
+                MOV EDX, _A             ; EDX now points to the original A
+                MOV EAX, _ALPHA         ; EAX now points to ALPHA
+                MOV EBX, 1              ; the increment of A is always 1 (a regular array)
+                MOV ESI, [EBP-4]        ; it's length had been pushed from EAX
+                SHR ESI, 1              ; but has to be adjusted (the true number of elements was 1/2 * EAX)
+                scalarmult scalarmult_a ; execute scalarmult
 
-vectoradd:
+; BETA * Y = YB, saved in Y
+yb:
+                MOV ECX, 0              ; counter = 0
+                MOV EDX, _Y             ; EDX now points to Y
+                MOV EAX, _BETA          ; EAX now points to BETA
+                MOV EBX, INCY           ; EBX now is Y's increment
+                MOV ESI, N              ; ESI now is Y's length
+                scalarmult scalarmult_b ; execute scalarmult
+
+; AA * X = AAX
+aax:
+
+; AAX + YB = AAXYB, saved in Y
+aaxyb:
 
 ; The function succeded 
 okay:
