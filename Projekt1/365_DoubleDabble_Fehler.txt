@@ -43,9 +43,18 @@
 0000|0000|0011|0110|0101|00000000000000000
 0000|0000|0011|1001|1000|00000000000000000
 
+<<<<<<< .mine
+--> Anleitung führt zu 398, da am Ende noch einmal zu viel addiert wird!
+
+
+
+Außerdem:
+- Schritt 1 mit Schritt 2 vertauschen
+- clk als input-port mit in die Entity aufnehmen=======
 --> Anleitung führt zu 398, da am Ende noch einmal zu viel addiert wird!
 
 
 
 EDIT: Doch kein Fehler! "Nach 17-maligem Schieben liegt die Zahl im BCD Format an (...)"
 Die Anleitung wird aber verdeutlicht.
+>>>>>>> .r5985
