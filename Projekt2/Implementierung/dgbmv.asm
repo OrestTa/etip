@@ -120,7 +120,28 @@ yb:
                 scalarmult scalarmult_b ; execute scalarmult
 
 ; AA * X = AAX
+; in Python:
+;     for i in xrange(1,N+1):
+;        for k in xrange(0,KU+KL+1+1):
+;            AAX[i-1] = AAX[i-1] + (X[k+1-1] * AA[KU+i-k-1][k+1-1])
 aax:
+                MOV EBX, 1              ; i
+for_i:
+                MOV ECX, 0              ; k
+for_k:
+                ;do some magic MOV ESI, [EDX+
+                ;and so on PUSH 
+                INC ECX                 ; increment k
+                MOV EDX, LDA            ; KU+KL+1
+                INC EDX                 ; KU+KL+1+1
+                CMP ECX, EDX            ; check whether k=KU+KL+1+1
+                JNZ for_k               ; if not, repeat
+end_k:
+                INC EBX                 ; increment i
+                MOV EDX, N              ; N
+                INC EDX                 ; N+1
+                CMP EBX, EDX            ; check whether i=N+1
+                JNZ for_i               ; if not, repeat
 
 ; AAX + YB = AAXYB, saved in Y
 aaxyb:
