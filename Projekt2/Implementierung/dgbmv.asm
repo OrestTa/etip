@@ -79,39 +79,35 @@ transpose:
 notranspose:
                 MOV EAX, LDA            ; LDA has to fit in 16 bits!
                 MUL word N              ; N has to fit in 16 bits!; TODO: error
-                ADD EAX, EAX            ; duplicate EAX (each double needs 8 bytes instead of 4)
                 PUSH EAX
 
-; Allocate memory
-alloc:
-                PUSH dword 0x0          ; populate the stack with 0s to allow for dynamic management
-                DEC EAX                 ; do it EAX times, i. e. LDA * N * 2
-                JNZ alloc               ; repeat until EAX=0
-                MOV EAX, [EBP-4]        ; restore LDA * N * 2
+; Calculate the pointer to the last element of A
+                MOV EBX, _A             ; EBX now contains the pointer to the original matrix, 1. element
+                DEC EAX                 ; adjust the counter
+                JZ pointerlastready     ; if zero, finished
+pointerlast:
+                ADD EBX, 8              ; move the pointer to the following element
+                DEC EAX                 ; decreasing the counter
+                JNZ pointerlast         ; until it reaches zero (all elements have been skipped)
+                MOV EAX, [EBP-4]        ; restore EAX
+pointerlastready:
 
-; Duplicate the matrix
-                MOV EDX, EBP            ; copy the base pointer
-                SUB EDX, EAX            ; calculate the position of the duplicated matrix (EDX)
-                SUB EDX, 4              ; populate the stack with duplicated matrix' elements
-                MOV EBX, _A             ; EBX contains the pointer to the original matrix
-                PUSH dword 0x0
-copy_loop:
-                MOV ECX, [EBX]
-                MOV [EBP-8], ECX
-                ADD EBX, 4
-                ADD EDX, 4
-                DEC EAX
-                JNE copy_loop
+; Duplicate the matrix A
+matrixduplicate:
+                PUSH dword [EBX+4]      ; push beginning with the last element of A
+                PUSH dword [EBX]        ; 8 bytes (one double element)
+                SUB EBX, 8              ; decrement EBX by 8 bytes to make it point to the previous element
+                DEC EAX                 ; decrease the counter
+                JNZ matrixduplicate     ; repeat until the counter reaches 0
 
 ; [ALPHA * A or ALPHA * A'] = AA
 aa:
-                MOV ECX, 0              ; counter = 0 ; ESP points to the address of A's duplicate
-                ;MOV EDX, [ESP]         ; EDX now points to A's duplicate
-                MOV EDX, _A             ; EDX now points to the original A
+                MOV ECX, 0              ; counter = 0
+                MOV EDX, ESP            ; EDX now points to A's duplicate
+;                MOV EDX, [EBP+32]       ; EDX now points to the original A
                 MOV EAX, _ALPHA         ; EAX now points to ALPHA
                 MOV EBX, 1              ; the increment of A is always 1 (a regular array)
-                MOV ESI, [EBP-4]        ; it's length had been pushed from EAX
-                SHR ESI, 1              ; but has to be adjusted (the true number of elements was 1/2 * EAX)
+                MOV ESI, [EBP-4]        ; A's length had been pushed from EAX at the beginning
                 scalarmult scalarmult_a ; execute scalarmult
 
 ; BETA * Y = YB, saved in Y
