@@ -23,7 +23,6 @@ global dgbmv
 ;               MOV EBX, INCY   : increment of the vector
 ;               MOV ESI, N      : length of the vector
 ;               scalarmult foo
-
 %macro scalarmult 1
 %1:
                 FLD qword [EAX]         ; first factor
@@ -55,11 +54,11 @@ dgbmv:
 
 ; Check which operation to execute
 transcheck:
-                MOV EAX, TRANS          ; Check paramter TRANS
-                CMP AL, 'N'             ; jump to notranspose if it is N or n
-                JE notranspose
+                MOV EAX, TRANS          ; check TRANS and
+                CMP AL, 'N'             ; do not transpose if it is N or n
+                JE proceed0
                 CMP AL, 'n'
-                JE notranspose
+                JE proceed0
                 CMP AL, 'T'             ; jump to transpose if it is T, t, C or c
                 JE transpose
                 CMP AL, 't'
@@ -75,11 +74,13 @@ transpose:
                 mov eax, 10             ; EAX = 10 (just for testing)
                 JMP finish              ; TODO! 
 
-; Proceed without transposing the matrix
-notranspose:
+; Proceed
+proceed0:
                 MOV EAX, LDA            ; LDA has to fit in 16 bits!
                 MUL word N              ; N has to fit in 16 bits!; TODO: error
-                PUSH EAX
+                PUSH EAX                ; the length of A can now be found in [EBP-4]
+                MOV EBX, 0            ; reserve memory for A's duplicate's pointer
+                PUSH EBX                ; on the stack in [EBP-8]
 
 ; Calculate the pointer to the last element of A
                 MOV EBX, _A             ; EBX now contains the pointer to the original matrix, 1. element
@@ -87,7 +88,7 @@ notranspose:
                 JZ pointerlastready     ; if zero, finished
 pointerlast:
                 ADD EBX, 8              ; move the pointer to the following element
-                DEC EAX                 ; decreasing the counter
+                DEC EAX                 ; decrementing the counter
                 JNZ pointerlast         ; until it reaches zero (all elements have been skipped)
                 MOV EAX, [EBP-4]        ; restore EAX
 pointerlastready:
@@ -104,10 +105,11 @@ matrixduplicate:
 aa:
                 MOV ECX, 0              ; counter = 0
                 MOV EDX, ESP            ; EDX now points to A's duplicate
-;                MOV EDX, [EBP+32]       ; EDX now points to the original A
+;                MOV EDX, [EBP+32]       ; EDX now points to the original A - for testing only
+                MOV [EBP-8], EDX        ; A's duplicate's pointer can now be found in [EBP-8]
                 MOV EAX, _ALPHA         ; EAX now points to ALPHA
                 MOV EBX, 1              ; the increment of A is always 1 (a regular array)
-                MOV ESI, [EBP-4]        ; A's length had been pushed from EAX at the beginning
+                MOV ESI, [EBP-4]        ; A's length had been pushed from EAX in proceed0
                 scalarmult scalarmult_a ; execute scalarmult
 
 ; BETA * Y = YB, saved in Y
@@ -125,18 +127,63 @@ yb:
 ;        for k in xrange(0,KU+KL+1+1):
 ;            AAX[i-1] = AAX[i-1] + (X[k+1-1] * AA[KU+i-k-1][k+1-1])
 aax:
+                MOV EAX, 0              ; memory alloc counter
+aax_memory:
+                MOV EBX, 0              ; populate the stack
+                PUSH EBX
+                PUSH EBX
+                INC EAX
+                CMP EAX, N              ; with N*2 dwords = N qwords
+                JNE aax_memory
+aax_body:
                 MOV EBX, 1              ; i
 for_i:
                 MOV ECX, 0              ; k
 for_k:
-                ;do some magic MOV ESI, [EDX+
-                ;and so on PUSH 
+                MOV EAX, KU             ; KU
+                ADD EAX, EBX            ; KU+i
+                SUB EAX, ECX            ; KU+i-k
+                DEC EAX                 ; KU+i-k-1 : EAX now contains the desired row of AA
+                DEC EAX                 ; because index(el)=(EAX-1)*N+ECX
+                MUL word N              ; v. s.; todo error if too big
+                ADD EAX, ECX            ; EAX now contains the index of AA's desired element; =EAX_old
+
+                MOV EDX, [EBP-8]        ; EDX now contains the pointer to AA
+                ADD EDX, EAX            ; each element is a double, so it requires 8 bytes
+                ADD EDX, EAX
+                ADD EDX, EAX
+                ADD EDX, EAX
+                ADD EDX, EAX
+                ADD EDX, EAX
+                ADD EDX, EAX
+                ADD EDX, EAX            ; EDX now contains the pointer to the EAX-th element of AA
+                MOV EAX, EDX            ; EAX=EDX
+
+                MOV EDX, _X             ; EDX now contains the pointer to X
+                ADD EDX, ECX            ; each element is a double, so it requires 8 bytes
+                ADD EDX, ECX
+                ADD EDX, ECX
+                ADD EDX, ECX
+                ADD EDX, ECX
+                ADD EDX, ECX
+                ADD EDX, ECX
+                ADD EDX, ECX            ; EDX now contains the pointer to the k-th element of X
+
+                MUL EDX                 ; EAX=X(ECX)*AA(EAX_old) ; todo size error!!!
+
+                MOV EDX, EBX            ; EDX=i
+                DEC EDX                 ; EDX=i-1
+                ADD EAX, [ESP+EDX]      ; EAX=X(ECX)*AA(EAX_old)+AAX(EDX)
+                MOV [ESP+EDX], EDX      ; AAX will be saved on the stack, with its first element on top
+
+                ; looping k
                 INC ECX                 ; increment k
                 MOV EDX, LDA            ; KU+KL+1
                 INC EDX                 ; KU+KL+1+1
                 CMP ECX, EDX            ; check whether k=KU+KL+1+1
                 JNZ for_k               ; if not, repeat
-end_k:
+k_finished:
+                ; looping i
                 INC EBX                 ; increment i
                 MOV EDX, N              ; N
                 INC EDX                 ; N+1
