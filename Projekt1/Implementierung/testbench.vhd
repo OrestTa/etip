@@ -7,9 +7,9 @@ END ENTITY;
 
 ARCHITECTURE v1 OF testbench IS
     SIGNAL clk: std_logic;
-    SIGNAL bin_input: IN std_logic_vector(16 DOWNTO 0);
-    SIGNAL einer, zehner, hunderter, tausender, zehntausender: OUT std_logic_vector(3 DOWNTO 0);
-    SIGNAL overflow: OUT std_logic;
+    SIGNAL bin_input: std_logic_vector(16 DOWNTO 0);
+    SIGNAL einer, zehner, hunderter, tausender, zehntausender: std_logic_vector(3 DOWNTO 0);
+    SIGNAL overflow: std_logic;
 
     COMPONENT BINBCD IS
         PORT(

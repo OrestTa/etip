@@ -1,7 +1,7 @@
 LIBRARY ieee;
 USE ieee.numeric_std.all;
 USE ieee.std_logic_1164.all;
-USE ieee.std_logic_unsigned.all;
+-- USE ieee.std_logic_unsigned.all;
 
 ENTITY BINBCD IS
 
@@ -64,27 +64,27 @@ BEGIN
 				-- Zehntausender
 				int_bcd_seg := to_integer(unsigned(vector(3 DOWNTO 0)));
 				IF (int_bcd_seg >= 5) THEN
-					vector(3 DOWNTO 0) := vector(3 DOWNTO 0) + "0011";
+					vector(3 DOWNTO 0) := std_logic_vector(unsigned(vector(3 DOWNTO 0)) + "0011");
 				END IF;
 				-- Tausender
 				int_bcd_seg := to_integer(unsigned(vector(7 DOWNTO 4)));
 				IF (int_bcd_seg >= 5) THEN
-					vector(7 DOWNTO 4) := vector(7 DOWNTO 4) + "0011";
+					vector(7 DOWNTO 4) := std_logic_vector(unsigned(vector(7 DOWNTO 4)) + "0011");
 				END IF;
 				-- Hunderter
 				int_bcd_seg := to_integer(unsigned(vector(11 DOWNTO 8)));
 				IF (int_bcd_seg >= 5) THEN
-					vector(11 DOWNTO 8) := vector(11 DOWNTO 8) + "0011";
+					vector(11 DOWNTO 8) := std_logic_vector(unsigned(vector(11 DOWNTO 8)) + "0011");
 				END IF;
 				-- Zehner
 				int_bcd_seg := to_integer(unsigned(vector(15 DOWNTO 12)));
 				IF (int_bcd_seg >= 5) THEN
-					vector(15 DOWNTO 12) := vector(15 DOWNTO 12) + "0011";
+					vector(15 DOWNTO 12) := std_logic_vector(unsigned(vector(15 DOWNTO 12)) + "0011");
 				END IF;
 				-- Einer
 				int_bcd_seg := to_integer(unsigned(vector(19 DOWNTO 16)));
 				IF (int_bcd_seg >= 5) THEN
-					vector(19 DOWNTO 16) := vector(19 DOWNTO 16) + "0011";
+					vector(19 DOWNTO 16) := std_logic_vector(unsigned(vector(19 DOWNTO 16)) + "0011");
 				END IF;
 				
 				-- Shiften:
