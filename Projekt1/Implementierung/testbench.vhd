@@ -35,8 +35,8 @@ BEGIN
     PROCESS
     BEGIN
         clk <= '0';
-        bin_input <= "00000000000000000";       -- 0
---      bin_input <= "00000001101000100";       -- 836
+--      bin_input <= "00000000000000000";       -- 0
+        bin_input <= "00000001101000100";       -- 836
 
 --      loop through 100 clock cycles, 1s each
         FOR i IN 0 TO 99 LOOP
