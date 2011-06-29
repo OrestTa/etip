@@ -2,24 +2,31 @@ extern  printf                          ; the C function to be called
 
 section .data                           ; data section
 
-;a:  dd  5                               ; int a = 5;
+; the printf format for flt64, "\n",'0'
+fmt_flt:     db "first float64 on stack = %E", 10, 10, 0
 
-fmt:    db "stack1 = %d, stack2 = %d, stack3 = %d", 10, 10, 0        ; the printf format, "\n",'0'
+; the printf format for int32, "\n",'0'
+fmt_int:    db "first int = %d, second int = %d, third int = %d", 10, 10, 0
+
+; data:
+;a:  dd  5                               ; int a = 5;
+flt2:   dq  -123.456789e300         ; 64-bit floating point
 
 ; in order to print, push
 ;                MOV EAX, [a]    ; load
 ;                ADD EAX, 2      ; a+2
 ;                PUSH EAX        ; stack3
-;                PUSH DWORD [a]  ; value of variable a ; stack2
+;                PUSH dword [a]  ; value of variable a ; stack2
 ;                ADD EAX, 3
 ;                PUSH EAX        ; stack1
-;                PUSH DWORD FMT  ; address of ctrl string ; stack0
-;                CALL PRINTF
-;                JMP OKAY
+;                PUSH dword fmt  ; address of ctrl string ; stack0
+;                CALL printf
 ;                POP EAX            
 ;                POP EAX
 ;                POP EAX
 ;                POP EAX
+; http://www.cs.umbc.edu/portal/help/nasm/sample.shtml
+
 
 section .text                           ; code
 
@@ -51,8 +58,8 @@ global dgbmv
 %1:
                 FLD qword [EAX]         ; first factor
                 FLD qword [EDX]         ; second factor
-                FMUL                    ; multiply!
-                FSTP qword [EDX]        ; save the result ; todo overflow? is there a problem?
+                FMUL                    ; multiply
+                FSTP qword [EDX]        ; save the result
 
                 ADD EDX, EBX            ; increase the pointer by 8*INC in order to
                 ADD EDX, EBX            ; make it point to the next element of the array
@@ -211,14 +218,14 @@ for_k:                                  ; calculate AAXYB[i-1] + (X[k+1-1] * A[K
 
                 FLD qword [EAX]         ; load the EAX_old-th element of AA: AA(EAX_old)
                 FLD qword [EDX]         ; load the k-th element of X: X(k)
-                FMUL                    ; multiply ; todo how about overflows?
+                FMUL                    ; multiply
                 FSTP qword [EAX]        ; the element that EAX points to now equals X(k)*AA(EAX_old)
 
                 MOV EDX, EBX            ; EDX=i
                 DEC EDX                 ; EDX=i-1
                 FLD qword [EAX]         ; load X(k)*AA(EAX_old)
                 FLD qword [ESP+EDX]     ; load AAX(EDX)
-                FADD                    ; add ; todo overflow
+                FADD                    ; add
                 FSTP qword [ESP+EDX]    ; AAX will be saved on the stack, with its first element on top
 
                 ; looping k
@@ -229,12 +236,22 @@ skiptonextk:
                 JNZ for_k               ; if not, repeat
 k_finished:
                 ; looping i
+
+;                mov edx, esp    ;mov                                     ;;;;;;;;;;;;;;;;;;;;;;;;;
+;                push dword [flt2+4]
+;                push dword [flt2]
+                push dword fmt_flt
+                call printf
+                pop edx
+                pop edx
+                pop edx
+
                 INC EBX                 ; increment i
                 MOV EDX, N              ; N
                 INC EDX                 ; N+1
                 CMP EBX, EDX            ; check whether i=N+1
                 JNZ for_i               ; if not, repeat
-                JMP aax_test            ; diagnose whether AAX is correct
+;                JMP aax_test            ; diagnose whether AAX is correct
 
 ; AAX + YB = AAXYB, saved in Y; aaxyb(i*INCY) = (aax(i) + yb(i*INCY)) for each i=0..N-1
 ; Warning: Y is and remains an incremented array!
@@ -246,7 +263,7 @@ aaxyb:
 aaxyb_body:                             ; sum and then calculate the new pointer to B*Y(i*INCY)
                 FLD qword [EAX]         ; load B*Y(i*INCY)
                 FLD qword [ESP+EBX]     ; load AAX(i)
-                FADD                    ; todo overflow?
+                FADD                    ; add
                 FSTP qword [EAX]        ; write B*Y(i*INCY)=B*Y(i*INCY)+AAX(i)
 
                 ADD EAX, INCY           ; each double is 8 bytes long
@@ -281,16 +298,52 @@ finish:
                 POP EBP
                 RET
 
+
 ; Testing
 
 aa_test:
-                MOV EAX, _Y             ; EAX now contains the pointer to Y(0)
-                MOV dword [EAX], 0      ; set Y(0)=0
-                MOV dword [EAX+4], 0    ; v. s.
-                MOV EDX, [EBP-8]        ; load AA's pointer
-                ADD EDX, 24             ; jump to AA(3)
-                FLD qword [EDX]         ; load
-                FSTP qword [EAX]        ; write [EDX] to Y(0)
+                MOV ESI, 0              ; counter/index
+;                PUSH dword [EBP-4]            ; length
+;                PUSH dword fmt_int
+;                CALL printf
+;                POP EBX
+;                POP EBX
+;                JMP okay               ; finish
+aa_test_print:
+                MOV EBX, [EBP-8]        ; AA's pointer
+                ADD EBX, ESI            ; increase by 8*index
+                ADD EBX, ESI
+                ADD EBX, ESI
+                ADD EBX, ESI
+                ADD EBX, ESI
+                ADD EBX, ESI
+                ADD EBX, ESI
+                ADD EBX, ESI
+
+                MOV ECX, [EBX+4]
+                MOV EDX, [EBX]
+                PUSH ECX
+                PUSH EDX
+                PUSH dword [EBX+4]
+                PUSH dword [EBX]
+                PUSH dword fmt_flt
+                CALL printf
+                POP EBX
+                POP EBX
+                POP EBX
+
+                ; looping
+                INC ESI
+                CMP ESI, [EBP-4]        ; AA's length
+                JNE aa_test_print       ; repeat until equal
+
+;                MOV EAX, _Y             ; EAX now contains the pointer to Y(0)
+;                MOV dword [EAX], 0      ; set Y(0)=0
+;                MOV dword [EAX+4], 0    ; v. s.
+;                MOV EDX, [EBP-8]        ; load AA's pointer
+;                ADD EDX, 24             ; jump to AA(3)
+;                FLD qword [EDX]         ; load
+;                FSTP qword [EAX]        ; write [EDX] to Y(0)
                 JMP okay
 
 aax_test:
