@@ -4,60 +4,36 @@
 # The following script calculates Y := ALPHA * A * X + BETA * Y
 #
 
-# Test as string or double?
-TYPE="D"
-#TYPE="S"
+M = 9
+N = 9
+KU = 3
+KL = 1
+LDA = 5
 
-# Test values as doubles
+TRANS = 'n'
 
-M_D = 9
-N_D = 9
-KU_D = 3
-KL_D = 1
-LDA_D = 5
+ALPHA = 2.0
+BETA = 3.0
 
-TRANS_D = 'n'
+INCX = 1
+INCY = 3
 
-ALPHA_D = 2.0
-BETA_D = 3.0
+A =   [[0.0, 0.0, 0.0, 1.4, 2.5, 3.6, 6.5, 4.3, 3.2], \
+       [0.0, 0.0, 1.3, 2.4, 3.5, 4.6, 6.5, 4.2, 0.0], \
+       [0.0, 1.2, 2.3, 3.4, 4.5, 5.6, 7.7, 5.1, 9.8], \
+       [1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 1.8, 0.0, 3.6], \
+       [2.1, 3.2, 4.3, 5.4, 6.5, 4.3, 0.0, 5.1, 0.0]]
 
-INCX_D = 1
-INCY_D = 3
+X =    [1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0]
 
-A_D = [[0.0, 0.0, 0.0, 1.4, 2.5, 3.6, 6.5, 4.3, 3.2], \
-       [0.0, 0.0, 1.3, 2.4, 3.5, 4.6, 6.5, 4.2, 2.7], \
-       [0.0, 1.2, 2.3, 3.4, 4.5, 5.6, 7.7, 8.8, 5.5], \
-       [1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 1.1, 2.2, 3.3], \
-       [2.1, 3.2, 4.3, 5.4, 6.5, 0.0, 0.0, 0.0, 0.0]]
-
-X_D =  [1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0]
-
-Y_D =  [6.0,0.0,0.0,7.0,0.0,0.0,8.0,0.0,0.0, \
+Y =    [6.0,0.0,0.0,7.0,0.0,0.0,8.0,0.0,0.0, \
         9.0,0.0,0.0,0.0,0.0,0.0,6.0,0.0,0.0, \
         7.1,0.0,0.0,8.2,0.0,0.0,3.0,0.0,0.0]
 
-AAXYB_D = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0] # this will be our result!
+AAXYB = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0] # this will be our result!
 
-if TYPE == "D":
-    M = M_D
-    N = N_D
-    KU = KU_D
-    KL = KL_D
-    LDA = LDA_D
-    TRANS = TRANS_D
-    ALPHA = ALPHA_D
-    BETA = BETA_D
-    INCX = INCX_D
-    INCY = INCY_D
-    A = A_D
-    X = X_D
-    Y = Y_D
-    AAXYB = AAXYB_D
-
-else:
-    print "Wrong type!"
-
-# Y := ALPHA * A * X + BETA * Y
+print
+print "Y = AAXYB := ALPHA * A * X + BETA * Y"
 
 print
 
@@ -120,10 +96,12 @@ print
 print "ALPHA*A*X:"
 
 for i in xrange(1,N+1):
-    for k in xrange(0,KU+KL+1+1):
+    print i
+    for k in xrange(0,N):
         if (KU+i-k-1) >= 0:
             if (KU+i-k-1) <= (LDA-1):
                 AAXYB[i-1] = AAXYB[i-1] + (X[k+1-1] * A[KU+i-k-1][k+1-1])
+# true result: 26, 71, 138, 252.2, 325.2, 376.8, 158.4, 176.4, 146.4
 
 # print AAXYB
 for i in xrange(0,len(AAXYB)):
@@ -149,4 +127,4 @@ for i in xrange(0,len(AAXYB)):
     print AAXYB[i],
 print
 
-# TODO: INC!!!
+# TODO: INCrements!!!
