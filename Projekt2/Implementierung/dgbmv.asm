@@ -1,4 +1,28 @@
-section .text
+extern  printf                          ; the C function to be called
+
+section .data                           ; data section
+
+;a:  dd  5                               ; int a = 5;
+
+fmt:    db "stack1 = %d, stack2 = %d, stack3 = %d", 10, 10, 0        ; the printf format, "\n",'0'
+
+; in order to print, push
+;                MOV EAX, [a]    ; load
+;                ADD EAX, 2      ; a+2
+;                PUSH EAX        ; stack3
+;                PUSH DWORD [a]  ; value of variable a ; stack2
+;                ADD EAX, 3
+;                PUSH EAX        ; stack1
+;                PUSH DWORD FMT  ; address of ctrl string ; stack0
+;                CALL PRINTF
+;                JMP OKAY
+;                POP EAX            
+;                POP EAX
+;                POP EAX
+;                POP EAX
+
+section .text                           ; code
+
 global dgbmv
 
 %define TRANS [EBP+8]
@@ -138,9 +162,9 @@ yb:
 ; todo! increment for x!!!!
 aax:
                 MOV EAX, 0              ; memory alloc counter
+                MOV EBX, 0
 aax_memory:
-                MOV EBX, 0              ; populate the stack
-                PUSH EBX
+                PUSH EBX                ; populate the stack
                 PUSH EBX
                 INC EAX
                 CMP EAX, N              ; with N*2 dwords = N qwords
