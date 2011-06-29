@@ -86,7 +86,7 @@ ALPHA spezifiziert den Wert des Skalars ALPHA; sein Inhalt wird nicht modifizier
 
 A ist ein Array der Dimension (LDA, N); anfänglich beinhaltet der führende (KL+KU+1)-mal-N-Teil die Matrixkoeffizienten, spaltenweise, mit der führenden Diagonale der Matrix in der Zeile KU+1 des Arrays, der ersten Superdiagonale beginnend an Stelle 1 der Zeile KU+2 des Arrays usw.
 <br/>Elemente des Arrays A, die mit den Elementen der Bandmatrix nicht korrespondieren (z. B. das oben-linke KU-mal-KU-Dreieck), werden nicht referenziert.
-<br/>Der folgende Programmabschnitt konvertiert eine Bandmatrix von der konventinellen Matrixlagerung in eine Bandmatrixlagerung.<br/>
+<br/>Der folgende Programmabschnitt konvertiert eine Bandmatrix von der konventionellen Matrixlagerung in eine Bandmatrixlagerung.<br/>
 &nbsp;&nbsp;&nbsp; DO 20, J = 1, N<br/>
 &nbsp;&nbsp;&nbsp; K = KU + 1 - J<br/>
 &nbsp;&nbsp;&nbsp; DO 10, I = MAX(1, J - KU), MIN(M, J + KL)<br/>
