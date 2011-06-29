@@ -7,6 +7,8 @@ fmt_flt:     db "first float64 on stack = %E", 10, 10, 0
 
 ; the printf format for int32, "\n",'0'
 fmt_int:    db "first int = %d, second int = %d, third int = %d", 10, 10, 0
+fmt_int_k:  db "k = %d, last row no = %d", 10, 0
+fmt_int_i:  db "i = %d, last float64 = %E", 10, 0
 
 ; data:
 ;a:  dd  5                               ; int a = 5;
@@ -182,6 +184,15 @@ for_k:                                  ; calculate AAXYB[i-1] + (X[k+1-1] * A[K
                 ADD EAX, EBX            ; KU+i
                 SUB EAX, ECX            ; KU+i-k
                 DEC EAX                 ; KU+i-k-1 : EAX now contains the desired row of AA
+
+                ;PUSH EAX                ; row
+                ;PUSH ECX                ; k
+                ;PUSH dword fmt_int_k
+                ;CALL printf             ; print
+                ;POP EDX
+                ;POP EDX
+                ;POP EDX
+
                 CMP EAX, 0              ; KU+i-k-1 < 0?
                 JL skiptonextk          ; skip to a next k
                 MOV EDX, LDA            ; LDA
@@ -227,26 +238,32 @@ for_k:                                  ; calculate AAXYB[i-1] + (X[k+1-1] * A[K
 
 skiptonextk:
                 ; looping k
+
+                ;PUSH EAX                ; row
+                ;PUSH ECX                ; k
+                ;PUSH dword fmt_int_k
+                ;CALL printf             ; print
+                ;POP EDX
+                ;POP EDX
+                ;POP EDX
+
                 INC ECX                 ; increment k
                 MOV EDX, N              ; N
-                DEC EDX                 ; N-1
-                CMP ECX, EDX            ; check whether k=N-1
+                CMP ECX, EDX            ; check whether k=N
                 JNZ for_k               ; if not, repeat
 k_finished:
                 ; looping i
 
-;                mov edx, esp    ;mov                                     ;;;;;;;;;;;;;;;;;;;;;;;;;
-;                push dword [flt2+4]
-;                push dword [flt2]
-                push dword fmt_flt
-                call printf
-                pop edx
-;                pop edx
-;                pop edx
+                PUSH EBX                ; i
+                PUSH dword fmt_int_i
+                CALL printf             ; print the last float64 on stack
+                POP EDX
+                POP EDX
 
                 INC EBX                 ; increment i
                 MOV EDX, N              ; N
-                CMP EBX, EDX            ; check whether i=N
+                INC EDX                 ; N+1
+                CMP EBX, EDX            ; check whether i=N+1
                 JNZ for_i               ; if not, repeat
 ;                JMP aax_test            ; diagnose whether AAX is correct
 
