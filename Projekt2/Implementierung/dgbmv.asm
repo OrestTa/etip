@@ -10,16 +10,16 @@ fmt_int:    db "first int = %d, second int = %d, third int = %d", 10, 10, 0
 
 ; data:
 ;a:  dd  5                               ; int a = 5;
-flt2:   dq  -123.456789e300         ; 64-bit floating point
+;flt2:   dq  -123.456789e300         ; 64-bit floating point
 
-; in order to print, push
-;                MOV EAX, [a]    ; load
-;                ADD EAX, 2      ; a+2
+; in order to print, push like this:
+;                MOV EAX, [a]    ;
+;                ADD EAX, 2      ; 
 ;                PUSH EAX        ; stack3
-;                PUSH dword [a]  ; value of variable a ; stack2
+;                PUSH dword [a]  ; stack2
 ;                ADD EAX, 3
 ;                PUSH EAX        ; stack1
-;                PUSH dword fmt  ; address of ctrl string ; stack0
+;                PUSH dword fmt  ; stack0
 ;                CALL printf
 ;                POP EAX            
 ;                POP EAX
@@ -81,7 +81,8 @@ dgbmv:
                 MOV EBP, ESP
 
 ; Check whether all parameters are legal
-; TODO! todo todo
+; TODO
+; also todo: incx, negative inc, check negative doubles as input; transpose; mul
 
 ; Check which operation to execute
 transcheck:
@@ -161,15 +162,10 @@ yb:
 ;         if (KU+i-k-1) >= 0:
 ;             if (KU+i-k-1) <= (LDA-1):
 ;                 AAXYB[i-1] = AAXYB[i-1] + (X[k+1-1] * A[KU+i-k-1][k+1-1])
-; Check if
-; KU+i-k-1 < 0
-; or
-; KU+i-k-1 > LDA-1
-; if so, skip
 ; todo! increment for x!!!!
 aax:
                 MOV EAX, 0              ; memory alloc counter
-                MOV EBX, 0
+                MOV EBX, 0              ; default value for AAX's elements
 aax_memory:
                 PUSH EBX                ; populate the stack
                 PUSH EBX
@@ -228,11 +224,12 @@ for_k:                                  ; calculate AAXYB[i-1] + (X[k+1-1] * A[K
                 FADD                    ; add
                 FSTP qword [ESP+EDX]    ; AAX will be saved on the stack, with its first element on top
 
-                ; looping k
 skiptonextk:
+                ; looping k
                 INC ECX                 ; increment k
                 MOV EDX, N              ; N
-                CMP ECX, EDX            ; check whether k=N
+                DEC EDX                 ; N-1
+                CMP ECX, EDX            ; check whether k=N-1
                 JNZ for_k               ; if not, repeat
 k_finished:
                 ; looping i
@@ -243,13 +240,12 @@ k_finished:
                 push dword fmt_flt
                 call printf
                 pop edx
-                pop edx
-                pop edx
+;                pop edx
+;                pop edx
 
                 INC EBX                 ; increment i
                 MOV EDX, N              ; N
-                INC EDX                 ; N+1
-                CMP EBX, EDX            ; check whether i=N+1
+                CMP EBX, EDX            ; check whether i=N
                 JNZ for_i               ; if not, repeat
 ;                JMP aax_test            ; diagnose whether AAX is correct
 
@@ -289,6 +285,12 @@ okay:
 transerror:                             ; TRANS is none of N, n, T, t, C, c
                 MOV EAX, -1             ; set return to -1
                 JMP finish
+dimerror:
+                MOV EAX, -2
+                JMP finish
+incerror:
+                MOV EAX, -3
+                JMP finish 
 
 ; EPILOGUE
 finish:
