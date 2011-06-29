@@ -111,7 +111,7 @@ aa:
                 MOV EBX, 1              ; the increment of A is always 1 (a regular array)
                 MOV ESI, [EBP-4]        ; A's length had been pushed from EAX in proceed0
                 scalarmult scalarmult_a ; execute scalarmult
-                JMP aa_test
+;                JMP aa_test             ; diagnose whether A*A is correct
 
 ; BETA * Y = YB, saved in Y
 yb:
@@ -147,9 +147,9 @@ aax_memory:
                 JNE aax_memory
 aax_body:
                 MOV EBX, 1              ; i
-for_i:
+for_i:                                  ; calculate AAXYB(i-1)
                 MOV ECX, 0              ; k
-for_k:
+for_k:                                  ; calculate AAXYB[i-1] + (X[k+1-1] * A[KU+i-k-1][k+1-1])
                 MOV EAX, KU             ; KU
                 ADD EAX, EBX            ; KU+i
                 SUB EAX, ECX            ; KU+i-k
@@ -188,7 +188,7 @@ for_k:
                 FLD qword [EAX]         ; load the EAX_old-th element of AA: AA(EAX_old)
                 FLD qword [EDX]         ; load the k-th element of X: X(k)
                 FMUL                    ; multiply ; todo how about overflows?
-                FSTP qword [EAX]        ; the elment EAX points to now equals X(k)*AA(EAX_old)
+                FSTP qword [EAX]        ; the element that EAX points to now equals X(k)*AA(EAX_old)
 
                 MOV EDX, EBX            ; EDX=i
                 DEC EDX                 ; EDX=i-1
@@ -260,38 +260,22 @@ finish:
 ; Testing
 
 aa_test:
-                MOV EAX, _Y             ; contains the pointer to Y(0)
-                MOV EDX, _Y             ; v. s.
+                MOV EAX, _Y             ; EAX now contains the pointer to Y(0)
                 MOV dword [EAX], 0      ; set Y(0)=0
-                MOV dword [EAX+4], 0
-;                MOV dword [EAX+24], 0
- ;               MOV dword [EAX+28], 0
-;                ADD EDX, 4
-;                MOV ESI, 0
-;                PUSH dword 66
-;                PUSH dword 999
-;                MOV ECX, [EBP-8]        ; AA's first element
-;                ADD ECX, 8              ; or one of the following ones
-                MOV EAX, [EBP-8]
-                FLD qword [EAX]     
-                FSTP qword [EDX]        ; write [EAX] to Y(0)
-;                MOV EBX, [ECX]          ; the first 4 bytes of the ECX-th double of AA
-;                MOV [EAX], EBX          ; write to the first 4 bytes of Y(0)
-;                MOV EBX, [ECX+4]        ; the second 4 bytes of AAX
-;                MOV [EAX+4], EBX        ; write to the second 4 bytes of Y(0)
-;                MOV dword EDX, 0
-;                MOV dword _Y, 0
+                MOV dword [EAX+4], 0    ; v. s.
+                MOV EDX, [EBP-8]        ; load AA's pointer
+                ADD EDX, 24             ; jump to AA(3)
+                FLD qword [EDX]         ; load
+                FSTP qword [EAX]        ; write [EDX] to Y(0)
                 JMP okay
 
 aax_test:
-                MOV EAX, _Y             ; the pointer to Y(0)
-                MOV ECX, ESP            ; stack's top element
-                ADD ECX, 2             ; or one of the following ones
-;                FLD qword [ESP+24]         ; load AAX(n)
-;                FSTP qword [EAX]        ; write AAX(n) to Y(0)
-                MOV EBX, [ECX]          ; the first 4 bytes of the ECX-th double of AAX
-                MOV [EAX], EBX          ; write to the first 4 bytes of Y(0)
-                MOV EBX, [ECX+4]        ; the second 4 bytes of AAX
-                MOV [EAX+4], EBX        ; write to the second 4 bytes of Y(0)
+                MOV EAX, _Y             ; EAX now contains the pointer to Y(0)
+                MOV dword [EAX], 0      ; set Y(0)=0
+                MOV dword [EAX+4], 0    ; v. s.
+                MOV EDX, ESP            ; load AAX's pointer
+;                ADD EDX, 0           ; jump to AA's second-to-last element
+                FLD qword [EDX]         ; load
+                FSTP qword [EAX]        ; write [EDX] to Y(0)
                 JMP okay
 

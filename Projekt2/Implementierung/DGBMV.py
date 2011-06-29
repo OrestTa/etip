@@ -96,7 +96,6 @@ print
 print "ALPHA*A*X:"
 
 for i in xrange(1,N+1):
-    print i
     for k in xrange(0,N):
         if (KU+i-k-1) >= 0:
             if (KU+i-k-1) <= (LDA-1):
@@ -125,6 +124,7 @@ print "Y*BETA+ALPHA*A*X:"
 for i in xrange(0,len(AAXYB)):
     AAXYB[i] = Y[3*i] + AAXYB[i]
     print AAXYB[i],
+print
 print
 
 # TODO: INCrements!!!
