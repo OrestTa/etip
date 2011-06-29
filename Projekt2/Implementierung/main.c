@@ -110,7 +110,7 @@ int main(int argc, char *argv[]) {
     if( result >= 0 ) {
         printf("OUTPUT Result:\n");
         printv('Y', y, incy, sizeof(y));
-        printv('A', a, 1, sizeof(a)); // - for testing purposes only
+//        printv('A', a, 1, sizeof(a)); // - for testing purposes only
         }
     else {
         printf("OUTPUT Error:\n");
