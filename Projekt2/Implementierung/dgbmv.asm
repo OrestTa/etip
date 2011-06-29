@@ -82,7 +82,7 @@ dgbmv:
 
 ; Check whether all parameters are legal
 ; TODO
-; also todo: incx, negative inc, check negative doubles as input; transpose; mul
+; also todo: incx, negative inc, check negative doubles as input; transpose
 
 ; Check which operation to execute
 transcheck:
@@ -108,8 +108,9 @@ transpose:
 
 ; Proceed
 proceed0:
-                MOV EAX, LDA            ; LDA has to fit in 16 bits!
-                MUL word N              ; N has to fit in 16 bits!; TODO: error
+                MOV EAX, LDA            ; LDA, first operand
+;                MUL word N              ; N has to fit in 16 bits!; TODO: error
+                IMUL EAX, dword N       ; *N, second operand; TODO: error if OF
                 PUSH EAX                ; the length of A can now be found in [EBP-4]
                 MOV EBX, 0              ; reserve memory for A's duplicate's pointer
                 PUSH EBX                ; on the stack in [EBP-8]
@@ -188,7 +189,7 @@ for_k:                                  ; calculate AAXYB[i-1] + (X[k+1-1] * A[K
                 CMP EAX, EDX            ; KU+i-k-1 > LDA-1?
                 JG skiptonextk          ; skip to a next k
                 DEC EAX                 ; because index(el)=(EAX-1)*N+ECX
-                MUL word N              ; v. s.; todo error if too big
+                IMUL EAX, dword N       ; v. s.; todo error if OF
                 ADD EAX, ECX            ; EAX now contains the index of AA's desired element, =:EAX_old
 
                 MOV EDX, [EBP-8]        ; EDX now contains the pointer to AA
