@@ -1,6 +1,17 @@
-extern  printf                          ; the C function to be called
+;
+; The following code calculates
+; Y := ALPHA * A  * X + BETA * Y
+; or alternatively
+; Y := ALPHA * A' * X + BETA * Y
+;
+; TODO:
+; On entry, BETA specifies the scalar beta. When BETA is 
+; supplied as zero then Y need not be set on input. 
+; incx, negative inc, check negative doubles as input; transpose
 
-section .data                           ; data section
+extern printf                           ; the C function to be called, for testing only
+
+section .data                           ; data, for testing only
 
 ; printf formats for flt64, "\n",'0'
 fmt_flt:     db "first float64 on stack = %E", 10, 10, 0
@@ -16,9 +27,9 @@ fmt_int_k_index:  db "k = %d, index = %d", 10, 0
 ; mixed formats
 fmt_i:  db "i = %d, last float64 = %E", 10, 0
 
-; data:
-;a:  dd  5                               ; int a = 5;
-;flt2:   dq  -123.456789e300         ; 64-bit floating point
+; Data:                                  ; for testing only
+;a:  dd   5                              ; int a = 5;
+;flt2:   dq  -123.456789e300             ; 64-bit floating point
 
 ; in order to print, push like this:
 ;                MOV EAX, [a]    ;
@@ -41,44 +52,40 @@ section .text                           ; code
 
 global dgbmv
 
+; Macros
+
+; These are our parameters put on the stack by main.c
 %define TRANS [EBP+8]
 %define M [EBP+12]
 %define N [EBP+16]
 %define KL [EBP+20]
 %define KU [EBP+24]
-%define _ALPHA [EBP+28]                 ; _X means X* (a pointer to X)
-%define _A [EBP+32]                     ; *
+%define _ALPHA [EBP+28]                 ; _Z means Z* (a pointer to Z)
+%define _A [EBP+32]
 %define LDA [EBP+36]
-%define _X [EBP+40]                     ; *
+%define _X [EBP+40]
 %define INCX [EBP+44]
-%define _BETA [EBP+48]                  ; *
-%define _Y [EBP+52]                     ; *
+%define _BETA [EBP+48]
+%define _Y [EBP+52]
 %define INCY [EBP+56]
 
 ; Multiply a scalar with an incremented vector
 ; Initalisation:
-;               MOV ECX, 0              : counter
-;               MOV EDX, _Y             : incremented vector*
-;               MOV EAX, _BETA          : scalar*
-;               MOV EBX, INCY           : increment of the vector
+;               MOV ECX, 0              : counter i=0
+;               MOV EDX, _Z             : incremented vector*
+;               MOV EAX, _GAMMA         : scalar*
+;               MOV EBX, INCZ           : increment of the vector
 ;               MOV ESI, N              : length of the vector
 ;               scalarmult foo
 %macro scalarmult 1
+                IMUL EBX, 8             ; each double is 8 bytes long
 %1:
                 FLD qword [EAX]         ; first factor
                 FLD qword [EDX]         ; second factor
                 FMUL                    ; multiply
                 FSTP qword [EDX]        ; save the result
-
                 ADD EDX, EBX            ; increase the pointer by 8*INC in order to
-                ADD EDX, EBX            ; make it point to the next element of the array
-                ADD EDX, EBX
-                ADD EDX, EBX
-                ADD EDX, EBX
-                ADD EDX, EBX
-                ADD EDX, EBX
-                ADD EDX, EBX
-
+                ; looping i             ; make it point to the next element of the array
                 INC ECX                 ; increase the counter
                 CMP ECX, ESI            ; check whether all elements have been processed
                 JNE %1                  ; if not, repeat
@@ -91,7 +98,6 @@ global dgbmv
                 PUSH EDX
                 PUSH ESI
 %endmacro
-
 %macro unsaveregs 0
                 POP ESI
                 POP EDX
@@ -105,9 +111,24 @@ dgbmv:
                 PUSH EBP
                 MOV EBP, ESP
 
-; Check whether all parameters are legal
-; TODO
-; also todo: incx, negative inc, check negative doubles as input; transpose
+; Try to check whether all parameters are legal
+                CMP dword M, 0
+                JL merror
+                CMP dword N, 0
+                JL nerror
+                CMP dword KL, 0
+                JL klerror
+                CMP dword KU, 0
+                JL kuerror
+                MOV EAX, KU             ; KU
+                ADD EAX, KL             ; KU+KL
+                INC EAX                 ; KU+KL+1
+                CMP dword LDA, EAX
+                JL ldaerror
+                CMP dword INCX, 0
+                JE incxerror
+                CMP dword INCY, 0
+                JE incyerror
 
 ; Check which operation to execute
 transcheck:
@@ -372,15 +393,45 @@ okay:
                 JMP finish
 
 ; Errors
-transerror:                             ; TRANS is none of N, n, T, t, C, c
-                MOV EAX, -1             ; set return to -1
+merror:
+                MOV EAX, -1
                 JMP finish
-dimerror:
+nerror:
                 MOV EAX, -2
                 JMP finish
-incerror:
+klerror:
                 MOV EAX, -3
-                JMP finish 
+                JMP finish
+kuerror:
+                MOV EAX, -4
+                JMP finish
+alphaerror:
+                MOV EAX, -5
+                JMP finish
+aerror:
+                MOV EAX, -6
+                JMP finish
+ldaerror:
+                MOV EAX, -7
+                JMP finish
+xerror:
+                MOV EAX, -8
+                JMP finish
+incxerror:
+                MOV EAX, -9
+                JMP finish
+betaerror:
+                MOV EAX, -10
+                JMP finish
+yerror:
+                MOV EAX, -11
+                JMP finish
+incyerror:
+                MOV EAX, -12
+                JMP finish
+transerror:                             ; TRANS is none of N, n, T, t, C, c
+                MOV EAX, -13
+                JMP finish
 
 ; EPILOGUE
 finish:
