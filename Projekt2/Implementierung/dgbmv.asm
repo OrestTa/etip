@@ -106,6 +106,17 @@ global dgbmv
                 POP EAX
 %endmacro
 
+%macro multipl 2;;;;;;;;;;;;;;;;;;;;____??????
+                PUSH EAX
+                PUSH EDX
+                MOV EAX, %1
+                MUL %2
+                JO oferror
+                MOV %1, EAX
+                POP EDX
+                POP EAX
+%endmacro
+
 ; DGBMV - PROLOGUE
 dgbmv:
                 PUSH EBP
@@ -155,7 +166,9 @@ transpose:
 ; Proceed
 proceed0:
                 MOV EAX, LDA            ; LDA, first operand
+                ;MOV EAX, 0xFFFFFFFF     ; test for OF detection
                 IMUL EAX, dword N       ; LDA*N, second operand; TODO: error if OF
+                ;JC oferror
                 PUSH EAX                ; the length of A can now be found in [EBP-4]
                 MOV EBX, 0              ; reserve memory for A's duplicate's pointer
                 PUSH EBX                ; on the stack in [EBP-8]
@@ -284,7 +297,7 @@ for_k:                                  ; calculate AAXYB[i-1] + (X[k+1-1] * A[K
 ; Multiply (X[k] * AA[KU+i-k-1][k]
                 FLD qword [EAX]         ; load the EAX_old-th element of AA: AA(EAX_old)
                 FLD qword [EDX]         ; load the k-th element of X: X(k)
-                FMUL                    ; multiply
+                FMUL                    ; multiply ; todo of
                 FSTP qword [EAX]        ; the element that EAX points to now equals X(k)*AA(EAX_old)
 
                 ;PUSH EAX
@@ -432,15 +445,21 @@ incyerror:
 transerror:                             ; TRANS is none of N, n, T, t, C, c
                 MOV EAX, -13
                 JMP finish
+oferror:
+                MOV EAX, -14
+                JMP finish
 
 ; EPILOGUE
 finish:
+                CMP EBP, ESP            ; is the stack empty?
+                JE finished             ; if so, nothing else to do
+finishing:
                 POP EBX                 ; pop from the stack
                 CMP EBP, ESP            ; until it's empty
-                JNE finish
+                JNE finishing
+finished:
                 POP EBP
                 RET
-
 
 ; Testing
 
