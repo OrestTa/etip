@@ -5,9 +5,10 @@ USE IEEE.std_logic_1164.all;
 ENTITY testbench IS
 END ENTITY;
 
-ARCHITECTURE v1 OF testbench IS
-    SIGNAL clk: std_logic;
-    SIGNAL bin_input: std_logic_vector(16 DOWNTO 0);
+ARCHITECTURE BINBCD_test OF testbench IS
+    SIGNAL clk: std_logic := '0';
+    SIGNAL bin_input: std_logic_vector(16 DOWNTO 0) := "00000001101000100";
+--  SIGNAL bin_input: std_logic_vector(16 DOWNTO 0) := "11000011010100000";
     SIGNAL einer, zehner, hunderter, tausender, zehntausender: std_logic_vector(3 DOWNTO 0);
     SIGNAL overflow: std_logic;
 
@@ -34,26 +35,13 @@ BEGIN
 
     PROCESS
     BEGIN
-        clk <= '0';
---      bin_input <= "00000000000000000";       -- 0
-        bin_input <= "00000001101000100";       -- 836
-
 --      loop through 100 clock cycles, 1s each
-        FOR i IN 0 TO 99 LOOP
+        FOR i IN 0 TO 169 LOOP
             clk <= '0';
             WAIT FOR 50 ms;
             clk <= '1';
             WAIT FOR 50 ms;
         END LOOP;
-
---      finished: set everything to 0
-        clk <= '0';
---      einer <= "0000";
---      zehner <= "0000";
---      hunderter <= "0000";
---      tausender <= "0000";
---      zehntausender <= "0000";
---      overflow <= '0';
-	END PROCESS;
+    END PROCESS;
 
 END ARCHITECTURE;
