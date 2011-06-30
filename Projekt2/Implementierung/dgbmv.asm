@@ -2,13 +2,19 @@ extern  printf                          ; the C function to be called
 
 section .data                           ; data section
 
-; the printf format for flt64, "\n",'0'
+; printf formats for flt64, "\n",'0'
 fmt_flt:     db "first float64 on stack = %E", 10, 10, 0
+fmt_flt_aa:  db "%E", 10, 0
+fmt_flt_xaa: db "X(k) = %E, AA(EAX_old) = %E", 10, 0
+fmt_flt_xaa2: db "AA_new(EAX_old) = %E", 10, 0
 
-; the printf format for int32, "\n",'0'
+; printf formats for int32, "\n",'0'
 fmt_int:    db "first int = %d, second int = %d, third int = %d", 10, 10, 0
-fmt_int_k:  db "k = %d, last row no = %d", 10, 0
-fmt_int_i:  db "i = %d, last float64 = %E", 10, 0
+fmt_int_k:  db "k = %d, row no = %d", 10, 0
+fmt_int_k_index:  db "k = %d, index = %d", 10, 0
+
+; mixed formats
+fmt_i:  db "i = %d, last float64 = %E", 10, 0
 
 ; data:
 ;a:  dd  5                               ; int a = 5;
@@ -27,6 +33,7 @@ fmt_int_i:  db "i = %d, last float64 = %E", 10, 0
 ;                POP EAX
 ;                POP EAX
 ;                POP EAX
+; Beware! EAX, EBX, ECX, EDX can be modified by printf!
 ; http://www.cs.umbc.edu/portal/help/nasm/sample.shtml
 
 
@@ -77,6 +84,22 @@ global dgbmv
                 JNE %1                  ; if not, repeat
 %endmacro
 
+%macro saveregs 0
+                PUSH EAX
+                PUSH EBX
+                PUSH ECX
+                PUSH EDX
+                PUSH ESI
+%endmacro
+
+%macro unsaveregs 0
+                POP ESI
+                POP EDX
+                POP ECX
+                POP EBX
+                POP EAX
+%endmacro
+
 ; DGBMV - PROLOGUE
 dgbmv:
                 PUSH EBP
@@ -111,8 +134,7 @@ transpose:
 ; Proceed
 proceed0:
                 MOV EAX, LDA            ; LDA, first operand
-;                MUL word N              ; N has to fit in 16 bits!; TODO: error
-                IMUL EAX, dword N       ; *N, second operand; TODO: error if OF
+                IMUL EAX, dword N       ; LDA*N, second operand; TODO: error if OF
                 PUSH EAX                ; the length of A can now be found in [EBP-4]
                 MOV EBX, 0              ; reserve memory for A's duplicate's pointer
                 PUSH EBX                ; on the stack in [EBP-8]
@@ -141,7 +163,6 @@ matrixduplicate:
 aa:
                 MOV ECX, 0              ; counter = 0
                 MOV EDX, [EBP-8]        ; EDX now points to A's duplicate
-;                MOV EDX, [EBP+32]       ; EDX now points to the original A - for testing only
                 MOV EAX, _ALPHA         ; EAX now points to ALPHA
                 MOV EBX, 1              ; the increment of A is always 1 (a regular array)
                 MOV ESI, [EBP-4]        ; A's length had been pushed from EAX in proceed0
@@ -164,7 +185,7 @@ yb:
 ;     for k in xrange(0,N):
 ;         if (KU+i-k-1) >= 0:
 ;             if (KU+i-k-1) <= (LDA-1):
-;                 AAXYB[i-1] = AAXYB[i-1] + (X[k+1-1] * A[KU+i-k-1][k+1-1])
+;                 AAX[i-1] = AAX[i-1] + (X[k+1-1] * AA[KU+i-k-1][k+1-1])
 ; todo! increment for x!!!!
 aax:
                 MOV EAX, 0              ; memory alloc counter
@@ -183,58 +204,102 @@ for_k:                                  ; calculate AAXYB[i-1] + (X[k+1-1] * A[K
                 MOV EAX, KU             ; KU
                 ADD EAX, EBX            ; KU+i
                 SUB EAX, ECX            ; KU+i-k
-                DEC EAX                 ; KU+i-k-1 : EAX now contains the desired row of AA
+                DEC EAX                 ; KU+i-k-1 : EAX now contains the desired row of AA, from 0
 
                 ;PUSH EAX                ; row
                 ;PUSH ECX                ; k
                 ;PUSH dword fmt_int_k
                 ;CALL printf             ; print
-                ;POP EDX
-                ;POP EDX
-                ;POP EDX
+                ;POP ECX
+                ;POP ECX
+                ;POP EAX
 
-                CMP EAX, 0              ; KU+i-k-1 < 0?
-                JL skiptonextk          ; skip to a next k
                 MOV EDX, LDA            ; LDA
                 DEC EDX                 ; LDA-1
                 CMP EAX, EDX            ; KU+i-k-1 > LDA-1?
                 JG skiptonextk          ; skip to a next k
-                DEC EAX                 ; because index(el)=(EAX-1)*N+ECX
-                IMUL EAX, dword N       ; v. s.; todo error if OF
+                CMP EAX, 0              ; KU+i-k-1 < 0?
+                JL skiptonextk          ; skip to a next k
+                IMUL EAX, dword N       ; because index(el)=EAX*N+ECX; todo error if OF
                 ADD EAX, ECX            ; EAX now contains the index of AA's desired element, =:EAX_old
 
+                ;PUSH EAX                ; index
+                ;PUSH ECX                ; k
+                ;PUSH dword fmt_int_k_index
+                ;CALL printf             ; print
+                ;POP ECX
+                ;POP ECX
+                ;POP EAX
+
+                IMUL EAX, 8             ; EAX now contains the byte offset for AA ; todo OF
+
                 MOV EDX, [EBP-8]        ; EDX now contains the pointer to AA
-                ADD EDX, EAX            ; each element is a double, so it requires 8 bytes
-                ADD EDX, EAX
-                ADD EDX, EAX
-                ADD EDX, EAX
-                ADD EDX, EAX
-                ADD EDX, EAX
-                ADD EDX, EAX
-                ADD EDX, EAX            ; EDX now contains the pointer to the EAX-th element of AA
-                MOV EAX, EDX            ; EAX=EDX
+                ADD EDX, EAX            ; EDX now contains the pointer to the EAX_old-th element of AA
+                MOV EAX, EDX            ; EAX:=EDX
 
+                MOV ESI, ECX            ; copy k
+                IMUL ESI, 8             ; ESI now contains the byte offset for X ; todo OF
                 MOV EDX, _X             ; EDX now contains the pointer to X
-                ADD EDX, ECX            ; each element is a double, so it requires 8 bytes
-                ADD EDX, ECX
-                ADD EDX, ECX
-                ADD EDX, ECX
-                ADD EDX, ECX
-                ADD EDX, ECX
-                ADD EDX, ECX
-                ADD EDX, ECX            ; EDX now contains the pointer to the k-th element of X
+                ADD EDX, ESI            ; EDX now contains the pointer to the k-th element of X
 
+                ;PUSH EAX
+                ;PUSH EBX
+                ;PUSH ECX
+                ;PUSH dword [EAX+4]      ; AA(EAX_old)
+                ;PUSH dword [EAX]
+                ;PUSH dword [EDX+4]      ; X(k)
+                ;PUSH dword [EDX]
+                ;PUSH dword fmt_flt_xaa
+                ;CALL printf             ; print
+                ;POP EAX
+                ;POP EAX
+                ;POP EAX
+                ;POP EAX
+                ;POP EAX
+                ;POP ECX
+                ;POP EBX
+                ;POP EAX
+
+; Multiply (X[k] * AA[KU+i-k-1][k]
                 FLD qword [EAX]         ; load the EAX_old-th element of AA: AA(EAX_old)
                 FLD qword [EDX]         ; load the k-th element of X: X(k)
                 FMUL                    ; multiply
                 FSTP qword [EAX]        ; the element that EAX points to now equals X(k)*AA(EAX_old)
 
+                ;PUSH EAX
+                ;PUSH EBX
+                ;PUSH ECX
+                ;PUSH dword [EAX+4]      ; AA(EAX_old)
+                ;PUSH dword [EAX]
+                ;PUSH dword fmt_flt_xaa2
+                ;CALL printf             ; print
+                ;POP EAX
+                ;POP EAX
+                ;POP EAX
+                ;POP ECX
+                ;POP EBX
+                ;POP EAX
+
+; Add AAX[i-1] + (X[k] * AA[KU+i-k-1][k]
                 MOV EDX, EBX            ; EDX=i
                 DEC EDX                 ; EDX=i-1
+                IMUL EDX, 8             ; EDX now contains the byte offset for AAX ; todo OF
+                ADD EDX, ESP            ; EDX now contains the pointer to AAX(i-1)
+
+                ;saveregs
+                ;PUSH dword [EAX+4]      ; AAX(EDX)
+                ;PUSH dword [EAX]
+                ;PUSH dword fmt_flt_xaa2
+                ;CALL printf             ; print
+                ;POP EAX
+                ;POP EAX
+                ;POP EAX
+                ;unsaveregs
+
                 FLD qword [EAX]         ; load X(k)*AA(EAX_old)
-                FLD qword [ESP+EDX]     ; load AAX(EDX)
+                FLD qword [EDX]         ; load AAX(i-1)
                 FADD                    ; add
-                FSTP qword [ESP+EDX]    ; AAX will be saved on the stack, with its first element on top
+                FSTP qword [EDX]        ; AAX will be saved on the stack, with its first element on top
 
 skiptonextk:
                 ; looping k
@@ -254,11 +319,22 @@ skiptonextk:
 k_finished:
                 ; looping i
 
-                PUSH EBX                ; i
-                PUSH dword fmt_int_i
-                CALL printf             ; print the last float64 on stack
-                POP EDX
-                POP EDX
+                MOV EDX, EBX            ; EDX=i
+                DEC EDX                 ; EDX=i-1
+                IMUL EDX, 8             ; EDX now contains the byte offset for AAX ; todo OF
+                ADD EDX, ESP            ; EDX now contains the pointer to AAX(i-1)
+
+                ;saveregs
+                ;PUSH dword [EDX+4]
+                ;PUSH dword [EDX]
+                ;PUSH EBX                ; i
+                ;PUSH dword fmt_i
+                ;CALL printf             ; print the last float64 on stack
+                ;POP EBX
+                ;POP EBX
+                ;POP EDX
+                ;POP EDX
+                ;unsaveregs
 
                 INC EBX                 ; increment i
                 MOV EDX, N              ; N
@@ -267,31 +343,27 @@ k_finished:
                 JNZ for_i               ; if not, repeat
 ;                JMP aax_test            ; diagnose whether AAX is correct
 
-; AAX + YB = AAXYB, saved in Y; aaxyb(i*INCY) = (aax(i) + yb(i*INCY)) for each i=0..N-1
+; AAX + YB = AAXYB, saved in Y; AAXYB(i*INCY) = (AAX(i) + YB(i*INCY)) for each i=0..N-1
 ; Warning: Y is and remains an incremented array!
 aaxyb:
                 MOV EBX, 0              ; counter i=0
                 MOV ECX, N              ; N
-                DEC ECX                 ; N-1
                 MOV EAX, _Y             ; EAX now points to B*Y(0)
 aaxyb_body:                             ; sum and then calculate the new pointer to B*Y(i*INCY)
+                MOV ESI, EBX            ; ESI now contains i
+                IMUL ESI, 8             ; ESI now contains 8*i, the byte offset for AAX ; todo OF
                 FLD qword [EAX]         ; load B*Y(i*INCY)
-                FLD qword [ESP+EBX]     ; load AAX(i)
+                FLD qword [ESP+ESI]     ; load AAX(i)
                 FADD                    ; add
                 FSTP qword [EAX]        ; write B*Y(i*INCY)=B*Y(i*INCY)+AAX(i)
 
-                ADD EAX, INCY           ; each double is 8 bytes long
-                ADD EAX, INCY           ; now increment the pointer by 8*INCY
-                ADD EAX, INCY           ; in order to make it point to the
-                ADD EAX, INCY           ; next element of B*Y
-                ADD EAX, INCY           ; i. e. to B*Y(i*INCY)
-                ADD EAX, INCY           ;
-                ADD EAX, INCY           ;
-                ADD EAX, INCY           ;
+                MOV ESI, INCY           ; ESI now contains INCY
+                IMUL ESI, 8             ; ESI now contains the offset for B*Y ; todo OF
+                ADD EAX, ESI            ; EAX now is the pointer to B*Y(i*INCY)
 
                 ; looping i
                 INC EBX                 ; i=i+1
-                CMP EBX, ECX            ; is i=N-1?
+                CMP EBX, ECX            ; is i=N?
                 JNE aaxyb_body          ; if not, repeat
 
 ; The function succeded 
@@ -346,11 +418,11 @@ aa_test_print:
                 PUSH EDX
                 PUSH dword [EBX+4]
                 PUSH dword [EBX]
-                PUSH dword fmt_flt
+                PUSH dword fmt_flt_aa
                 CALL printf
-                POP EBX
-                POP EBX
-                POP EBX
+                POP EDX
+                POP EDX
+                POP ECX
 
                 ; looping
                 INC ESI
