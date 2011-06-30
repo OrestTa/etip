@@ -1,8 +1,7 @@
-set name=im1d
-ghdl -a --ieee=synopsys %name%.vhd
-ghdl -a --ieee=synopsys testbench.vhd
-ghdl -e --ieee=synopsys testbench
-ghdl -r --ieee=synopsys testbench --vcd=%name%.vcd
+set name=implementierung1
+ghdl -a %name%.vhd testbench.vhd
+ghdl -e testbench
+ghdl -r --stop-time=10000ms testbench --vcd=%name%.vcd
 gtkwave %name%.vcd
 pause
 del work-obj93.cf %name%.vcd
