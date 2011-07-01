@@ -5,10 +5,7 @@
 ; Y := ALPHA * A' * X + BETA * Y
 ;
 ; TODO:
-; On entry, BETA specifies the scalar beta. When BETA is 
-; supplied as zero then Y need not be set on input. 
-; incx, negative inc, check negative doubles as input; transpose
-; save registers; save INCs and perhaps X or V
+; check negative doubles as input
 
 extern printf                           ; the C function to be called, for testing only
 
@@ -223,16 +220,16 @@ dgbmv:
 matrix_move_prepare:
                 MOV EAX, LDA            ; calculate needed size for A_trans
                 IMUL EAX, dword N
-                PUSH EAX                ; push the length of A
-                PUSH dword 0x0          ; reserve memory for A's duplicate's pointer at [EBP-8]
+                PUSH EAX                ; push the length of A to [EBP-28]
+                PUSH dword 0x2A         ; magic happens here
 alloc_loop:
                 PUSH dword 0x0          ; push "length of A" qwords, to reserve memory for A_trans
                 PUSH dword 0x0
                 DEC EAX
                 JNZ alloc_loop
 
-                MOV EDX, _A
-                MOV _A, ESP             ; save pointer to A_trans in [EBP-8]
+                MOV EDX, _A             ; save pointer to the original matrix A in EDX
+                MOV _A, ESP             ; save pointer to the new matrix A in _A
 
 ; Check which operation to execute
 transcheck:
@@ -334,7 +331,7 @@ aa:
                 MOV EDX, _A             ; EDX now points to A's duplicate
                 MOV EAX, _ALPHA         ; EAX now points to ALPHA
                 MOV EBX, 1              ; the increment of A is always 1 (a regular array)
-                MOV ESI, [EBP-28]        ; A's length had been pushed from EAX in matrix_move_prepare
+                MOV ESI, [EBP-28]       ; A's length had been pushed from EAX in matrix_move_prepare
                 scalarmult scalarmult_a ; execute scalarmult
 ;                JMP aa_test             ; diagnose whether A*A is correct
 
@@ -365,6 +362,62 @@ yb_multiply:
                 scalarmult scalarmult_b ; execute scalarmult
 ;                JMP okay                ; diagnose whether Y*B is correct
 
+prepare_x:
+
+                CMP dword INCX, 0
+                JG incx_pos
+
+; MOV EAX, INCZ
+; MOV ECX, N        ; element count
+; MOV EDX, _Z
+                MOV EAX, INCX
+                IMUL EAX, -1            ; |INCX|
+                MOV ECX, N
+                MOV EDX, _X
+
+                MOV ESI, 0              ; k (in N)
+x_1:
+                PUSH dword [EDX+4]      ; push one qword
+                PUSH dword [EDX]
+
+                MOV EDI, EAX            ; k (in N)
+                IMUL EDI, 8             ; byte offset for Z ; todo of
+                ADD EDX, EDI            ; point to the next element of Z
+
+                ; looping k
+                INC ESI
+                CMP ESI, N
+                JNE x_1
+
+                MOV _X, ESP
+                JMP aax                 ; continue
+
+incx_pos:                               ; INCX is positive
+                MOV EAX, N
+incx_alloc:
+                PUSH dword 0x0
+                PUSH dword 0x0
+                DEC EAX
+                JNE incx_alloc
+
+                MOV EAX, 0
+
+                MOV ESI, _X
+                MOV EDI, ESP
+                MOV EBX, 1
+
+                MOV ECX, INCX
+                IMUL ECX, 8
+incx_pos_loop:
+                CALL memcpy
+                ADD ESI, ECX
+                ADD EDI, 8
+                INC EAX
+                CMP EAX, N
+                JNE incx_pos_loop
+
+                MOV _X, ESP
+
 ; AA * X = AAX
 ; in Python:
 ; for i in xrange(1,N+1):
@@ -372,7 +425,6 @@ yb_multiply:
 ;         if (KU+i-k-1) >= 0:
 ;             if (KU+i-k-1) <= (LDA-1):
 ;                 AAX[i-1] = AAX[i-1] + (X[k+1-1] * AA[KU+i-k-1][k+1-1])
-; todo! increment for x!!!!
 aax:
                 MOV EAX, 0              ; memory alloc counter
                 MOV EBX, 0              ; default value for AAX's elements
