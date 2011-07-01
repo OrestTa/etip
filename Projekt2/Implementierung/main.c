@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
     double y[]   = {6.0,0.0,0.0,7.0,0.0,0.0,8.0,0.0,0.0, \
                     9.0,0.0,0.0,0.0,0.0,0.0,6.0,0.0,0.0, \
                     7.1,0.0,0.0,8.2,0.0,0.0,3.0,0.0,0.0};
-    int incy     = 3;
+    int incy     = -3;
 
     /* define the INPUT parameters here */
 /*    char trans   = 'n';

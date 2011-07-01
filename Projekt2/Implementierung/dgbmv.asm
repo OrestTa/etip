@@ -121,7 +121,7 @@ global dgbmv
 ;                unsaveregs
 %endmacro
 
-; Store a negatively incremented vector as a positively incremented vector
+; Store a negatively incremented vector as a positively incremented vector on the stack
 ; Z_new[i] = Z[|INCZ| * N - |INCZ| * (i+1)]
 ; Z_new[i-1] =Z[|INCZ| * N - |INCZ| * (i)]
 ; N be the length of the incremented array
@@ -131,24 +131,52 @@ global dgbmv
 ;                MOV EBX, INCZ           ; increment of the vector
 ;                neginc foo
 ; You need to update Z* with ESP and INCZ with EBX afterwards!
-%macro neginc 1
-                IMUL EBX, -1            ; -INCZ=|INCZ|; todo of
-                MOV EAX, EBX            ; |INCZ|
-                IMUL EAX, dword N       ; |INCZ|*N ; todo of
-                PUSH EAX                ; |INCZ|*N can now be found in [EBP-12]  
-%1:
-                MOV ESI, EBX            ; |INCZ|
-                IMUL ESI, ECX           ; |INCZ|*i ; todo of
-                MOV EAX, [EBP-12]       ; restore |INCZ|*N into EAX
-                SUB EAX, ESI            ; |INCZ|*N-|INCZ|*i
+;%macro neginc 1
+                ;IMUL EBX, -1            ; -INCZ=|INCZ|; todo of
+                ;MOV EAX, EBX            ; |INCZ|
+                ;IMUL EAX, dword N       ; |INCZ|*N ; todo of
+                ;PUSH EAX                ; |INCZ|*N can now be found in [EBP-12]  
+;%1:
+                ;MOV ESI, EBX            ; |INCZ|
+                ;IMUL ESI, ECX           ; |INCZ|*i ; todo of
+                ;MOV EAX, [EBP-12]       ; restore |INCZ|*N into EAX
+                ;SUB EAX, ESI            ; |INCZ|*N-|INCZ|*i
                                         ; EAX now contains the index of Z's element
-                IMUL EAX, 8             ; EAX now contains the offset of Z's element
-                ADD EAX, EDX            ; EAX now contains the pointer to Z's element
-                PUSH dword [EAX+4]      ; the new vector will be stored on the stack
-                PUSH dword [EAX]        ; beginning with the last element
+                ;IMUL EAX, 8             ; EAX now contains the offset of Z's element
+                ;ADD EAX, EDX            ; EAX now contains the pointer to Z's element
+                ;PUSH dword [EAX+4]      ; the new vector will be stored on the stack
+                ;PUSH dword [EAX]        ; beginning with the last element
                 ; looping i
-                DEC ECX
-                CMP ECX, 0
+                ;DEC ECX
+                ;CMP ECX, 0
+                ;JNE %1
+;%endmacro
+
+; MOV EAX, INCZ
+; MOV ECX, N        ; element count
+; MOV EDX, _Z
+%macro neginc 2
+                MOV ESI, 0              ; k (in N)
+%1:
+                MOV EBX, EAX            ; i=INCZ
+%2:
+                PUSH dword 0            ; push INCZ bytes
+                PUSH dword 0            
+                ; looping i
+                DEC EBX
+                CMP EBX, 1
+                JNE %2
+
+                PUSH dword [EDX+4]            ; push one qword
+                PUSH dword [EDX]
+
+                MOV EDI, EAX            ; k (in N)
+                IMUL EDI, 8             ; byte offset for Z ; todo of
+                ADD EDX, EDI            ; point to the next element of Z
+
+                ; looping k
+                INC ESI
+                CMP ESI, N
                 JNE %1
 %endmacro
 
@@ -352,71 +380,19 @@ aa:
 yb:
                 CMP dword INCY, 0
                 JG yb_multiply          ; if INCY is positive, skip the following
-                MOV EDX, INCY
-                MOV ECX, M
-                MOV EBX, N
-                arraylength y_length    ; calculate Y's length, stored in EDX
-                MOV EDI, EDX            ; save Y's length
-
-                ;saveregs
-                ;PUSH EDX
-                ;PUSH dword fmt_int
-                ;CALL printf
-                ;POP EDX
-                ;POP EDX
-                ;unsaveregs
-
-                MOV ECX, EDX            ; Y's length
-                MOV EDX, _Y             ; Y*
-                MOV EBX, INCY           ; increment of Y
-                neginc y_neginc
-                ;MOV _Y, ESP             ; update Y* with the pointer to the rearranged array
+                MOV EBX, INCY
+                IMUL EBX, -1            ; INCY -> -INCY ; todo of
                 MOV INCY, EBX           ; update INCY with -INCY
 
-                MOV EDX, EDI            ; restore Y's length into EDX
-                ;saveregs
-                ;PUSH EDX
-                ;PUSH dword fmt_int
-                ;CALL printf
-                ;POP EDX
-                ;POP EDX
-                ;unsaveregs
-
-MOV EBX, 0      ; i
-looop:
-MOV EAX, _Y     ; pointer to the top element of Y*
-MOV ESI, ESP    ; pointer to the top element of Z
-MOV ECX, EBX    ; i
-IMUL ECX, 8     ; offset
-ADD ESI, ECX    ; pointer to the i-th element of Z
-ADD EAX, ECX    ; pointer to the i-th element of Y
-
-MOV EDI, [ESI+4]
-MOV [EAX+4], EDI
-MOV EDI, [ESI]
-MOV [EAX], EDI
-
-;MOV dword [ESI+4], [EDX+4]
-;MOV dword [ESI], [EDX]
-; looping i
-;POP EBX
-
-                saveregs
-                MOV EAX, _Y
-                PUSH EDX
-                PUSH EBX
-                PUSH dword fmt_int
-                CALL printf
-                POP EDX
-                POP EDX
-                POP EDX
-                unsaveregs
-
-INC EBX
-CMP EBX, EDX
-JNE looop
-
-jmp okay
+                MOV EAX, INCY
+                MOV ECX, N
+                MOV EDX, _Y
+                neginc niy0, niy1
+                MOV ESI, ESP
+                MOV EDI, _Y
+                MOV EBX, N
+                IMUL EBX, INCY
+                CALL memcpy
 
 yb_multiply:
                 MOV ECX, 0              ; counter = 0
