@@ -92,11 +92,64 @@ global dgbmv
                 JNE %1                  ; if not, repeat
 %endmacro
 
+; Calculate the (minimal) length of an incremented array
+; 1 + (N-1)*|INCZ| when TRANS = 'N' or 'n'
+; 1 + (M-1)*|INCZ| otherwise
+; Initialisation:
+;                MOV EDX, INCZ
+;                MOV ECX, M when Y, N when X
+;                MOV EBX, M when X, N when Y
+;                arraylength foo
+%macro arraylength 1
+                MOV EAX, TRANS          ; check TRANS and
+                CMP AL, 'N'             ; do not transpose if it is N or n
+                JE %1
+                CMP AL, 'n'
+                JE %1
+                MOV EBX, ECX            ; replace N with M
+%1:
+                IMUL EDX, -1            ; |INCZ|
+                DEC EBX                 ; N-1
+                IMUL EDX, EBX           ; (N-1)*|INCZ| ; todo of
+                INC EDX                 ; 1 + (N-1)*|INCZ|, Z's length
+;                saveregs
+;                PUSH EDX
+;                PUSH dword fmt_int_k
+;                CALL printf
+;                POP EDX
+;                POP EDX
+;                unsaveregs
+%endmacro
+
 ; Store a negatively incremented vector as a positively incremented vector
-; manipulating it's pointer; update INCZ
-; z_new[i] = z[|INCZ| * n - |INCZ| * (i+1)]
-%macro neginc 0
-               ;??????????????????? 
+; Z_new[i] = Z[|INCZ| * N - |INCZ| * (i+1)]
+; Z_new[i-1] =Z[|INCZ| * N - |INCZ| * (i)]
+; N be the length of the incremented array
+; Initialisation:
+;                MOV ECX, N              ; counter i=N, ind of the last element of Z
+;                MOV EDX, _Z             ; incremented vector*
+;                MOV EBX, INCZ           ; increment of the vector
+;                neginc foo
+; You need to update Z* with ESP and INCZ with EBX afterwards!
+%macro neginc 1
+                IMUL EBX, -1            ; -INCZ=|INCZ|; todo of
+                MOV EAX, EBX            ; |INCZ|
+                IMUL EAX, dword N       ; |INCZ|*N ; todo of
+                PUSH EAX                ; |INCZ|*N can now be found in [EBP-12]  
+%1:
+                MOV ESI, EBX            ; |INCZ|
+                IMUL ESI, ECX           ; |INCZ|*i ; todo of
+                MOV EAX, [EBP-12]       ; restore |INCZ|*N into EAX
+                SUB EAX, ESI            ; |INCZ|*N-|INCZ|*i
+                                        ; EAX now contains the index of Z's element
+                IMUL EAX, 8             ; EAX now contains the offset of Z's element
+                ADD EAX, EDX            ; EAX now contains the pointer to Z's element
+                PUSH dword [EAX+4]      ; the new vector will be stored on the stack
+                PUSH dword [EAX]        ; beginning with the last element
+                ; looping i
+                DEC ECX
+                CMP ECX, 0
+                JNE %1
 %endmacro
 
 %macro saveregs 0
@@ -272,6 +325,7 @@ kl_loop:
                 ; Decrement counter
                 DEC ECX
                 JNZ kl_loop
+
 ; Lower diagonals and main diagonal from A are now copied to A_trans
                 JMP new_matrix_ready    ; continue after "notranspose"
 
@@ -296,6 +350,75 @@ aa:
 
 ; BETA * Y = YB, saved in Y
 yb:
+                CMP dword INCY, 0
+                JG yb_multiply          ; if INCY is positive, skip the following
+                MOV EDX, INCY
+                MOV ECX, M
+                MOV EBX, N
+                arraylength y_length    ; calculate Y's length, stored in EDX
+                MOV EDI, EDX            ; save Y's length
+
+                ;saveregs
+                ;PUSH EDX
+                ;PUSH dword fmt_int
+                ;CALL printf
+                ;POP EDX
+                ;POP EDX
+                ;unsaveregs
+
+                MOV ECX, EDX            ; Y's length
+                MOV EDX, _Y             ; Y*
+                MOV EBX, INCY           ; increment of Y
+                neginc y_neginc
+                ;MOV _Y, ESP             ; update Y* with the pointer to the rearranged array
+                MOV INCY, EBX           ; update INCY with -INCY
+
+                MOV EDX, EDI            ; restore Y's length into EDX
+                ;saveregs
+                ;PUSH EDX
+                ;PUSH dword fmt_int
+                ;CALL printf
+                ;POP EDX
+                ;POP EDX
+                ;unsaveregs
+
+MOV EBX, 0      ; i
+looop:
+MOV EAX, _Y     ; pointer to the top element of Y*
+MOV ESI, ESP    ; pointer to the top element of Z
+MOV ECX, EBX    ; i
+IMUL ECX, 8     ; offset
+ADD ESI, ECX    ; pointer to the i-th element of Z
+ADD EAX, ECX    ; pointer to the i-th element of Y
+
+MOV EDI, [ESI+4]
+MOV [EAX+4], EDI
+MOV EDI, [ESI]
+MOV [EAX], EDI
+
+;MOV dword [ESI+4], [EDX+4]
+;MOV dword [ESI], [EDX]
+; looping i
+;POP EBX
+
+                saveregs
+                MOV EAX, _Y
+                PUSH EDX
+                PUSH EBX
+                PUSH dword fmt_int
+                CALL printf
+                POP EDX
+                POP EDX
+                POP EDX
+                unsaveregs
+
+INC EBX
+CMP EBX, EDX
+JNE looop
+
+jmp okay
+
+yb_multiply:
                 MOV ECX, 0              ; counter = 0
                 MOV EDX, _Y             ; EDX now points to Y
                 MOV EAX, _BETA          ; EAX now points to BETA

@@ -17,9 +17,9 @@ void printv(char name, double vector[], int inc, int size) {
     int i;
     int length = size/sizeof(double);
     printf("%c    : (", name);
-    for(i=0; i<length; i=i+inc) {
+    for(i=0; i<length; i++) {
         printf("%f", vector[i]);
-        if( i < length-inc ) printf(", ");
+        if( i < length-1 ) printf(", ");
         }
     printf(")\n");
     }
