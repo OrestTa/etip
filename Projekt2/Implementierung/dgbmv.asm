@@ -8,6 +8,7 @@
 ; On entry, BETA specifies the scalar beta. When BETA is 
 ; supplied as zero then Y need not be set on input. 
 ; incx, negative inc, check negative doubles as input; transpose
+; save registers; save INCs and perhaps X or V
 
 extern printf                           ; the C function to be called, for testing only
 
@@ -89,6 +90,13 @@ global dgbmv
                 INC ECX                 ; increase the counter
                 CMP ECX, ESI            ; check whether all elements have been processed
                 JNE %1                  ; if not, repeat
+%endmacro
+
+; Store a negatively incremented vector as a positively incremented vector
+; manipulating it's pointer; update INCZ
+; z_new[i] = z[|INCZ| * n - |INCZ| * (i+1)]
+%macro neginc 0
+               ;??????????????????? 
 %endmacro
 
 %macro saveregs 0
@@ -352,11 +360,6 @@ skiptonextk:
                 JNZ for_k               ; if not, repeat
 k_finished:
                 ; looping i
-
-                MOV EDX, EBX            ; EDX=i
-                DEC EDX                 ; EDX=i-1
-                IMUL EDX, 8             ; EDX now contains the byte offset for AAX ; todo OF
-                ADD EDX, ESP            ; EDX now contains the pointer to AAX(i-1)
 
                 ;saveregs
                 ;PUSH dword [EDX+4]
