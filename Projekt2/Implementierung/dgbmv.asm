@@ -166,11 +166,104 @@ transcheck:
                 JE transpose
                 JMP transerror          ; jump to transerror otherwise
 
-; Transpose the matrix
-transpose:
-                mov eax, 10             ; EAX = 10 (just for testing)
-                JMP finish              ; TODO! 
 
+; memcpy FROM, TO, LENGTH -- ESI, EDI, EBX
+; FROM: Pointer to starting point
+; TO: Pointer to destination point
+; LENGTH: Length in doubles (8 byte blocks)
+;
+; All registers stay unchanged after calling this subroutine!
+memcpy:
+                PUSH EDX                ; save EDX, as we'll change it
+                PUSH EAX                ; save EAX, as we'll change it
+                SHL EBX, 1              ; EBX*2 - double the length (EBX), so that we can calculate with 4 byte blocks
+                MOV EDX, 0              ; init counter
+cpy_loop:
+                MOV EAX, [ESI+EDX*4]    ; move 4 bytes from starting point to EAX
+                MOV [EDI+EDX*4], EAX    ; move 4 bytes from EAX to destination point
+                INC EDX                 ; increment counter
+                CMP EDX, EBX            ; check if we're finished
+                JNE cpy_loop            ; if not - repeat
+                SHR EBX, 1              ; EBX/2 - restore the original length (EBX)
+                POP EAX                 ; restore EAX, as we changed it
+                POP EDX                 ; restore EDX, as we changed it
+                ret
+
+; Transpose the matrix -- Copy the origianl Matrix A to it's new location at [EBP-8] and transpose it on the fly
+transpose:
+                MOV EAX, LDA            ; calculate needed size for A_trans
+                IMUL EAX, dword N
+                PUSH EAX                ; push the lenght of A
+                PUSH dword 0x0          ; reserve memory for A's duplicate's pointer at [EBP-8]
+alloc_loop:
+                PUSH dword 0x0          ; push "lenght of A" qwords, to reserver memory for A_trans
+                PUSH dword 0x0
+                DEC EAX
+                JNZ alloc_loop
+
+                MOV [EBP-8], ESP        ; save pointer to A_trans in [EBP-8]
+; ======================================================================================================================
+                ; START A
+                MOV ESI, _A
+                MOV ECX, KU
+                IMUL ECX, 8
+                ADD ESI, ECX
+                ; ZIEL A_trans
+                MOV EDI, [EBP-8]
+                MOV ECX, LDA
+                DEC ECX
+                IMUL ECX, N
+                IMUL ECX, 8
+                ADD EDI, ECX
+                ; Length
+                MOV EBX, N
+                SUB EBX, KU
+                ; Counter
+                MOV ECX, KU
+                INC ECX
+ku_loop:
+                ;memcpy ESI, EDI, EBX
+                call memcpy
+
+                ; START := START+(N-1)*8
+                MOV EAX, N
+                DEC EAX
+                IMUL EAX, 8
+                ADD ESI, EAX
+                ; ZIEL := ZIEL-N*8
+                MOV EAX, N
+                IMUL EAX, 8
+                SUB EDI, EAX
+                ; LENGTH := LENGTH+1
+                INC EBX
+                ; Decrement counter
+                DEC ECX
+                JNZ ku_loop
+; ============================================================ Upper Diagonals and Main Diagonal from A are now copied to A_trans
+                ; Length--
+                DEC EBX
+                ; Counter
+                MOV ECX, KL
+                JMP aa_test
+kl_loop:
+                ; START := START+N*8
+                MOV EAX, N
+                IMUL EAX, 8
+                ADD ESI, EAX
+                ; ZIEL := ZIEL-(N-1)*8
+                MOV EAX, N
+                DEC EAX
+                IMUL EAX, 8
+                SUB EDI, EAX
+                ; LENGTH := LENGTH-1
+                DEC EBX
+                ; Copy
+                ;memcpy ESI, EDI, EBX
+                call memcpy
+                ; Decrement counter
+                DEC ECX
+                JNZ kl_loop
+; ============================================================ Lower Diagonals and Main Diagonal from A are now copied to A_trans
 ; Proceed
 proceed0:
                 MOV EAX, LDA            ; LDA, first operand
