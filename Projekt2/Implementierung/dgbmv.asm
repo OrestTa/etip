@@ -92,35 +92,6 @@ global dgbmv
                 JNE %1                  ; if not, repeat
 %endmacro
 
-; Calculate the (minimal) length of an incremented array
-; 1 + (N-1)*|INCZ| when TRANS = 'N' or 'n'
-; 1 + (M-1)*|INCZ| otherwise
-; Initialisation:
-;                MOV EDX, INCZ
-;                MOV ECX, M when Y, N when X
-;                MOV EBX, M when X, N when Y
-;                arraylength foo
-%macro arraylength 1
-                MOV EAX, TRANS          ; check TRANS and
-                CMP AL, 'N'             ; do not transpose if it is N or n
-                JE %1
-                CMP AL, 'n'
-                JE %1
-                MOV EBX, ECX            ; replace N with M
-%1:
-                IMUL EDX, -1            ; |INCZ|
-                DEC EBX                 ; N-1
-                IMUL EDX, EBX           ; (N-1)*|INCZ| ; todo of
-                INC EDX                 ; 1 + (N-1)*|INCZ|, Z's length
-;                saveregs
-;                PUSH EDX
-;                PUSH dword fmt_int_k
-;                CALL printf
-;                POP EDX
-;                POP EDX
-;                unsaveregs
-%endmacro
-
 ; Store a negatively incremented vector as a positively incremented vector on the stack
 ; Z_new[i] = Z[|INCZ| * N - |INCZ| * (i+1)]
 ; Z_new[i-1] =Z[|INCZ| * N - |INCZ| * (i)]
@@ -131,26 +102,6 @@ global dgbmv
 ;                MOV EBX, INCZ           ; increment of the vector
 ;                neginc foo
 ; You need to update Z* with ESP and INCZ with EBX afterwards!
-;%macro neginc 1
-                ;IMUL EBX, -1            ; -INCZ=|INCZ|; todo of
-                ;MOV EAX, EBX            ; |INCZ|
-                ;IMUL EAX, dword N       ; |INCZ|*N ; todo of
-                ;PUSH EAX                ; |INCZ|*N can now be found in [EBP-12]  
-;%1:
-                ;MOV ESI, EBX            ; |INCZ|
-                ;IMUL ESI, ECX           ; |INCZ|*i ; todo of
-                ;MOV EAX, [EBP-12]       ; restore |INCZ|*N into EAX
-                ;SUB EAX, ESI            ; |INCZ|*N-|INCZ|*i
-                                        ; EAX now contains the index of Z's element
-                ;IMUL EAX, 8             ; EAX now contains the offset of Z's element
-                ;ADD EAX, EDX            ; EAX now contains the pointer to Z's element
-                ;PUSH dword [EAX+4]      ; the new vector will be stored on the stack
-                ;PUSH dword [EAX]        ; beginning with the last element
-                ; looping i
-                ;DEC ECX
-                ;CMP ECX, 0
-                ;JNE %1
-;%endmacro
 
 ; MOV EAX, INCZ
 ; MOV ECX, N        ; element count
@@ -167,7 +118,7 @@ global dgbmv
                 CMP EBX, 1
                 JNE %2
 
-                PUSH dword [EDX+4]            ; push one qword
+                PUSH dword [EDX+4]      ; push one qword
                 PUSH dword [EDX]
 
                 MOV EDI, EAX            ; k (in N)
@@ -186,8 +137,10 @@ global dgbmv
                 PUSH ECX
                 PUSH EDX
                 PUSH ESI
+                PUSH EDI
 %endmacro
 %macro unsaveregs 0
+                POP EDI
                 POP ESI
                 POP EDX
                 POP ECX
@@ -206,7 +159,7 @@ global dgbmv
                 POP EAX
 %endmacro
 
-; Helperfunctions
+; Helper functions
 
 ; memcpy FROM, TO, LENGTH -- ESI, EDI, EBX
 ; FROM: pointer to starting point
@@ -236,6 +189,14 @@ cpy_loop:
 dgbmv:
                 PUSH EBP
                 MOV EBP, ESP
+
+; Save all registers
+                PUSH EAX
+                PUSH ECX
+                PUSH EDX
+                PUSH ESI
+                PUSH EDI
+                PUSH EBX
 
 ; Try to check whether all parameters are legal
                 CMP dword M, 0
@@ -270,7 +231,8 @@ alloc_loop:
                 DEC EAX
                 JNZ alloc_loop
 
-                MOV [EBP-8], ESP        ; save pointer to A_trans in [EBP-8]
+                MOV EDX, _A
+                MOV _A, ESP             ; save pointer to A_trans in [EBP-8]
 
 ; Check which operation to execute
 transcheck:
@@ -289,16 +251,16 @@ transcheck:
                 JE transpose
                 JMP transerror          ; jump to transerror otherwise
 
-; Transpose the matrix -- Copy the original matrix A to it's new location at [EBP-8] and transpose it on the fly
+; Transpose the matrix -- Copy the original matrix A at [EDX] to its new location at _A and transpose it on the fly
 transpose:
 ; Initialize starting point, destination point and length
                 ; START A
-                MOV ESI, _A
+                MOV ESI, EDX
                 MOV ECX, KU
                 IMUL ECX, 8
                 ADD ESI, ECX
                 ; DESTINATION A_trans
-                MOV EDI, [EBP-8]
+                MOV EDI, _A
                 MOV ECX, LDA
                 DEC ECX
                 IMUL ECX, N
@@ -359,9 +321,9 @@ kl_loop:
 
 ; Do not transpose the matrix -- just copy it over to its new location
 notranspose:
-                MOV ESI, _A             ; initiate starting point = *A
-                MOV EDI, [EBP-8]        ; initiate destination point = *A_new
-                MOV EBX, [EBP-4]        ; initiate length (in doubles) = LDA*N - this is already calculated in [EBP-4]
+                MOV ESI, EDX            ; initiate starting point = *A
+                MOV EDI, _A             ; initiate destination point = *A_new
+                MOV EBX, [EBP-28]       ; initiate length (in doubles) = LDA*N - this is already calculated in [EBP-28]
                 call memcpy             ; DO IT!!
 
 new_matrix_ready:
@@ -369,10 +331,10 @@ new_matrix_ready:
 ; [ALPHA * A or ALPHA * A'] = AA
 aa:
                 MOV ECX, 0              ; counter = 0
-                MOV EDX, [EBP-8]        ; EDX now points to A's duplicate
+                MOV EDX, _A             ; EDX now points to A's duplicate
                 MOV EAX, _ALPHA         ; EAX now points to ALPHA
                 MOV EBX, 1              ; the increment of A is always 1 (a regular array)
-                MOV ESI, [EBP-4]        ; A's length had been pushed from EAX in matrix_move_prepare
+                MOV ESI, [EBP-28]        ; A's length had been pushed from EAX in matrix_move_prepare
                 scalarmult scalarmult_a ; execute scalarmult
 ;                JMP aa_test             ; diagnose whether A*A is correct
 
@@ -457,7 +419,7 @@ for_k:                                  ; calculate AAXYB[i-1] + (X[k+1-1] * A[K
 
                 IMUL EAX, 8             ; EAX now contains the byte offset for AA ; todo OF
 
-                MOV EDX, [EBP-8]        ; EDX now contains the pointer to AA
+                MOV EDX, _A             ; EDX now contains the pointer to AA
                 ADD EDX, EAX            ; EDX now contains the pointer to the EAX_old-th element of AA
                 MOV EAX, EDX            ; EAX:=EDX
 
@@ -636,6 +598,13 @@ oferror:
 
 ; EPILOGUE
 finish:
+                ; Restore all register
+                ;MOV EAX, [EBP-4]
+                MOV ECX, [EBP-8]
+                MOV EDX, [EBP-12]
+                MOV ESI, [EBP-16]
+                MOV EDI, [EBP-20]
+                
                 CMP EBP, ESP            ; is the stack empty?
                 JE finished             ; if so, nothing else to do
 finishing:
@@ -650,14 +619,14 @@ finished:
 
 aa_test:
                 MOV ESI, 0              ; counter/index
-;                PUSH dword [EBP-4]            ; length
+;                PUSH dword [EBP-28]            ; length
 ;                PUSH dword fmt_int
 ;                CALL printf
 ;                POP EBX
 ;                POP EBX
 ;                JMP okay               ; finish
 aa_test_print:
-                MOV EBX, [EBP-8]        ; AA's pointer
+                MOV EBX, _A             ; AA's pointer
                 ADD EBX, ESI            ; increase by 8*index
                 ADD EBX, ESI
                 ADD EBX, ESI
@@ -681,7 +650,7 @@ aa_test_print:
 
                 ; looping
                 INC ESI
-                CMP ESI, [EBP-4]        ; AA's length
+                CMP ESI, [EBP-28]        ; AA's length
                 JNE aa_test_print       ; repeat until equal
 
 ;                MOV EAX, _Y             ; EAX now contains the pointer to Y(0)
