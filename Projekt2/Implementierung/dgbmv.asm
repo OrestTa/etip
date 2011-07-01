@@ -128,11 +128,11 @@ global dgbmv
 ; Helperfunctions
 
 ; memcpy FROM, TO, LENGTH -- ESI, EDI, EBX
-; FROM: Pointer to starting point
-; TO: Pointer to destination point
-; LENGTH: Length in doubles (8 byte blocks)
+; FROM: pointer to starting point
+; TO: pointer to destination point
+; LENGTH: length in doubles (8 byte blocks)
 ;
-; All registers stay unchanged after calling this subroutine!
+; All registers remain unchanged after calling this subroutine!
 memcpy:
                 PUSH EDX                ; save EDX, as we'll change it
                 PUSH EAX                ; save EAX, as we'll change it
@@ -142,7 +142,7 @@ cpy_loop:
                 MOV EAX, [ESI+EDX*4]    ; move 4 bytes from starting point to EAX
                 MOV [EDI+EDX*4], EAX    ; move 4 bytes from EAX to destination point
                 INC EDX                 ; increment counter
-                CMP EDX, EBX            ; check if we're finished
+                CMP EDX, EBX            ; check if we've finished
                 JNE cpy_loop            ; if not - repeat
                 SHR EBX, 1              ; EBX/2 - restore the original length (EBX)
                 POP EAX                 ; restore EAX, as we changed it
@@ -175,16 +175,16 @@ dgbmv:
                 CMP dword INCY, 0
                 JE incyerror
 
-; Allocate Memory for a copy of A (transposed or normal)
+; Allocate memory for a copy of A (transposed as well as normal)
 ; + 4 bytes for the matrix length
 ; + 4 bytes for a pointer to the new matrix
-matrixMove_prepare:
+matrix_move_prepare:
                 MOV EAX, LDA            ; calculate needed size for A_trans
                 IMUL EAX, dword N
-                PUSH EAX                ; push the lenght of A
+                PUSH EAX                ; push the length of A
                 PUSH dword 0x0          ; reserve memory for A's duplicate's pointer at [EBP-8]
 alloc_loop:
-                PUSH dword 0x0          ; push "lenght of A" qwords, to reserver memory for A_trans
+                PUSH dword 0x0          ; push "length of A" qwords, to reserve memory for A_trans
                 PUSH dword 0x0
                 DEC EAX
                 JNZ alloc_loop
@@ -194,7 +194,7 @@ alloc_loop:
 ; Check which operation to execute
 transcheck:
                 MOV EAX, TRANS          ; check TRANS and
-                CMP AL, 'N'             ; do not transpose if it is N or n
+                CMP AL, 'N'             ; jump to notranspose if it is N or n
                 JE notranspose
                 CMP AL, 'n'
                 JE notranspose
@@ -208,7 +208,7 @@ transcheck:
                 JE transpose
                 JMP transerror          ; jump to transerror otherwise
 
-; Transpose the matrix -- Copy the origianl Matrix A to it's new location at [EBP-8] and transpose it on the fly
+; Transpose the matrix -- Copy the original matrix A to it's new location at [EBP-8] and transpose it on the fly
 transpose:
 ; Initialize starting point, destination point and length
                 ; START A
@@ -216,7 +216,7 @@ transpose:
                 MOV ECX, KU
                 IMUL ECX, 8
                 ADD ESI, ECX
-                ; ZIEL A_trans
+                ; DESTINATION A_trans
                 MOV EDI, [EBP-8]
                 MOV ECX, LDA
                 DEC ECX
@@ -229,7 +229,7 @@ transpose:
                 ; Counter
                 MOV ECX, KU
                 INC ECX
-; Start with copying
+; Start copying
 ku_loop:
                 ;memcpy ESI, EDI, EBX
                 call memcpy
@@ -241,7 +241,7 @@ ku_loop:
                 DEC EAX
                 IMUL EAX, 8
                 ADD ESI, EAX
-                ; ZIEL := ZIEL-N*8
+                ; DESTINATION := DESTINATION-N*8
                 MOV EAX, N
                 IMUL EAX, 8
                 SUB EDI, EAX
@@ -250,7 +250,7 @@ ku_loop:
                 ; Decrement counter
                 DEC ECX
                 JNZ ku_loop
-; Upper Diagonals and Main Diagonal from A are now copied to A_trans
+; Upper diagonals and main diagonal from A are now copied to A_trans
 kl:
                 ; Counter
                 MOV ECX, KL
@@ -259,7 +259,7 @@ kl_loop:
                 MOV EAX, N
                 IMUL EAX, 8
                 ADD ESI, EAX
-                ; ZIEL := ZIEL-(N-1)*8
+                ; DESTINATION := DESTINATION-(N-1)*8
                 MOV EAX, N
                 DEC EAX
                 IMUL EAX, 8
@@ -272,7 +272,7 @@ kl_loop:
                 ; Decrement counter
                 DEC ECX
                 JNZ kl_loop
-; Lower Diagonals and Main Diagonal from A are now copied to A_trans
+; Lower diagonals and main diagonal from A are now copied to A_trans
                 JMP new_matrix_ready    ; continue after "notranspose"
 
 ; Do not transpose the matrix -- just copy it over to its new location
@@ -290,7 +290,7 @@ aa:
                 MOV EDX, [EBP-8]        ; EDX now points to A's duplicate
                 MOV EAX, _ALPHA         ; EAX now points to ALPHA
                 MOV EBX, 1              ; the increment of A is always 1 (a regular array)
-                MOV ESI, [EBP-4]        ; A's length had been pushed from EAX in proceed0
+                MOV ESI, [EBP-4]        ; A's length had been pushed from EAX in matrix_move_prepare
                 scalarmult scalarmult_a ; execute scalarmult
 ;                JMP aa_test             ; diagnose whether A*A is correct
 
@@ -299,8 +299,8 @@ yb:
                 MOV ECX, 0              ; counter = 0
                 MOV EDX, _Y             ; EDX now points to Y
                 MOV EAX, _BETA          ; EAX now points to BETA
-                MOV EBX, INCY           ; EBX now is Y's increment
-                MOV ESI, N              ; ESI now is Y's length
+                MOV EBX, INCY           ; EBX is Y's increment now
+                MOV ESI, N              ; ESI is Y's length now
                 scalarmult scalarmult_b ; execute scalarmult
 ;                JMP okay                ; diagnose whether Y*B is correct
 
