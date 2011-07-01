@@ -7,8 +7,8 @@ END ENTITY;
 
 ARCHITECTURE BINBCD_test OF testbench IS
     SIGNAL clk: std_logic := '0';
-    SIGNAL bin_input: std_logic_vector(16 DOWNTO 0) := "00000001101000100";
---  SIGNAL bin_input: std_logic_vector(16 DOWNTO 0) := "11000011010100000";
+    SIGNAL bin_input: std_logic_vector(16 DOWNTO 0) := "00000001101000100";			-- 836
+ -- SIGNAL bin_input: std_logic_vector(16 DOWNTO 0) := "11000011010100000";			-- 100000 (zu gross)
     SIGNAL einer, zehner, hunderter, tausender, zehntausender: std_logic_vector(3 DOWNTO 0);
     SIGNAL overflow: std_logic;
 
@@ -35,7 +35,7 @@ BEGIN
 
     PROCESS
     BEGIN
---      loop through 100 clock cycles, 1s each
+--      loop through 170 clock cycles, 0.1s each
         FOR i IN 0 TO 169 LOOP
             clk <= '0';
             WAIT FOR 50 ms;
