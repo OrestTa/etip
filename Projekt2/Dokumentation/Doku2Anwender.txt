@@ -1,0 +1,51 @@
+Die vorliegende Datei dgbmv.asm enthält eine Implementierung von DGBMV, einer fundamentalen Operation aus der linearen Algebra, die zur Softwarebibliothek der Basic Linear Algebra Subprograms (BLAS) gehört. Die in dieser Bibliothek enthaltenen Unterprogramme sind essentielle, universelle Operationen, die beim Programmieren häufig benötigt werden, weshalb sie in einer Vielzahl von Programmiersprachen implementiert sind.
+DGBMV gehört zu den Level 2 BLAS-Routinen, den Vektor-Matrix-Rechenoperationen der Form y <-- alpha*A*x + beta*y.
+Alpha und beta sind Skalare, x und y Vektoren und A eine Matrix; bei DGBMV handelt es sich bei A um eine Bandmatrix, oder ihrer Transponierten in Bandspeicherform.
+
+Die Bandspeicherform ist eine besonders platzsparende Art, eine Bandmatrix auszudrücken, zumindest falls die Anzahl der Spalten der Bandmatrix die Summe ihrer Superdiagonalen und ihrer Subdiagonalen übersteigt.
+
+               <Erklärung Super-/Subdiagonalen>     <Erklärung Bandspeicherform>
+
+Die Funktion DGBMV benötigt neben den bereits genannten Parametern noch M, N, KL und KU (die Zeilen-, bzw. Spaltenanzahl, sowie die Anzahl der Sub-, bzw. Superdiagonalen der normalen Speicherform von A), LDA (die Zeilenanzahl der Bandspeicherform von A), INCX und INCY, die den regelmäßigen Abstand der Elemente der Vektoren x und y in den Arrays X und Y enthalten und außerdem noch TRANS, eine Variable, deren Inhalt darüber entscheidet, ob die Matrix A so wie sie ist verwendet, ob sie vorher transponiert, oder adjungiert werden soll. Die Funtionalität, die Matrix zu adjungieren ist jedoch in der vorliegenden Implementierung nicht gegeben.
+
+               <Erklärung INCX/INCY>
+
+Die einzige Ausgabe ist der modifizierte Vektor y.
+
+
+Die genaue funktionsweise der Funktion DGBMV( TRANS, M, N, KL, KU, ALPHA, A, LDA, X, INCX, BETA, Y, INCY ) wird im Folgenden anhand eines Beispiels verdeutlicht:
+
+Sei TRANS=1, M=N=6, KL=1, KU=3, ALPHA=7, A=(000936|001893|073958|264855|823740), LDA=5, X=(1,0,0,2,0,0,3,0,0,4,0,0,5,0,0,6), INCX=3, BETA=4, Y=(9,0,8,0,7,0,6,0,5,0,4) und INCY=-2.
+
+Zur Vorbereitung müssen die Vektoren x und y aus ihren Arrays X und Y extrahiert werden, indem nur jedes INCXte/INCYte Feld in den Vektor übertragen wird. Im Fall von X jedes dritte, wobei immer mit dem nullten begonnen wird:
+
+                0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
+               (1, 0, 0, 2, 0, 0, 3, 0, 0, 4, 0, 0, 5, 0, 0, 6)
+
+               Es werden nur die mit durch drei ganzzahlig teilbaren Indices ausgewählt:
+
+                0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
+               (1,       2,       3,       4,       5,       6)     =>     (1,2,3,4,5,6)=x
+
+
+               Bei negativen INCX/INCY wird von hinten angefangen:
+
+                10 9  8  7  6  5  4  3  2  1  0
+               (9, 0, 8, 0, 7, 0, 6, 0, 5, 0, 4)
+
+                10    8     6     4     2     0
+               (9,    8,    7,    6,    5,    4)     =>     (4,5,6,7,8,9)=y
+
+Danach können die Produkte ALPHA*x und BETA*y berechnet werden:
+
+               x'=(1,2,3,4,5,6)*7 = (7,14,21,28,35,42)
+               y'=(4,5,6,7,8,9)*4 = (16,20,24,28,32,36)
+
+Als kompliziertester Schritt folgt die eigentliche Matrix-Vektor-Multiplikation A*x':
+
+               
+
+Zum Schluss wird das letzte Ergebnis auf y' aufaddiert:
+
+               
+
