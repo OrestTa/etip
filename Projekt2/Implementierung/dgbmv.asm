@@ -125,6 +125,32 @@ global dgbmv
                 POP EAX
 %endmacro
 
+; Helperfunctions
+
+; memcpy FROM, TO, LENGTH -- ESI, EDI, EBX
+; FROM: Pointer to starting point
+; TO: Pointer to destination point
+; LENGTH: Length in doubles (8 byte blocks)
+;
+; All registers stay unchanged after calling this subroutine!
+memcpy:
+                PUSH EDX                ; save EDX, as we'll change it
+                PUSH EAX                ; save EAX, as we'll change it
+                SHL EBX, 1              ; EBX*2 - double the length (EBX), so that we can calculate with 4 byte blocks
+                MOV EDX, 0              ; init counter
+cpy_loop:
+                MOV EAX, [ESI+EDX*4]    ; move 4 bytes from starting point to EAX
+                MOV [EDI+EDX*4], EAX    ; move 4 bytes from EAX to destination point
+                INC EDX                 ; increment counter
+                CMP EDX, EBX            ; check if we're finished
+                JNE cpy_loop            ; if not - repeat
+                SHR EBX, 1              ; EBX/2 - restore the original length (EBX)
+                POP EAX                 ; restore EAX, as we changed it
+                POP EDX                 ; restore EDX, as we changed it
+                ret
+
+
+
 ; DGBMV - PROLOGUE
 dgbmv:
                 PUSH EBP
@@ -149,48 +175,10 @@ dgbmv:
                 CMP dword INCY, 0
                 JE incyerror
 
-; Check which operation to execute
-transcheck:
-                MOV EAX, TRANS          ; check TRANS and
-                CMP AL, 'N'             ; do not transpose if it is N or n
-                JE proceed0
-                CMP AL, 'n'
-                JE proceed0
-                CMP AL, 'T'             ; jump to transpose if it is T, t, C or c
-                JE transpose
-                CMP AL, 't'
-                JE transpose
-                CMP AL, 'C'
-                JE transpose
-                CMP AL, 'c'
-                JE transpose
-                JMP transerror          ; jump to transerror otherwise
-
-
-; memcpy FROM, TO, LENGTH -- ESI, EDI, EBX
-; FROM: Pointer to starting point
-; TO: Pointer to destination point
-; LENGTH: Length in doubles (8 byte blocks)
-;
-; All registers stay unchanged after calling this subroutine!
-memcpy:
-                PUSH EDX                ; save EDX, as we'll change it
-                PUSH EAX                ; save EAX, as we'll change it
-                SHL EBX, 1              ; EBX*2 - double the length (EBX), so that we can calculate with 4 byte blocks
-                MOV EDX, 0              ; init counter
-cpy_loop:
-                MOV EAX, [ESI+EDX*4]    ; move 4 bytes from starting point to EAX
-                MOV [EDI+EDX*4], EAX    ; move 4 bytes from EAX to destination point
-                INC EDX                 ; increment counter
-                CMP EDX, EBX            ; check if we're finished
-                JNE cpy_loop            ; if not - repeat
-                SHR EBX, 1              ; EBX/2 - restore the original length (EBX)
-                POP EAX                 ; restore EAX, as we changed it
-                POP EDX                 ; restore EDX, as we changed it
-                ret
-
-; Transpose the matrix -- Copy the origianl Matrix A to it's new location at [EBP-8] and transpose it on the fly
-transpose:
+; Allocate Memory for a copy of A (transposed or normal)
+; + 4 bytes for the matrix length
+; + 4 bytes for a pointer to the new matrix
+matrixMove_prepare:
                 MOV EAX, LDA            ; calculate needed size for A_trans
                 IMUL EAX, dword N
                 PUSH EAX                ; push the lenght of A
@@ -202,7 +190,27 @@ alloc_loop:
                 JNZ alloc_loop
 
                 MOV [EBP-8], ESP        ; save pointer to A_trans in [EBP-8]
-; ======================================================================================================================
+
+; Check which operation to execute
+transcheck:
+                MOV EAX, TRANS          ; check TRANS and
+                CMP AL, 'N'             ; do not transpose if it is N or n
+                JE notranspose
+                CMP AL, 'n'
+                JE notranspose
+                CMP AL, 'T'             ; jump to transpose if it is T, t, C or c
+                JE transpose
+                CMP AL, 't'
+                JE transpose
+                CMP AL, 'C'
+                JE transpose
+                CMP AL, 'c'
+                JE transpose
+                JMP transerror          ; jump to transerror otherwise
+
+; Transpose the matrix -- Copy the origianl Matrix A to it's new location at [EBP-8] and transpose it on the fly
+transpose:
+; Initialize starting point, destination point and length
                 ; START A
                 MOV ESI, _A
                 MOV ECX, KU
@@ -221,10 +229,13 @@ alloc_loop:
                 ; Counter
                 MOV ECX, KU
                 INC ECX
+; Start with copying
 ku_loop:
                 ;memcpy ESI, EDI, EBX
                 call memcpy
 
+                CMP ECX, 1
+                JE kl
                 ; START := START+(N-1)*8
                 MOV EAX, N
                 DEC EAX
@@ -239,12 +250,10 @@ ku_loop:
                 ; Decrement counter
                 DEC ECX
                 JNZ ku_loop
-; ============================================================ Upper Diagonals and Main Diagonal from A are now copied to A_trans
-                ; Length--
-                DEC EBX
+; Upper Diagonals and Main Diagonal from A are now copied to A_trans
+kl:
                 ; Counter
                 MOV ECX, KL
-                JMP aa_test
 kl_loop:
                 ; START := START+N*8
                 MOV EAX, N
@@ -263,36 +272,17 @@ kl_loop:
                 ; Decrement counter
                 DEC ECX
                 JNZ kl_loop
-; ============================================================ Lower Diagonals and Main Diagonal from A are now copied to A_trans
-; Proceed
-proceed0:
-                MOV EAX, LDA            ; LDA, first operand
-                ;MOV EAX, 0xFFFFFFFF     ; test for OF detection
-                IMUL EAX, dword N       ; LDA*N, second operand; TODO: error if OF
-                ;JC oferror
-                PUSH EAX                ; the length of A can now be found in [EBP-4]
-                MOV EBX, 0              ; reserve memory for A's duplicate's pointer
-                PUSH EBX                ; on the stack in [EBP-8]
+; Lower Diagonals and Main Diagonal from A are now copied to A_trans
+                JMP new_matrix_ready    ; continue after "notranspose"
 
-; Calculate the pointer to the last element of A
-                MOV EBX, _A             ; EBX now contains the pointer to the original matrix, 1. element
-                DEC EAX                 ; adjust the counter
-                JZ pointerlastready     ; if zero, finished
-pointerlast:
-                ADD EBX, 8              ; move the pointer to the following element
-                DEC EAX                 ; decrementing the counter
-                JNZ pointerlast         ; until it reaches zero (all elements have been skipped)
-                MOV EAX, [EBP-4]        ; restore EAX
-pointerlastready:                       ; EBX contains the pointer to the last element of A
+; Do not transpose the matrix -- just copy it over to its new location
+notranspose:
+                MOV ESI, _A             ; initiate starting point = *A
+                MOV EDI, [EBP-8]        ; initiate destination point = *A_new
+                MOV EBX, [EBP-4]        ; initiate length (in doubles) = LDA*N - this is already calculated in [EBP-4]
+                call memcpy             ; DO IT!!
 
-; Duplicate the matrix A
-matrixduplicate:
-                PUSH dword [EBX+4]      ; push beginning with the last element of A
-                PUSH dword [EBX]        ; 8 bytes (one double element)
-                SUB EBX, 8              ; decrement EBX by 8 bytes to make it point to the previous element
-                DEC EAX                 ; decrease the counter
-                JNZ matrixduplicate     ; repeat until the counter reaches 0
-                MOV [EBP-8], ESP        ; A's duplicate's pointer can now be found in [EBP-8]
+new_matrix_ready:
 
 ; [ALPHA * A or ALPHA * A'] = AA
 aa:
