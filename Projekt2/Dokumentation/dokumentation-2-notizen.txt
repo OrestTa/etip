@@ -1,0 +1,4 @@
+reg save
+parameters on stack
+software versions
+gcc, nasm, gdb, jasmin ( :) ) etc.
