@@ -4,5 +4,5 @@ if ! nmcli con status | grep "LRZ IPsec" ; then
 	nmcli con up id "LRZ IPsec ETI"
 fi
 git svn rebase
-git commit -a
+git commit -s -a
 git svn dcommit
