@@ -294,6 +294,8 @@ ku_loop:
 kl:
                 ; Counter
                 MOV ECX, KL
+                CMP ECX, 0
+                JE new_matrix_ready     ; nothing to do, as kl is 0
 kl_loop:
                 ; START := START+N*8
                 MOV EAX, N
