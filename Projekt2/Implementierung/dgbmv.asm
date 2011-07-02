@@ -4,8 +4,6 @@
 ; or alternatively
 ; Y := ALPHA * A' * X + BETA * Y
 ;
-; TODO:
-; check negative doubles as input; LDA, Y, X could all be bigger than necessary!
 
 extern printf                           ; the C function to be called, for testing purposes only
 

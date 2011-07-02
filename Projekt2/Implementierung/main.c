@@ -27,15 +27,72 @@ void printv(char name, double vector[], int size) {
 
 /*
  * This function prints an error code of dgbmv(), as of:
- * -1   : INVALID_TRANS
- * -2   : INVALID_M
- * -3   : INVALID_N
- * -4   : INVALID_KL
- * -5   : INVALID_KU
- * ...
+    M_INVALID       = -1,
+    N_INVALID       = -2,
+    KL_INVALID      = -3,
+    KU_INVALID      = -4,
+    ALPHA_INVALID   = -5,
+    A_INVALID       = -6,
+    LDA_INVALID     = -7,
+    X_INVALID       = -8,
+    INCX_INVALID    = -9,
+    BETA_INVALID    = -10,
+    Y_INVALID       = -11,
+    INCY_INVALID    = -12,
+    TRANS_INVALID   = -13,
+    OVERFLOW        = -14,
+    NO_SQUARE_MATRIX= -15
  */
 void printe(int error) {
-    printf("ERROR: %i\n", error);
+    printf("[%i] ", error);
+    switch (error) {
+        case -1:
+            printf("M invalid");
+            break;
+        case -2:
+            printf("N invalid");
+            break;
+        case -3:
+            printf("KL invalid");
+            break;
+        case -4:
+            printf("KU invalid");
+            break;
+        case -5:
+            printf("ALPHA invalid");
+            break;
+        case -6:
+            printf("A invalid");
+            break;
+        case -7:
+            printf("LDA invalid");
+            break;
+        case -8:
+            printf("X invalid");
+            break;
+        case -9:
+            printf("INCX invalid");
+            break;
+        case -10:
+            printf("BETA invalid");
+            break;
+        case -11:
+            printf("Y invalid");
+            break;
+        case -12:
+            printf("INCY invalid");
+            break;
+        case -13:
+            printf("TRANS invalid");
+            break;
+        case -14:
+            printf("Overflow");
+            break;
+        case -15:
+            printf("A is no square matrix");
+            break;
+        }
+    printf("\n");
     }
 
 /*
@@ -55,14 +112,17 @@ int main(int argc, char *argv[]) {
                     0.0, 0.0, 1.3, 2.4, 3.5, 4.6, 6.5, 4.2, 0.0, \
                     0.0, 1.2, 2.3, 3.4, 4.5, 5.6, 7.7, 5.1, 9.8, \
                     1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 1.8, 0.0, 3.6, \
-                    2.1, 3.2, 4.3, 5.4, 6.5, 4.3, 0.0, 5.1, 0.0}; 
+                    2.1, 3.2, 4.3, 5.4, 6.5, 4.3, 0.0, 5.1, 0.0, \
+                    1.1,2.2,3.3,4.4,5.5}; // A with extended length - for testing
     int lda      = 5;
-    double x[]   = {1.0,0.0,2.0,0.0,3.0,0.0,4.0,0.0,5.0,0.0,6.0,0.0,7.0,0.0,8.0,0.0,9.0,0.0};
+    double x[]   = {1.0,0.0,2.0,0.0,3.0,0.0,4.0,0.0,5.0,0.0,6.0,0.0,7.0,0.0,8.0,0.0,9.0,0.0,\
+                    1.1,2.2,3.3,4.4,5.5,6.6}; // X with extended length - for testing
     int incx     = -2;
     double beta  = -3.0;
     double y[]   = {6.0,0.0,0.0,7.0,0.0,0.0,8.0,0.0,0.0, \
                     9.0,0.0,0.0,0.0,0.0,0.0,6.0,0.0,0.0, \
-                    7.1,0.0,0.0,8.2,0.0,0.0,3.0,0.0,0.0};
+                    7.1,0.0,0.0,8.2,0.0,0.0,3.0,0.0,0.0, \
+                    0.0, 3.0, 2.3, 3.2}; // Y with extended length - for testing
     int incy     = 3;
 
 
