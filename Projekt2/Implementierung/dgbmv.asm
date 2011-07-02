@@ -510,8 +510,10 @@ for_k:                                  ; calculate AAXYB[i-1] + (X[k+1-1] * A[K
 
                 FLD qword [EAX]         ; load the EAX_old-th element of AA: AA(EAX_old)
                 FLD qword [EDX]         ; load the k-th element of X: X(k)
-                FMUL                    ; multiply ; todo of
+                FMUL                    ; multiply
+                JO oferror              ; in case of an overflow (80 bit), abort
                 FSTP qword [EAX]        ; the element that EAX points to now equals X(k)*AA(EAX_old)
+                JO oferror              ; in case of an overflow (64 bit), abort
 
                 ;PUSH EAX
                 ;PUSH EBX
