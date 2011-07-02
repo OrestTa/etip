@@ -42,16 +42,16 @@ end BINBCD;
 <hr width="100%" size="1">
 <h4><a name="Alternative1">Alternative 1: Double-Dabble</a></h4>
 <p>
-Diese Alternative sieht es vor, dass die Eingabe zuerst (mit Hilfe einer binären Konstanten: 11000011010011111<sub>2</sub> = 99999<sub>10</sub>) auf ihre Gültigkeit überprüft wird. Falls die Eingabe im Definitionsbereich liegt, so wird ein 37-Bit-Vektor erstellt, der wie folgt aufgebaut ist (beginnend mit dem höchstwertigsten Bit, MSB):<br/><br/>
+Diese Alternative sieht es vor, dass die Eingabe zuerst auf ihre Gültigkeit (Eingabe &lt;= 99999) überprüft wird. Falls die Eingabe im Definitionsbereich liegt, so wird ein zusammengesetzt 37-Bit-Vektor erstellt, der wie folgt aufgebaut ist (beginnend mit dem höchstwertigsten Bit, MSB):<br/><br/>
 <code>4-Bit BCD Zehntausender, 4-Bit BCD Tausender, 4-Bit BCD Hunderter, 4-Bit BCD Zehner, 4-Bit BCD Einer, 17-Bit binäre Eingabe</code>.<br/><br/>
-Danach wird nach folgendem Schema vorgegangen, um die binäre Eingabe (in den 17 niedigstwertigen Bits des Vektors) in eine BCD umzuwandeln:
+Danach wird nach folgendem Schema vorgegangen, um die binäre Eingabe (in den 17 niedigstwertigen Bits des zusammengesetzten Vektors) in eine BCD umzuwandeln:
 <ol>
 <li>Schiebe den Vektor um ein Bit nach links.</li>
 <li>Wenn der Binäre Wert in einer der BCD Spalten größer oder gleich 5 ist, addiere den Wert 3 zu dieser Spalte.</li>
 <li>Wiederhole dieses Schema 16 mal ab Punkt 1.</li>
 </ol>
-Nach 17-maligem Schieben liegt die Zahl im BCD Format an den (4-Bit-breiten) Stellen der Zehntausender, Tausender, Hunderter, Zehner und Einser.<br/><br/>
-Falls die Eingabe nicht im Definitionsbereich liegt, wird der Ausgang auf 0 und das Overflowbit auf 1 gesetzt.
+Nach 17-maligem Schieben liegt die Zahl im BCD Format an den (4-Bit-breiten) Stellen der Zehntausender, Tausender, Hunderter, Zehner und Einer.<br/><br/>
+Falls die Eingabe nicht im Definitionsbereich liegt, werde die Ausgänge auf 0 und das Overflowbit auf 1 gesetzt.
 </p>
 <br/>
 <br/>
