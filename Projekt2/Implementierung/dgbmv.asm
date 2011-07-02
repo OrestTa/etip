@@ -5,7 +5,7 @@
 ; Y := ALPHA * A' * X + BETA * Y
 ;
 ; TODO:
-; check negative doubles as input
+; check negative doubles as input; LDA, Y, X could all be bigger than necessary!!!
 
 extern printf                           ; the C function to be called, for testing only
 
@@ -90,37 +90,31 @@ global dgbmv
 %endmacro
 
 ; Store a negatively incremented vector as a positively incremented vector on the stack
-; Z_new[i] = Z[|INCZ| * N - |INCZ| * (i+1)]
-; Z_new[i-1] =Z[|INCZ| * N - |INCZ| * (i)]
-; N be the length of the incremented array
+; Z_new[i-1] =Z[|INCZ| * N - |INCZ| * (i)], N be the length of the incremented array
 ; Initialisation:
-;                MOV ECX, N              ; counter i=N, ind of the last element of Z
+;                MOV EAX, INCZ           ; abs(increment of the vector), has to be positive!
+;                MOV ECX, N              ; element count
 ;                MOV EDX, _Z             ; incremented vector*
-;                MOV EBX, INCZ           ; increment of the vector
-;                neginc foo
-; You need to update Z* with ESP and INCZ with EBX afterwards!
-
-; MOV EAX, INCZ
-; MOV ECX, N        ; element count
-; MOV EDX, _Z
+;                neginc par1 par2
+; You need to update Z* with ESP afterwards
 %macro neginc 2
-                MOV ESI, 0              ; k (in N)
+                MOV ESI, 0              ; k=0 (to N)
 %1:
-                MOV EBX, EAX            ; i=INCZ
+                MOV EBX, EAX            ; i=INCZ (down to 0)
 %2:
-                PUSH dword 0            ; push INCZ bytes
-                PUSH dword 0            
+                PUSH dword 0            ; push INCZ qwords
+                PUSH dword 0            ; i. e. create INCZ's lacuna
                 ; looping i
                 DEC EBX
                 CMP EBX, 1
                 JNE %2
 
                 PUSH dword [EDX+4]      ; push one qword
-                PUSH dword [EDX]
+                PUSH dword [EDX]        ; which is Z's relevant element
 
                 MOV EDI, EAX            ; k (in N)
-                IMUL EDI, 8             ; byte offset for Z ; todo of
-                ADD EDX, EDI            ; point to the next element of Z
+                IMUL EDI, 8             ; calculate the byte offset for Z ; todo of
+                ADD EDX, EDI            ; EDX now points to Z's next relevant element
 
                 ; looping k
                 INC ESI
@@ -159,35 +153,35 @@ global dgbmv
 ; Helper functions
 
 ; memcpy FROM, TO, LENGTH -- ESI, EDI, EBX
-; FROM: pointer to starting point
-; TO: pointer to destination point
-; LENGTH: length in doubles (8 byte blocks)
+; FROM: pointer to starting qword                       ESI
+; TO: pointer to destination qword                      EDI
+; LENGTH: length in doubles (8 byte blocks / qwords)    EBX
 ;
 ; All registers remain unchanged after calling this subroutine!
 memcpy:
-                PUSH EDX                ; save EDX, as we'll change it
-                PUSH EAX                ; save EAX, as we'll change it
+                PUSH EDX                ; save EDX as we'll change it
+                PUSH EAX                ; save EAX as we'll change it
                 SHL EBX, 1              ; EBX*2 - double the length (EBX), so that we can calculate with 4 byte blocks
                 MOV EDX, 0              ; init counter
 cpy_loop:
-                MOV EAX, [ESI+EDX*4]    ; move 4 bytes from starting point to EAX
-                MOV [EDI+EDX*4], EAX    ; move 4 bytes from EAX to destination point
-                INC EDX                 ; increment counter
+                MOV EAX, [ESI+EDX*4]    ; copy 4 bytes from the starting cell to EAX
+                MOV [EDI+EDX*4], EAX    ; copy 4 bytes from EAX to the destination cell
+                INC EDX                 ; increment the counter
                 CMP EDX, EBX            ; check if we've finished
                 JNE cpy_loop            ; if not - repeat
-                SHR EBX, 1              ; EBX/2 - restore the original length (EBX)
-                POP EAX                 ; restore EAX, as we changed it
-                POP EDX                 ; restore EDX, as we changed it
-                ret
+                SHR EBX, 1              ; EBX/2 : restore the original length (EBX)
+                POP EAX                 ; restore EAX
+                POP EDX                 ; restore EDX
+                RET
 
-
+; ======================================
 
 ; DGBMV - PROLOGUE
 dgbmv:
                 PUSH EBP
                 MOV EBP, ESP
 
-; Save all registers
+; Save registers
                 PUSH EAX
                 PUSH ECX
                 PUSH EDX
@@ -200,6 +194,9 @@ dgbmv:
                 JL merror
                 CMP dword N, 0
                 JL nerror
+                MOV EAX, dword N
+                CMP EAX, dword M
+                JNE mnerror
                 CMP dword KL, 0
                 JL klerror
                 CMP dword KU, 0
@@ -341,19 +338,18 @@ aa:
 yb:
                 CMP dword INCY, 0
                 JG yb_multiply          ; if INCY is positive, skip the following
-                MOV EBX, INCY
-                IMUL EBX, -1            ; INCY -> -INCY ; todo of
-                MOV INCY, EBX           ; update INCY with -INCY
-
                 MOV EAX, INCY
-                MOV ECX, N
-                MOV EDX, _Y
-                neginc niy0, niy1
-                MOV ESI, ESP
-                MOV EDI, _Y
-                MOV EBX, N
-                IMUL EBX, INCY
-                CALL memcpy
+                IMUL EAX, -1            ; INCY -> -INCY, INCY is positive now
+                MOV INCY, EAX           ; update INCY with -INCY
+                MOV ECX, N              ; initialise N
+                MOV EDX, _Y             ; initialise Y*
+                neginc niy0, niy1       ; push Y as a positively incremented array
+                MOV ESI, ESP            ; initialise the starting memory qword
+                MOV EDI, _Y             ; initialise the destination memory qword
+                MOV EBX, N              ; initialise N
+                IMUL EBX, INCY          ; N*INCY returns the count of qwords
+                CALL memcpy             ; which will be copied back into Y
+; todo - clean up the stack????
 
 yb_multiply:
                 MOV ECX, 0              ; counter = 0
@@ -365,7 +361,6 @@ yb_multiply:
 ;                JMP okay                ; diagnose whether Y*B is correct
 
 prepare_x:
-
                 CMP dword INCX, 0
                 JG incx_pos
 
@@ -648,6 +643,9 @@ transerror:                             ; TRANS is none of N, n, T, t, C, c
                 JMP finish
 oferror:
                 MOV EAX, -14
+                JMP finish
+mnerror:
+                MOV EAX, -15            ; A is not a square matrix!
                 JMP finish
 
 ; EPILOGUE
