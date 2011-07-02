@@ -169,7 +169,9 @@ int main(int argc, char *argv[]) {
     int incy     = 1;*/
 
     /* print the INPUT paramters */
-    printf("\n");
+    printf("********************************************************************************\n");
+    printf("*                                    DGBMV                                     *\n");
+    printf("********************************************************************************\n");
     printf("INPUT Parameters:\n");
     printf("TRANS: %c\n", trans);
     printf("M    : %i\n", m);
@@ -200,12 +202,6 @@ int main(int argc, char *argv[]) {
         printf("OUTPUT Error:\n");
         printe(result);
     }
-    printf("\n");
-
-    /* print the result (EAX) - for testing purposes only */
-    printf("Result for testing\n");
-    printf("hex: %x\n",result);
-    printf("int: %i\n",result);
 
     return 0;
     }
