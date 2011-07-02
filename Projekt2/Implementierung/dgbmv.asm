@@ -5,7 +5,7 @@
 ; Y := ALPHA * A' * X + BETA * Y
 ;
 ; TODO:
-; OVERFLOW with IMUL!!!, check negative doubles as input; LDA, Y, X could all be bigger than necessary!
+; check negative doubles as input; LDA, Y, X could all be bigger than necessary!
 
 extern printf                           ; the C function to be called, for testing purposes only
 
@@ -65,6 +65,7 @@ global dgbmv
 ;               scalarmult foo
 %macro scalarmult 1
                 IMUL EBX, 8             ; each double is 8 bytes long
+                JO oferror              ; in case of an overflow, abort
 %1:
                 FLD qword [EAX]         ; first factor
                 FLD qword [EDX]         ; second factor
@@ -101,7 +102,8 @@ global dgbmv
                 PUSH dword [EDX]        ; which is Z's relevant element
 
                 MOV EDI, EAX            ; k (in N)
-                IMUL EDI, 8             ; calculate the byte offset for Z ; todo of
+                IMUL EDI, 8             ; calculate the byte offset for Z
+                JO oferror              ; in case of an overflow, abort
                 ADD EDX, EDI            ; EDX now points to Z's next relevant element
 
                 ; looping k
@@ -205,6 +207,7 @@ dgbmv:
 matrix_move_prepare:
                 MOV EAX, LDA            ; LDA is A's first dimension
                 IMUL EAX, dword N       ; N is A's second dimension; calculate the needed length
+                JO oferror              ; in case of an overflow, abort
                 PUSH EAX                ; push the length of A to [EBP-28]
                 PUSH dword 0x2A         ; magic happens here
 alloc_loop:
@@ -240,13 +243,16 @@ transpose:
                 MOV ESI, EDX
                 MOV ECX, KU
                 IMUL ECX, 8
+                JO oferror              ; in case of an overflow, abort
                 ADD ESI, ECX
                 ; DESTINATION A_trans
                 MOV EDI, _A
                 MOV ECX, LDA
                 DEC ECX
                 IMUL ECX, N
+                JO oferror              ; in case of an overflow, abort
                 IMUL ECX, 8
+                JO oferror              ; in case of an overflow, abort
                 ADD EDI, ECX
                 ; Length
                 MOV EBX, N
@@ -265,10 +271,12 @@ ku_loop:
                 MOV EAX, N
                 DEC EAX
                 IMUL EAX, 8
+                JO oferror              ; in case of an overflow, abort
                 ADD ESI, EAX
                 ; DESTINATION := DESTINATION-N*8
                 MOV EAX, N
                 IMUL EAX, 8
+                JO oferror              ; in case of an overflow, abort
                 SUB EDI, EAX
                 ; LENGTH := LENGTH+1
                 INC EBX
@@ -285,11 +293,13 @@ kl_loop:
                 ; START := START+N*8
                 MOV EAX, N
                 IMUL EAX, 8
+                JO oferror              ; in case of an overflow, abort
                 ADD ESI, EAX
                 ; DESTINATION := DESTINATION-(N-1)*8
                 MOV EAX, N
                 DEC EAX
                 IMUL EAX, 8
+                JO oferror              ; in case of an overflow, abort
                 SUB EDI, EAX
                 ; LENGTH := LENGTH-1
                 DEC EBX
@@ -329,6 +339,7 @@ yb:
 
                 MOV EAX, INCY
                 IMUL EAX, -1            ; INCY -> -INCY, INCY is positive now
+                JO oferror              ; in case of an overflow, abort
                 MOV INCY, EAX           ; update INCY with -INCY
                 MOV ECX, N              ; initialise N
                 MOV EDX, _Y             ; initialise Y*
@@ -338,6 +349,7 @@ yb:
                 MOV EDI, _Y             ; initialise the destination memory qword
                 MOV EBX, N              ; initialise N
                 IMUL EBX, INCY          ; N*INCY returns the count of qwords
+                JO oferror              ; in case of an overflow, abort
                 CALL memcpy             ; which will be copied back into Y
 ; todo - clean up the stack????
 
@@ -356,6 +368,7 @@ prepare_x:
 ; If INCX is negative, store X's relevant elements on the stack
                 MOV EAX, INCX
                 IMUL EAX, -1            ; INCX -> -INCX, INCX is positive now
+                JO oferror              ; in case of an overflow, abort
                 MOV INCX, EAX           ; update INCX
                 MOV ECX, N
                 MOV EDX, _X
@@ -366,7 +379,8 @@ x_1:
                 PUSH dword [EDX]        ; which is X's relevant element
 
                 MOV EDI, EAX            ; k (in N)
-                IMUL EDI, 8             ; byte offset for X ; todo of
+                IMUL EDI, 8             ; byte offset for X
+                JO oferror              ; in case of an overflow, abort
                 ADD EDX, EDI            ; EDX now points to X's next relevant element
 
                 ; looping k
@@ -391,6 +405,7 @@ incx_alloc:
 
                 MOV ECX, INCX
                 IMUL ECX, 8             ; byte offset
+                JO oferror              ; in case of an overflow, abort
 incx_pos_loop:
                 CALL memcpy
                 ADD ESI, ECX            ; offset the source
@@ -446,7 +461,8 @@ for_k:                                  ; calculate AAXYB[i-1] + (X[k+1-1] * A[K
                 JG skiptonextk          ; skip to a next k
                 CMP EAX, 0              ; KU+i-k-1 < 0?
                 JL skiptonextk          ; skip to a next k
-                IMUL EAX, dword N       ; because index(el)=EAX*N+ECX; todo error if OF
+                IMUL EAX, dword N       ; because index(el)=EAX*N+ECX
+                JO oferror              ; in case of an overflow, abort
                 ADD EAX, ECX            ; EAX now contains the index of AA's desired element, =:EAX_old
 
                 ;PUSH EAX                ; index
@@ -459,14 +475,16 @@ for_k:                                  ; calculate AAXYB[i-1] + (X[k+1-1] * A[K
 
                 ; Calculate the pointer to A[KU+i-k-1][k+1-1] and X[k]
 
-                IMUL EAX, 8             ; EAX now contains the byte offset for AA ; todo OF
+                IMUL EAX, 8             ; EAX now contains the byte offset for AA
+                JO oferror              ; in case of an overflow, abort
 
                 MOV EDX, _A             ; EDX now contains the pointer to AA
                 ADD EDX, EAX            ; EDX now contains the pointer to the EAX_old-th element of AA
                 MOV EAX, EDX            ; EAX:=EDX
 
                 MOV ESI, ECX            ; copy k
-                IMUL ESI, 8             ; ESI now contains the byte offset for X ; todo OF
+                IMUL ESI, 8             ; ESI now contains the byte offset for X
+                JO oferror              ; in case of an overflow, abort
                 MOV EDX, _X             ; EDX now contains the pointer to X
                 ADD EDX, ESI            ; EDX now contains the pointer to the k-th element of X
 
@@ -513,7 +531,8 @@ for_k:                                  ; calculate AAXYB[i-1] + (X[k+1-1] * A[K
 
                 MOV EDX, EBX            ; EDX=i
                 DEC EDX                 ; EDX=i-1
-                IMUL EDX, 8             ; EDX now contains the byte offset for AAX ; todo OF
+                IMUL EDX, 8             ; EDX now contains the byte offset for AAX
+                JO oferror              ; in case of an overflow, abort
                 ADD EDX, ESP            ; EDX now contains the pointer to AAX(i-1)
 
                 ;saveregs
@@ -556,14 +575,16 @@ aaxyb:
                 MOV EAX, _Y             ; EAX now points to B*Y(0)
 aaxyb_body:                             ; sum and then calculate the new pointer to B*Y(i*INCY)
                 MOV ESI, EBX            ; ESI now contains i
-                IMUL ESI, 8             ; ESI now contains 8*i, the byte offset for AAX ; todo OF
+                IMUL ESI, 8             ; ESI now contains 8*i, the byte offset for AAX
+                JO oferror              ; in case of an overflow, abort
                 FLD qword [EAX]         ; load B*Y(i*INCY)
                 FLD qword [ESP+ESI]     ; load AAX(i)
                 FADD                    ; add
                 FSTP qword [EAX]        ; write B*Y(i*INCY)=B*Y(i*INCY)+AAX(i)
 
                 MOV ESI, INCY           ; ESI now contains INCY
-                IMUL ESI, 8             ; ESI now contains the offset for B*Y ; todo OF
+                IMUL ESI, 8             ; ESI now contains the offset for B*Y
+                JO oferror              ; in case of an overflow, abort
                 ADD EAX, ESI            ; EAX now is the pointer to B*Y(i*INCY)
 
                 ; looping i
