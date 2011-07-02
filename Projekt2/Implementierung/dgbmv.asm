@@ -335,7 +335,7 @@ yb:
                 CMP dword INCY, 0
                 JG yb_multiply          ; if INCY is positive, skip the following
 
-                MOV EAX, INCY
+                MOV EAX, INCY           ; else generate INCY in needed format
                 IMUL EAX, -1            ; INCY -> -INCY, INCY is positive now
                 JO oferror              ; in case of an overflow, abort
                 MOV INCY, EAX           ; update INCY with -INCY
@@ -349,8 +349,18 @@ yb:
                 IMUL EBX, INCY          ; N*INCY returns the count of qwords
                 JO oferror              ; in case of an overflow, abort
                 CALL memcpy             ; which will be copied back into Y
-; todo - clean up the stack????
 
+; Cleanup the stack.
+; neginc pushed N*INCY*2 dwords
+                MOV EAX, N
+                IMUL EAX, INCY, 2       ; EAX = N*INCY*2
+                JO oferror
+yb_clean_stack:
+                POP EBX                 ; Pop top 4 bytes
+                DEC EAX                 ; until Y's copy on the stack is cleaned
+                JNZ yb_clean_stack
+
+; Do the actual BETA*Y calculation
 yb_multiply:
                 MOV ECX, 0              ; counter = 0
                 MOV EDX, _Y             ; EDX now points to Y
