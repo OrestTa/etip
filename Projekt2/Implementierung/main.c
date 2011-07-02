@@ -13,13 +13,14 @@ extern int dgbmv(char trans, int m, int n, int kl, int ku, double *alpha, \
  * This function prints a vector of doubles in the form of:
  * X: (1.0, 2.0, 3.0, ...)
  */
-void printv(char name, double vector[], int inc, int size) {
+void printv(char name, double vector[], int size) {
     int i;
     int length = size/sizeof(double);
     printf("%c    : (", name);
     for(i=0; i<length; i++) {
-        printf("%f", vector[i]);
+        printf("%12f", vector[i]);
         if( i < length-1 ) printf(", ");
+        if ( (i+1)%10 == 0) printf("\n        "); //break after 13 doubles (pretty print)
         }
     printf(")\n");
     }
@@ -43,18 +44,22 @@ void printe(int error) {
 int main(int argc, char *argv[]) {
 
     /* define the INPUT parameters here */
-    char trans   = 't';
+    char trans   = 'n';
     int  m       = 9;
     int  n       = 9;
-    int  kl      = 0;
-    int  ku      = 0;
-    double alpha = 2.0;
+    int  kl      = 1;
+    int  ku      = 3;
+    double alpha = -2.0;
     // a bandmatrix - row by row
-    double a[]   = {1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 1.8, 0.0, 3.6}; 
-    int lda      = 1;
+    double a[]   = {0.0, 0.0, 0.0, 1.4, 2.5, 3.6, 6.5, 4.3, 3.2, \
+                    0.0, 0.0, 1.3, 2.4, 3.5, 4.6, 6.5, 4.2, 0.0, \
+                    0.0, 1.2, 2.3, 3.4, 4.5, 5.6, 7.7, 5.1, 9.8, \
+                    1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 1.8, 0.0, 3.6, \
+                    2.1, 3.2, 4.3, 5.4, 6.5, 4.3, 0.0, 5.1, 0.0}; 
+    int lda      = 5;
     double x[]   = {1.0,0.0,2.0,0.0,3.0,0.0,4.0,0.0,5.0,0.0,6.0,0.0,7.0,0.0,8.0,0.0,9.0,0.0};
     int incx     = -2;
-    double beta  = 3.0;
+    double beta  = -3.0;
     double y[]   = {6.0,0.0,0.0,7.0,0.0,0.0,8.0,0.0,0.0, \
                     9.0,0.0,0.0,0.0,0.0,0.0,6.0,0.0,0.0, \
                     7.1,0.0,0.0,8.2,0.0,0.0,3.0,0.0,0.0};
@@ -112,12 +117,12 @@ int main(int argc, char *argv[]) {
     printf("KL   : %i\n", kl);
     printf("KU   : %i\n", ku);
     printf("ALPHA: %f\n", alpha);
-    printv('A', a, 1, sizeof(a));
+    printv('A', a, sizeof(a));
     printf("LDA  : %i\n", lda);
-    printv('X', x, incx, sizeof(x));
+    printv('X', x, sizeof(x));
     printf("INCX : %i\n", incx);
     printf("BETA : %f\n", beta);
-    printv('Y', y, incy, sizeof(y));
+    printv('Y', y, sizeof(y));
     printf("INCY : %i\n", incy);
     printf("\n");
 
@@ -128,7 +133,7 @@ int main(int argc, char *argv[]) {
     /* print the calculated result or an error */
     if( result >= 0 ) {
         printf("OUTPUT Result:\n");
-        printv('Y', y, incy, sizeof(y));
+        printv('Y', y, sizeof(y));
         //printv('A', a, 1, sizeof(a)); // - for testing purposes only
         }
     else {
