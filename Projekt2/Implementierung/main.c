@@ -44,7 +44,7 @@ void printe(int error) {
 int main(int argc, char *argv[]) {
 
     /* define the INPUT parameters here */
-    char trans   = 'n';
+    char trans   = 't';
     int  m       = 9;
     int  n       = 9;
     int  kl      = 1;

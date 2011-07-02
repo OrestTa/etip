@@ -4,13 +4,17 @@
 # The following script calculates Y := ALPHA * A * X + BETA * Y
 #
 
+def shift(seq, n):
+    n = n % len(seq)
+    return seq[n:] + seq[:n]
+
 M = 9
 N = 9
 KU = 3
 KL = 1
 LDA = 5
 
-TRANS = 'n'
+TRANS = 't'
 
 ALPHA = -2.0
 BETA = -3.0
@@ -23,6 +27,26 @@ A =   [[0.0, 0.0, 0.0, 1.4, 2.5, 3.6, 6.5, 4.3, 3.2], \
        [0.0, 1.2, 2.3, 3.4, 4.5, 5.6, 7.7, 5.1, 9.8], \
        [1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 1.8, 0.0, 3.6], \
        [2.1, 3.2, 4.3, 5.4, 6.5, 4.3, 0.0, 5.1, 0.0]]
+
+if (TRANS == 't' or TRANS == 'T' or TRANS == 'c' or TRANS == 'C'):
+    A.reverse()
+    kl = KL
+    ku = 0
+    maind = 0
+    i = 0
+    for line in A:
+        if(kl>0):
+            line = shift(line,-kl)
+            kl -= 1
+            A[i] = line
+            i += 1
+            continue
+        if(ku<=KU):
+            line = shift(line,ku)
+            ku += 1
+            A[i] = line
+            i += 1
+            continue 
 
 X =    [1.0,2.0,3.0,4.0,5,6.0,7.0,8.0,9.0]
 if (INCX == -1):
@@ -130,3 +154,4 @@ print
 print
 
 # TODO: INCrements!!!
+
