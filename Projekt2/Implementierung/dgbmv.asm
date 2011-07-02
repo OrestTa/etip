@@ -68,6 +68,7 @@ global dgbmv
                 FLD qword [EAX]         ; first factor
                 FLD qword [EDX]         ; second factor
                 FMUL                    ; multiply
+                JO oferror              ; return an overflow error if needed
                 FSTP qword [EDX]        ; save the result
                 ADD EDX, EBX            ; increase the pointer by 8*INC in order to
                 ; looping i             ; make it point to the next element of the array
