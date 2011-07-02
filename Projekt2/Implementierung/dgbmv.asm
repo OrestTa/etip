@@ -5,32 +5,24 @@
 ; Y := ALPHA * A' * X + BETA * Y
 ;
 
+; ==============================================================================
+
 extern printf                           ; the C function to be called, for testing purposes only
 
 section .data                           ; data, for testing purposes only
 
-; printf formats for flt64, "\n",'0'
-fmt_flt:     db "first float64 on stack = %E", 10, 10, 0
-fmt_flt_aa:  db "%E", 10, 0
-fmt_flt_xaa: db "X(k) = %E, AA(EAX_old) = %E", 10, 0
-fmt_flt_xaa2: db "AA_new(EAX_old) = %E", 10, 0
+fmt_i:  db "int = %d, float64 = %E", 10, 0   ; printf mixed format
 
-; printf formats for int32, "\n",'0'
-fmt_int:    db "first int = %d, second int = %d, third int = %d", 10, 10, 0
-fmt_int_k:  db "k = %d, row no = %d", 10, 0
-fmt_int_k_index:  db "k = %d, index = %d", 10, 0
-
-; mixed formats
-fmt_i:  db "i = %d, last float64 = %E", 10, 0
-
-; in order to printf EAX, push like this:
+; in order to printf EAX, do:
+;                saveregs
 ;                PUSH EAX
-;                PUSH dword fmtX
+;                PUSH dword fmt_X
 ;                CALL printf
 ;                POP EAX
 ;                POP EAX
-; Beware! EAX, EBX, ECX, EDX can be modified by printf!
-; http://www.cs.umbc.edu/portal/help/nasm/sample.shtml
+;                unsaveregs
+
+; ==============================================================================
 
 section .text                           ; code
 
@@ -68,8 +60,9 @@ global dgbmv
                 FLD qword [EAX]         ; first factor
                 FLD qword [EDX]         ; second factor
                 FMUL                    ; multiply
-                JO oferror              ; return an overflow error if needed
+                JO oferror              ; in case of an overflow (80 bit), abort
                 FSTP qword [EDX]        ; save the result
+                JO oferror              ; in case of an overflow (64 bit), abort
                 ADD EDX, EBX            ; increase the pointer by 8*INC in order to
                 ; looping i             ; make it point to the next element of the array
                 INC ECX                 ; increase the counter
@@ -83,7 +76,7 @@ global dgbmv
 ;                MOV EAX, INCZ           ; abs(increment of the vector), has to be positive!
 ;                MOV ECX, N              ; element count
 ;                MOV EDX, _Z             ; incremented vector*
-;                neginc par1 par2
+;                neginc par1, par2
 ; You need to update Z* with ESP afterwards
 %macro neginc 2
                 MOV ESI, 0              ; k=0 (to N)
@@ -128,16 +121,7 @@ global dgbmv
                 POP EAX
 %endmacro
 
-%macro multipl 2;;;;;;;;;;;;;;;;;;;;____??????
-                PUSH EAX
-                PUSH EDX
-                MOV EAX, %1
-                MUL %2
-                JO oferror
-                MOV %1, EAX
-                POP EDX
-                POP EAX
-%endmacro
+; ==============================================================================
 
 ; Helper functions
 
@@ -145,8 +129,7 @@ global dgbmv
 ; FROM: pointer to starting qword                       ESI
 ; TO: pointer to destination qword                      EDI
 ; LENGTH: length in doubles (8 byte blocks / qwords)    EBX
-;
-; All registers remain unchanged after calling this subroutine!
+; All registers remain unchanged.
 memcpy:
                 PUSH EDX                ; save EDX as we'll change it
                 PUSH EAX                ; save EAX as we'll change it
@@ -163,7 +146,7 @@ cpy_loop:
                 POP EDX                 ; restore EDX
                 RET
 
-; ======================================
+; ==============================================================================
 
 ; DGBMV - PROLOGUE
 dgbmv:
@@ -199,6 +182,8 @@ dgbmv:
                 JE incxerror
                 CMP dword INCY, 0
                 JE incyerror
+
+; ==============================================================================
 
 ; Allocate stack memory for a copy of A (transposed or normal)
 ; + 4 bytes for the matrix length
@@ -253,17 +238,15 @@ transpose:
                 IMUL ECX, 8
                 JO oferror              ; in case of an overflow, abort
                 ADD EDI, ECX
-                ; Length
+                ; length
                 MOV EBX, N
                 SUB EBX, KU
-                ; Counter
+                ; counter
                 MOV ECX, KU
                 INC ECX
 ; Start copying
 ku_loop:
-                ;memcpy ESI, EDI, EBX
-                call memcpy
-
+                CALL memcpy
                 CMP ECX, 1
                 JE kl
                 ; START := START+(N-1)*8
@@ -279,15 +262,15 @@ ku_loop:
                 SUB EDI, EAX
                 ; LENGTH := LENGTH+1
                 INC EBX
-                ; Decrement counter
+                ; decrement counter
                 DEC ECX
                 JNZ ku_loop
-; Upper diagonals and main diagonal from A are now copied to A_trans
+; A's upper diagonals and the main diagonal have now been copied to A_new
 kl:
-                ; Counter
+                ; counter
                 MOV ECX, KL
                 CMP ECX, 0
-                JE new_matrix_ready     ; nothing to do, as kl is 0
+                JE new_matrix_ready     ; nothing to do because KL=0
 kl_loop:
                 ; START := START+N*8
                 MOV EAX, N
@@ -302,24 +285,23 @@ kl_loop:
                 SUB EDI, EAX
                 ; LENGTH := LENGTH-1
                 DEC EBX
-                ; Copy
-                ;memcpy ESI, EDI, EBX
-                call memcpy
-                ; Decrement counter
+                CALL memcpy
+                ; decrement counter
                 DEC ECX
                 JNZ kl_loop
-
-; Lower diagonals and main diagonal from A are now copied to A_trans
-                JMP new_matrix_ready    ; continue after "notranspose"
+; A's lower diagonals and the main diagonal have now been copied to A_new
+                JMP new_matrix_ready    ; proceed skipping notranspose
 
 ; Do not transpose the matrix, just copy it over to its new location
 notranspose:
                 MOV ESI, EDX            ; initiate starting point = *A_original
                 MOV EDI, _A             ; initiate destination point = *A_new
                 MOV EBX, [EBP-28]       ; initiate length (in doubles) = LDA*N
-                call memcpy             ; copy
+                CALL memcpy             ; copy
 
 new_matrix_ready:                       ; proceed
+
+; ==============================================================================
 
 ; [ALPHA * A or ALPHA * A'] = AA
 aa:
@@ -329,14 +311,15 @@ aa:
                 MOV EBX, 1              ; the increment of A is always 1 (a regular array)
                 MOV ESI, [EBP-28]       ; A's length had been pushed from EAX in matrix_move_prepare
                 scalarmult scalarmult_a ; execute scalarmult
-;                JMP aa_test             ; diagnose whether A*A is correct
+
+; ==============================================================================
 
 ; BETA * Y = YB, saved in Y
 yb:
                 CMP dword INCY, 0
                 JG yb_multiply          ; if INCY is positive, skip the following
 
-                MOV EAX, INCY           ; else generate INCY in needed format
+                MOV EAX, INCY           ; else:
                 IMUL EAX, -1            ; INCY -> -INCY, INCY is positive now
                 JO oferror              ; in case of an overflow, abort
                 MOV INCY, EAX           ; update INCY with -INCY
@@ -351,17 +334,17 @@ yb:
                 JO oferror              ; in case of an overflow, abort
                 CALL memcpy             ; which will be copied back into Y
 
-; Cleanup the stack.
-; neginc pushed N*INCY*2 dwords
+; Clean up the stack
+; neginc has pushed N*INCY*2 dwords
                 MOV EAX, N
                 IMUL EAX, INCY, 2       ; EAX = N*INCY*2
-                JO oferror
+                JO oferror              ; in case of an overflow, abort
 yb_clean_stack:
-                POP EBX                 ; Pop top 4 bytes
-                DEC EAX                 ; until Y's copy on the stack is cleaned
+                POP EBX                 ; pop a dword
+                DEC EAX                 ; until Y's copy on the stack is removed
                 JNZ yb_clean_stack
 
-; Do the actual BETA*Y calculation
+; Perform the actual BETA*Y calculation
 yb_multiply:
                 MOV ECX, 0              ; counter = 0
                 MOV EDX, _Y             ; EDX now points to Y
@@ -371,6 +354,9 @@ yb_multiply:
                 scalarmult scalarmult_b ; execute scalarmult
 ;                JMP okay                ; diagnose whether Y*B is correct
 
+; ==============================================================================
+
+; AA * X = AAX
 prepare_x:
                 CMP dword INCX, 0       ; if INCX is positive
                 JG incx_pos             ; skip the following
@@ -425,7 +411,7 @@ incx_pos_loop:
 
                 MOV _X, ESP             ; update X*
 
-; AA * X = AAX
+; Perform the actual AA * X = AAX calculation
 ; in Python:
 ; for i in xrange(1,N+1):
 ;     for k in xrange(0,N):
@@ -454,14 +440,6 @@ for_k:                                  ; calculate AAXYB[i-1] + (X[k+1-1] * A[K
                 SUB EAX, ECX            ; KU+i-k
                 DEC EAX                 ; KU+i-k-1 : EAX now contains the desired row of AA (beginning at 0)
 
-                ;PUSH EAX                ; row
-                ;PUSH ECX                ; k
-                ;PUSH dword fmt_int_k
-                ;CALL printf             ; print
-                ;POP ECX
-                ;POP ECX
-                ;POP EAX
-
                 ; Check if the element exists
 
                 MOV EDX, LDA            ; LDA
@@ -473,14 +451,6 @@ for_k:                                  ; calculate AAXYB[i-1] + (X[k+1-1] * A[K
                 IMUL EAX, dword N       ; because index(el)=EAX*N+ECX
                 JO oferror              ; in case of an overflow, abort
                 ADD EAX, ECX            ; EAX now contains the index of AA's desired element, =:EAX_old
-
-                ;PUSH EAX                ; index
-                ;PUSH ECX                ; k
-                ;PUSH dword fmt_int_k_index
-                ;CALL printf             ; print
-                ;POP ECX
-                ;POP ECX
-                ;POP EAX
 
                 ; Calculate the pointer to A[KU+i-k-1][k+1-1] and X[k]
 
@@ -497,24 +467,6 @@ for_k:                                  ; calculate AAXYB[i-1] + (X[k+1-1] * A[K
                 MOV EDX, _X             ; EDX now contains the pointer to X
                 ADD EDX, ESI            ; EDX now contains the pointer to the k-th element of X
 
-                ;PUSH EAX
-                ;PUSH EBX
-                ;PUSH ECX
-                ;PUSH dword [EAX+4]      ; AA(EAX_old)
-                ;PUSH dword [EAX]
-                ;PUSH dword [EDX+4]      ; X(k)
-                ;PUSH dword [EDX]
-                ;PUSH dword fmt_flt_xaa
-                ;CALL printf             ; print
-                ;POP EAX
-                ;POP EAX
-                ;POP EAX
-                ;POP EAX
-                ;POP EAX
-                ;POP ECX
-                ;POP EBX
-                ;POP EAX
-
                 ; Multiply (X[k] * AA[KU+i-k-1][k]
 
                 FLD qword [EAX]         ; load the EAX_old-th element of AA: AA(EAX_old)
@@ -524,20 +476,6 @@ for_k:                                  ; calculate AAXYB[i-1] + (X[k+1-1] * A[K
                 FSTP qword [EAX]        ; the element that EAX points to now equals X(k)*AA(EAX_old)
                 JO oferror              ; in case of an overflow (64 bit), abort
 
-                ;PUSH EAX
-                ;PUSH EBX
-                ;PUSH ECX
-                ;PUSH dword [EAX+4]      ; AA(EAX_old)
-                ;PUSH dword [EAX]
-                ;PUSH dword fmt_flt_xaa2
-                ;CALL printf             ; print
-                ;POP EAX
-                ;POP EAX
-                ;POP EAX
-                ;POP ECX
-                ;POP EBX
-                ;POP EAX
-
                 ; Add AAX[i-1] + (X[k] * AA[KU+i-k-1][k]
 
                 MOV EDX, EBX            ; EDX=i
@@ -545,16 +483,6 @@ for_k:                                  ; calculate AAXYB[i-1] + (X[k+1-1] * A[K
                 IMUL EDX, 8             ; EDX now contains the byte offset for AAX
                 JO oferror              ; in case of an overflow, abort
                 ADD EDX, ESP            ; EDX now contains the pointer to AAX(i-1)
-
-                ;saveregs
-                ;PUSH dword [EAX+4]      ; AAX(EDX)
-                ;PUSH dword [EAX]
-                ;PUSH dword fmt_flt_xaa2
-                ;CALL printf             ; print
-                ;POP EAX
-                ;POP EAX
-                ;POP EAX
-                ;unsaveregs
 
                 FLD qword [EAX]         ; load X(k)*AA(EAX_old)
                 FLD qword [EDX]         ; load AAX(i-1)
@@ -574,8 +502,8 @@ k_finished:
                 INC EDX                 ; N+1
                 CMP EBX, EDX            ; check whether i=N+1
                 JNZ for_i               ; if not, repeat
-;                JMP aax_test            ; diagnose whether AAX is correct
 
+; ==============================================================================
 
 ; AAX + YB = AAXYB, saved in Y
 ; AAXYB(i*INCY) = (AAX(i) + YB(i*INCY)) for each i=0..N-1
@@ -602,6 +530,8 @@ aaxyb_body:                             ; sum and then calculate the new pointer
                 INC EBX                 ; i=i+1
                 CMP EBX, ECX            ; is i=N?
                 JNE aaxyb_body          ; if not, repeat
+
+; ==============================================================================
 
 ; Calculation successful
 okay:
@@ -655,6 +585,8 @@ mnerror:
                 MOV EAX, -15            ; A is not a square matrix!
                 JMP finish
 
+; ==============================================================================
+
 ; EPILOGUE
 finish:
                 ; Restore registers
@@ -673,62 +605,3 @@ finishing:
 finished:                               ; stack clean, EBX restored
                 POP EBP
                 RET
-
-
-; Testing
-
-aa_test:
-                MOV ESI, 0              ; counter/index
-;                PUSH dword [EBP-28]            ; length
-;                PUSH dword fmt_int
-;                CALL printf
-;                POP EBX
-;                POP EBX
-;                JMP okay               ; finish
-aa_test_print:
-                MOV EBX, _A             ; AA's pointer
-                ADD EBX, ESI            ; increase by 8*index
-                ADD EBX, ESI
-                ADD EBX, ESI
-                ADD EBX, ESI
-                ADD EBX, ESI
-                ADD EBX, ESI
-                ADD EBX, ESI
-                ADD EBX, ESI
-
-                MOV ECX, [EBX+4]
-                MOV EDX, [EBX]
-                PUSH ECX
-                PUSH EDX
-                PUSH dword [EBX+4]
-                PUSH dword [EBX]
-                PUSH dword fmt_flt_aa
-                CALL printf
-                POP EDX
-                POP EDX
-                POP ECX
-
-                ; looping
-                INC ESI
-                CMP ESI, [EBP-28]        ; AA's length
-                JNE aa_test_print       ; repeat until equal
-
-;                MOV EAX, _Y             ; EAX now contains the pointer to Y(0)
-;                MOV dword [EAX], 0      ; set Y(0)=0
-;                MOV dword [EAX+4], 0    ; v. s.
-;                MOV EDX, [EBP-8]        ; load AA's pointer
-;                ADD EDX, 24             ; jump to AA(3)
-;                FLD qword [EDX]         ; load
-;                FSTP qword [EAX]        ; write [EDX] to Y(0)
-                JMP okay
-
-aax_test:
-                MOV EAX, _Y             ; EAX now contains the pointer to Y(0)
-                MOV dword [EAX], 0      ; set Y(0)=0
-                MOV dword [EAX+4], 0    ; v. s.
-                MOV EDX, ESP            ; load AAX's pointer
-;                ADD EDX, 0           ; jump to AA's second-to-last element
-                FLD qword [EDX]         ; load
-                FSTP qword [EAX]        ; write [EDX] to Y(0)
-                JMP okay
-
