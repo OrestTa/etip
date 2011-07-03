@@ -163,25 +163,31 @@ dgbmv:
 
 ; Try to check whether all parameters are legal
                 CMP dword M, 0
-                JL merror
+                JL merror               ; M is negative
                 CMP dword N, 0
-                JL nerror
+                JL nerror               ; N is negative
                 MOV EAX, dword N
                 CMP EAX, dword M
                 JNE mnerror             ; M != N
+                CMP dword N, 0
+                JE okay                 ; N=M=0, nothing left to do
                 CMP dword KL, 0
-                JL klerror
+                JL klerror              ; KL is negative
+                CMP EAX, dword KL
+                JNG klerror             ; KL is equal to or greater than N
                 CMP dword KU, 0
-                JL kuerror
+                JL kuerror              ; KU is negative
+                CMP EAX, dword KU
+                JNG kuerror             ; KU is equal to or greater than N
                 MOV EAX, KU             ; KU
                 ADD EAX, KL             ; KU+KL
                 INC EAX                 ; KU+KL+1
                 CMP dword LDA, EAX
-                JL ldaerror
+                JL ldaerror             ; LDA < KU+KL+1
                 CMP dword INCX, 0
-                JE incxerror
+                JE incxerror            ; INCX=0
                 CMP dword INCY, 0
-                JE incyerror
+                JE incyerror            ; INCY=0
 
 ; ==============================================================================
 
@@ -352,7 +358,6 @@ yb_multiply:
                 MOV EBX, INCY           ; EBX is Y's increment now
                 MOV ESI, N              ; ESI is Y's length now
                 scalarmult scalarmult_b ; execute scalarmult
-;                JMP okay                ; diagnose whether Y*B is correct
 
 ; ==============================================================================
 
