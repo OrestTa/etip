@@ -224,12 +224,12 @@ transcheck:
 transpose:
 ; Initialize starting point, destination point and length
                 ; START A
-                MOV ESI, EDX
+                MOV ESI, EDX            ; pointer to the original matrix
                 MOV ECX, KU
-                IMUL ECX, 8
+                IMUL ECX, 8             ; byte offset
                 JO oferror              ; in case of an overflow, abort
                 ADD ESI, ECX
-                ; DESTINATION A_trans
+                ; DESTINATION A_new
                 MOV EDI, _A
                 MOV ECX, LDA
                 DEC ECX
