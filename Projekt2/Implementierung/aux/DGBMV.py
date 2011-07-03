@@ -3,6 +3,7 @@
 #
 # The following script calculates Y := ALPHA * A * X + BETA * Y
 #
+# TODO: support INCrements
 
 def shift(seq, n):
     n = n % len(seq)
@@ -126,7 +127,6 @@ for i in xrange(1,N+1):
         if (KU+i-k-1) >= 0:
             if (KU+i-k-1) <= (LDA-1):
                 AAXYB[i-1] = AAXYB[i-1] + (X[k+1-1] * A[KU+i-k-1][k+1-1])
-# true result: 26, 71, 138, 252.2, 325.2, 376.8, 158.4, 176.4, 146.4
 
 # print AAXYB
 for i in xrange(0,len(AAXYB)):
@@ -152,6 +152,3 @@ for i in xrange(0,len(AAXYB)):
     print AAXYB[i],
 print
 print
-
-# TODO: INCrements!!!
-
