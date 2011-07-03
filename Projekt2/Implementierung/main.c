@@ -1,17 +1,21 @@
 #include <stdio.h>
 
 /*
- * This extern (ASM) function calculates a matrix-vector-operation in form of:
+ * This external ASM function performs a matrix-vector-operation of
  * Y := ALPHA * A * X + BETA * Y
- * where A is a matrix, ALPHA and BETA are scalars, X and Y are vectors
+ * where A is a matrix, ALPHA and BETA are scalars, X and Y are vectors.
+ * It is possible to have A transposed first.
  */
 extern int dgbmv(char trans, int m, int n, int kl, int ku, double *alpha, \
               double (*a)[], int lda, double (*x)[], int incx, double *beta, \
               double (*y)[], int incy);
 
+
+// Helper functions
+
 /*
- * This function prints a vector of doubles in the form of:
- * X: (1.0, 2.0, 3.0, ...)
+ * This function prints a vector of doubles in the form of
+ * X: (1.0, 2.0, 3.0, ...) .
  */
 void printv(char name, double vector[], int size) {
     int i;
@@ -20,13 +24,13 @@ void printv(char name, double vector[], int size) {
     for(i=0; i<length; i++) {
         printf("%12f", vector[i]);
         if( i < length-1 ) printf(", ");
-        if ( (i+1)%10 == 0) printf("\n        "); //break after 13 doubles (pretty print)
+        if ( (i+1)%10 == 0) printf("\n        "); // break line after 13 doubles
         }
     printf(")\n");
     }
 
 /*
- * This function prints an error code of dgbmv(), as of:
+ * This function prints the error code from dgbmv():
     M_INVALID       = -1,
     N_INVALID       = -2,
     KL_INVALID      = -3,
@@ -41,7 +45,7 @@ void printv(char name, double vector[], int size) {
     INCY_INVALID    = -12,
     TRANS_INVALID   = -13,
     OVERFLOW        = -14,
-    NO_SQUARE_MATRIX= -15
+    NOT_A_SQUARE    = -15 .
  */
 void printe(int error) {
     printf("[%i] ", error);
@@ -89,51 +93,52 @@ void printe(int error) {
             printf("Overflow");
             break;
         case -15:
-            printf("A is no square matrix");
+            printf("A is not a square matrix");
             break;
         }
     printf("\n");
     }
 
+
 /*
- * This is the program's starting point.
+ * This is the entry point.
  */
 int main(int argc, char *argv[]) {
 
-    /* define the INPUT parameters here */
+    /* define INPUT parameters here */
     char trans   = 't';
     int  m       = 9;
     int  n       = 9;
     int  kl      = 1;
     int  ku      = 3;
     double alpha = -2.0;
-    // a bandmatrix - row by row
+    // bandmatrix - row by row
     double a[]   = {0.0, 0.0, 0.0, 1.4, 2.5, 3.6, 6.5, 4.3, 3.2, \
                     0.0, 0.0, 1.3, 2.4, 3.5, 4.6, 6.5, 4.2, 0.0, \
                     0.0, 1.2, 2.3, 3.4, 4.5, 5.6, 7.7, 5.1, 9.8, \
                     1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 1.8, 0.0, 3.6, \
                     2.1, 3.2, 4.3, 5.4, 6.5, 4.3, 0.0, 5.1, 0.0, \
-                    1.1,2.2,3.3,4.4,5.5}; // A with extended length - for testing
+                    1.1,2.2,3.3,4.4,5.5}; // A with extended length (testing)
     int lda      = 5;
     double x[]   = {1.0,0.0,2.0,0.0,3.0,0.0,4.0,0.0,5.0,0.0,6.0,0.0,7.0,0.0,8.0,0.0,9.0,0.0,\
-                    1.1,2.2,3.3,4.4,5.5,6.6}; // X with extended length - for testing
+                    1.1,2.2,3.3,4.4,5.5,6.6}; // X with extended length (testing)
     int incx     = -2;
     double beta  = -3.0;
     double y[]   = {6.0,0.0,0.0,7.0,0.0,0.0,8.0,0.0,0.0, \
                     9.0,0.0,0.0,0.0,0.0,0.0,6.0,0.0,0.0, \
                     7.1,0.0,0.0,8.2,0.0,0.0,3.0,0.0,0.0, \
-                    0.0, 3.0, 2.3, 3.2}; // Y with extended length - for testing
+                    0.0, 3.0, 2.3, 3.2}; // Y with extended length (testing)
     int incy     = 3;
 
 
-    /* define the INPUT parameters here */
+    /* define INPUT parameters here */
 /*    char trans   = 'n';
     int  m       = 9;
     int  n       = 9;
     int  kl      = 1;
     int  ku      = 3;
     double alpha = 2.0;
-    // a bandmatrix - row by row
+    // bandmatrix - row by row
     double a[]   = {0.0, 0.0, 0.0, 1.4, 2.5, 3.6, 6.5, 4.3, 3.2, \
                     0.0, 0.0, 1.3, 2.4, 3.5, 4.6, 6.5, 4.2, 0.0, \
                     0.0, 1.2, 2.3, 3.4, 4.5, 5.6, 7.7, 5.1, 9.8, \
@@ -148,14 +153,14 @@ int main(int argc, char *argv[]) {
                     7.1,0.0,0.0,8.2,0.0,0.0,3.0,0.0,0.0};
     int incy     = 3;
 */
-    /* define the INPUT parameters here */
+    /* define INPUT parameters here */
 /*    char trans   = 'n';
     int  m       = 6;
     int  n       = 6;
     int  kl      = 1;
     int  ku      = 3;
     double alpha = 2.0;
-    // The Bandmatrix - row by row
+    // bandmatrix - row by row
     double a[]   = {0.0, 0.0, 0.0, 1.4, 2.5, 3.6, \
                     0.0, 0.0, 1.3, 2.4, 3.5, 4.6, \
                     0.0, 1.2, 2.3, 3.4, 4.5, 5.6, \
@@ -168,7 +173,8 @@ int main(int argc, char *argv[]) {
     double y[]   = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
     int incy     = 1;*/
 
-    /* print the INPUT paramters */
+
+    /* print INPUT paramters */
     printf("********************************************************************************\n");
     printf("*                                    DGBMV                                     *\n");
     printf("********************************************************************************\n");
@@ -188,11 +194,11 @@ int main(int argc, char *argv[]) {
     printf("INCY : %i\n", incy);
     printf("\n");
 
-    /* call the actual ASM function */
+    /* call the ASM function */
     int result = dgbmv(trans, m, n, kl, ku, &alpha, &a, lda, &x, incx, \
                        &beta, &y, incy);
 
-    /* print the calculated result or an error */
+    /* print the result or an error */
     if( result >= 0 ) {
         printf("OUTPUT Result:\n");
         printv('Y', y, sizeof(y));

@@ -168,7 +168,7 @@ dgbmv:
                 JL nerror               ; N is negative
                 MOV EAX, dword N
                 CMP EAX, dword M
-                JNE mnerror             ; M != N
+                JNE mnerror             ; M != N, i. e. A is not a square matrix
                 CMP dword N, 0
                 JE okay                 ; N=M=0, nothing left to do
                 CMP dword KL, 0
@@ -580,14 +580,14 @@ yerror:
 incyerror:
                 MOV EAX, -12
                 JMP finish
-transerror:                             ; TRANS is none of N, n, T, t, C, c
+transerror:
                 MOV EAX, -13
                 JMP finish
 oferror:
                 MOV EAX, -14
                 JMP finish
 mnerror:
-                MOV EAX, -15            ; A is not a square matrix!
+                MOV EAX, -15
                 JMP finish
 
 ; ==============================================================================
