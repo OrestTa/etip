@@ -27,7 +27,7 @@ Es ist eine Funktion DGBMV zu entwickeln, welche Matrix-Vektor-Operationen in Ab
 <code>Y := ALPHA * A * X + BETA * Y</code>.<br/><br/>
 Wenn TRANS='T' oder 't' oder 'C' oder 'c', wird die folgende Formel verwendet:<br/><br/>
 <code>Y := ALPHA * A' * X + BETA * Y</code>.<br/><br/>
-ALPHA, BETA seien Skalare; X, Y seien Vektoren; A sei eine Matrix; A' sei transponiertes A.
+ALPHA, BETA seien Skalare; X, Y seien Vektoren; A sei eine Matrix. Die Werte bzw. Pointer werden durch ein Wrapperprogramm auf den Stack gelegt. A' sei transponiertes A.
 </p>
 <br/>
 <br/>
