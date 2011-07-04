@@ -7,8 +7,10 @@ END ENTITY;
 
 ARCHITECTURE BINBCD_test OF testbench IS
     SIGNAL clk: std_logic := '0';
-    SIGNAL bin_input: std_logic_vector(16 DOWNTO 0) := "00000001101000100";     -- 836
- -- SIGNAL bin_input: std_logic_vector(16 DOWNTO 0) := "11000011010100000";     -- 100000 (too large, for testing purposes)
+    SIGNAL bin_input: std_logic_vector(16 DOWNTO 0) := "00000001101000100";     -- 00836
+--    SIGNAL bin_input: std_logic_vector(16 DOWNTO 0) := "11000011010011111";     -- 9999
+--    SIGNAL bin_input: std_logic_vector(16 DOWNTO 0) := "11000011010100000";     -- 10000 (too large)
+--    SIGNAL bin_input: std_logic_vector(16 DOWNTO 0) := "11111111111111111";     -- 65535 (too large)
     SIGNAL einer, zehner, hunderter, tausender, zehntausender: std_logic_vector(3 DOWNTO 0);
     SIGNAL overflow: std_logic;
 

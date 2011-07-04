@@ -13,7 +13,7 @@ PORT(
 
 END BINBCD; 
 
-ARCHITECTURE DoubleDabbleV3 OF BINBCD IS
+ARCHITECTURE DoubleDabbleV4 OF BINBCD IS
 
 SIGNAL overflw : std_logic := '1';                                          -- "overflw" is high per default
                                                                             -- as the port "overflow" is OUT and cannot be read,
@@ -80,4 +80,4 @@ BEGIN
 
     overflow <= overflw;                                                    -- update the port "overflow" with our internal signal "overflw"
 
-END DoubleDabbleV3;
+END DoubleDabbleV4;
