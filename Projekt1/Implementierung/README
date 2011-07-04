@@ -15,8 +15,8 @@ Files:
 * implementierung1.vhd      -- contains VHDL code calculating a BCD from a binary
 * testbench.vhd             -- testbench, contains input parameters
 * Makefile                  -- Makefile, type "make" in order to compile, simulate and view results in gtkwave
-* MakefileWIN.bat           -- Makefile for Windows, execute and pray in order to compile, simulate and hopefully view results in gtkwave (additional)
 * Test_Versions/*           -- early implementations, deprecated
+* MakefileWIN.bat           -- Makefile for Windows, execute and pray in order to compile, simulate and hopefully view results in gtkwave (auxiliary character only, use the Linux version instead!)
 
 
 Platform:
