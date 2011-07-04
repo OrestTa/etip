@@ -37,8 +37,9 @@ BEGIN
 
     PROCESS
     BEGIN
- -- loop through 170 clock cycles, lasting 0.1 s each
-        FOR i IN 0 TO 169 LOOP
+ -- loop through 200 clock cycles, lasting 0.1 s each -> 20 s
+ -- the result should be available after less than 2 s
+        FOR i IN 0 TO 199 LOOP
             clk <= '0';
             WAIT FOR 50 ms;
             clk <= '1';

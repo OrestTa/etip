@@ -10,7 +10,7 @@ simulate: compile
 	${GHDL} -e testbench
 
 run: simulate
-	./testbench --stop-time=10000ms --vcd=testbench.w
+	./testbench --stop-time=20000ms --vcd=testbench.w
 	${WAVE} testbench.w
 
 clean:
