@@ -3,7 +3,6 @@
 #
 # The following script calculates Y := ALPHA * A * X + BETA * Y
 #
-# TODO: support INCrements
 
 def shift(seq, n):
     n = n % len(seq)
@@ -17,18 +16,19 @@ LDA = 5
 
 TRANS = 't'
 
-ALPHA = -2.0
+ALPHA = 2.0
 BETA = -3.0
 
-INCX = -1
+INCX = 1
 INCY = 3
 
-A =   [[0.0, 0.0, 0.0, 1.4, 2.5, 3.6, 6.5, 4.3, 3.2], \
-       [0.0, 0.0, 1.3, 2.4, 3.5, 4.6, 6.5, 4.2, 0.0], \
-       [0.0, 1.2, 2.3, 3.4, 4.5, 5.6, 7.7, 5.1, 9.8], \
-       [1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 1.8, 0.0, 3.6], \
-       [2.1, 3.2, 4.3, 5.4, 6.5, 4.3, 0.0, 5.1, 0.0]]
+A =   [[-0.0, 0.0, 0.0, 1.4, 2.5, 3.6, 6.5, -4.3, 3.2], \
+       [-0.0, -0.0, 1.3, 2.4, -3.5, 4.6, 6.5, 4.2, -0.0], \
+       [0.0, 1.2, 12.3, -3.4, 4.5, -1.6, 7.7, -5.1, 9.8], \
+       [-1.1, 2.2, -13.3, 4.4, 5.5, -9.6, -1.8, 0.0, 3.6], \
+       [2.1, 3.2, 4.3, 5.1, 6.5, 4.13, -0.0, 5.1, 0.0]]
 
+# transpose A
 if (TRANS == 't' or TRANS == 'T' or TRANS == 'c' or TRANS == 'C'):
     A.reverse()
     kl = KL
@@ -49,15 +49,27 @@ if (TRANS == 't' or TRANS == 'T' or TRANS == 'c' or TRANS == 'C'):
             i += 1
             continue 
 
-X =    [1.0,2.0,3.0,4.0,5,6.0,7.0,8.0,9.0]
-if (INCX == -1):
+X = [0.0]*N
+X_inced =    [1.0,2.0,3.0,4.0,5,6.0,7.0,8.0,9.0] # without trailing irrelevant values
+for i in xrange(0,len(X)):
+    X[i] = X_inced[i*abs(INCX)]
+if (INCX < 0):
     X.reverse()
 
-Y =    [6.0,0.0,0.0,7.0,0.0,0.0,8.0,0.0,0.0, \
-        9.0,0.0,0.0,0.0,0.0,0.0,6.0,0.0,0.0, \
-        7.1,0.0,0.0,8.2,0.0,0.0,3.0,0.0,0.0]
+Y_inced =    [6.0,0.0,0.0,7.0,0.0,0.0,8.0,0.0,0.0, \
+              9.0,0.0,0.0,0.0,0.0,0.0,6.0,0.0,0.0, \
+              7.1,0.0,0.0,8.2,0.0,0.0,3.0,0.0,0.0] # without trailing irrelevant values
+Y = [0.0]*M
+#Y_inced =    [-1.0,0.0,-4.0,0.0,15.0,0.0, \
+#              -19.3,0.0,0.0,0.0,-3.0,0.0, \
+#                3.5,0.0,5.1,0.0,-7.1,0.0]
+for i in xrange(0,len(Y)):
+    Y[i] = Y_inced[i*abs(INCY)]
+if (INCY < 0):
+    Y.reverse()
 
-AAXYB = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0] # this will be our result!
+AAXYB = [0.0]*N
+#AAXYB = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0] # this will be our result!
 
 print
 print "Y = AAXYB := ALPHA * A * X + BETA * Y"
@@ -148,7 +160,7 @@ print
 print "Y*BETA+ALPHA*A*X:"
 
 for i in xrange(0,len(AAXYB)):
-    AAXYB[i] = Y[3*i] + AAXYB[i]
+    AAXYB[i] = Y[i] + AAXYB[i]
     print AAXYB[i],
 print
 print
