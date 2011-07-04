@@ -106,7 +106,7 @@ void printe(int error) {
 int main(int argc, char *argv[]) {
 
     /* define INPUT parameters here */
-    char trans   = 't';
+    char trans   = 'T';
     int  m       = 9;
     int  n       = 9;
     int  kl      = 1;
@@ -124,11 +124,11 @@ int main(int argc, char *argv[]) {
                     1.1,2.2,3.3,4.4,5.5,6.6}; // X with extended length (testing)
     int incx     = 2;
     double beta  = -3.0;
-    double y[]   = {6.0,0.0,0.0,7.0,0.0,0.0,8.0,0.0,0.0, \
-                    9.0,0.0,0.0,0.0,0.0,0.0,6.0,0.0,0.0, \
-                    7.1,0.0,0.0,8.2,0.0,0.0,3.0,0.0,0.0, \
-                    0.0, 3.0, 2.3, 3.2}; // Y with extended length (testing)
-    int incy     = 3;
+    double y[]   = { -1.0,   0.0,  -4.0,   0.0,  15.0,   0.0, \
+                    -19.3,   0.0,   0.0,   0.0,  -3.0,   0.0, \
+                      3.5,   0.0,   5.1,   0.0,  -7.1,   0.0, \
+                      0.0,   3.0,   2.3,   3.2}; // Y with extended length (testing)
+    int incy     = 2;
 
 /*    double a[]   = {0.0, 0.0, 0.0, 1.4, 2.5, 3.6, 6.5, 4.3, 3.2, \
                     0.0, 0.0, 1.3, 2.4, 3.5, 4.6, 6.5, 4.2, 0.0, \
@@ -136,7 +136,13 @@ int main(int argc, char *argv[]) {
                     1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 1.8, 0.0, 3.6, \
                     2.1, 3.2, 4.3, 5.4, 6.5, 4.3, 0.0, 5.1, 0.0, \
                     1.1,2.2,3.3,4.4,5.5}; // A with extended length (testing)
+
+    double y[]   = {6.0,0.0,0.0,7.0,0.0,0.0,8.0,0.0,0.0, \
+                    9.0,0.0,0.0,0.0,0.0,0.0,6.0,0.0,0.0, \
+                    7.1,0.0,0.0,8.2,0.0,0.0,3.0,0.0,0.0, \
+                    0.0, 3.0, 2.3, 3.2}; // Y with extended length (testing)
 */
+
     /* define INPUT parameters here */
 /*    char trans   = 'n';
     int  m       = 9;
