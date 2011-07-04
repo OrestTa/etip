@@ -32,7 +32,7 @@ BEGIN
     PROCESS(clk)
     BEGIN
 
-        IF (clk'EVENT) AND (clk = '1') AND (counter <= 17) AND (unsigned(bin_input) <= 99999) THEN
+        IF (rising_edge(clk)) AND (counter <= 17) AND (unsigned(bin_input) <= 99999) THEN
                                                                             -- if rising edge and if input within domain
             lzehntausender <= lzehntausender(2 DOWNTO 0)&ltausender(3);     -- shift left all BCD-vectors
             ltausender <= ltausender(2 DOWNTO 0)&lhunderter(3);
@@ -43,7 +43,7 @@ BEGIN
             counter <= counter+1;                                           -- 17 times
         END IF;
 
-        IF (clk'EVENT) AND (clk = '0') AND (counter <= 17) THEN             -- if falling edge
+        IF (falling_edge(clk)) AND (counter <= 17) THEN                          -- if falling edge
         IF (unsigned(bin_input) <= 99999) THEN                              -- if input within domain
             overflw <= '0';                                                 -- set "overflw" to 0
             IF (unsigned(leiner) >= 5) THEN                                 -- check which BCD vectors' values are equal to or bigger than 5
