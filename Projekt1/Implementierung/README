@@ -1,0 +1,26 @@
+README i1
+
+ss11-g07
+
+
+Authors:
+
+* Maximilian Staab
+* Lukas Märdian
+* Orest Tarasiuk
+
+
+Files:
+
+* implementierung1.vhd      -- contains VHDL code calculating a BCD from a binary
+* testbench.vhd             -- testbench, contains input parameters
+* Makefile                  -- Makefile, type "make" in order to compile, simulate and view results in gtkwave
+* MakefileWIN.bat           -- Makefile for Windows, execute and pray in order to compile, simulate and hopefully view results in gtkwave (additional)
+* Test_Versions/*           -- early implementations, deprecated
+
+
+Platform:
+
+* Ubuntu 11.04 64 bit
+* ghdl 0.29+gcc4.3.4+dfsg-1build1
+* gtkwave 3.3.19-1
