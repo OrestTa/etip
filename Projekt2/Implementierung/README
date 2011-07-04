@@ -1,0 +1,28 @@
+README i2
+
+ss11-g07
+
+
+Authors:
+
+* Maximilian Staab
+* Lukas Märdian
+* Orest Tarasiuk
+
+
+Files:
+
+* dgbmv.asm                       -- contains assembler code calculating dgbmv
+* main.c                          -- C wrapper, contains input parameters and manages output
+* Makefile                        -- Makefile, type "make" in order to compile, then execute dgbmv
+* aux/DGBMV.py                    -- a python script with similar functionality, for testing purposes only
+* aux/bandmatrix-vector-mult.py   -- an early multiplication test script, deprecated
+* aux/matrix-2-bandmatrix.py      -- an early conversion test script, deprecated
+
+
+Platform:
+
+* Ubuntu 11.04 64 bit
+* gcc 4:4.5.2-1ubuntu3
+* libc6-dev-i386 2.13-0ubuntu13
+* nasm 2.09.04-1
