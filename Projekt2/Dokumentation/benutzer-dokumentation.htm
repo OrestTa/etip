@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Benutzer Dokumentation 2 ss11-g07</title>
+</head>
+<body>
+<div align="Center">
+<h3><a name="Benutzer_Doku"></a><strong>Benutzer Dokumentation zum Projekt Nr. 2 der Gruppe 7 (ss11-g07)</strong></h3>
+<i>Tutor: Steffen Bauereiss</i><br>
+</div>
+<ul>
+<li>
+  <a href="#abhaengigkeiten">Abhänigkeiten</a>
+</li>
+<li>
+  <a href="#kompilieren">Kompilieren</a>
+</li>
+<li>
+  <a href="#ausfuehren">Ausführen</a>
+</li>
+<li>
+  <a href="#eingabewerte_aendern">Eingabewerte ändern</a>
+</li>
+</ul>
+<br>
+
+<hr width="100%" size="1">
+<h4><a name="abhaengigkeiten">Abhängigkeiten</a></h4><p>
+  Um das Programm <code>dgbmv</code> benutzen zu können benötigt man folgende Tools:
+<ul>
+  <li>Gnu Compiler Collection (gcc) - Version 4.5.2</li>
+  <li>The Netwide Assembler (nasm) - Version 2.09.04</li>
+  <li>Embedded GNU C Library (libc6) - Version 2.13</li>
+  <li>GNU Make (make) - Version 3.81 (Optional)</li>
+</ul>
+  Als Referenzplattform dient eine aktuelle Linux Distribution (Ubuntu 11.04) mit den o.g. Tools in den entsprechenden Versionen.<br/>
+  Dabei sollte das System entweder eine native 32-Bit Version sein, oder die entsprechenden 32-Bit Libraries installiert haben.<p>
+<br>
+<br>
+
+<hr width="100%" size="1">
+<h4><a name="kompilieren">Kompilieren</a></h4><p>
+  <strong>Automatisch (mit make):</strong> Im Verzeichnis der Implementierung gibt es ein <code>Makefile</code>, welches benutzt werden kann um das Programm zu kompilieren.<br/>
+  Gibt man in einem Terminal, welches sich im Implementierungsverzeichnis befindet den Befehl <code>make</code> ein, so wird das Programm automatisch kompiliert.<br/><br/>
+  <strong>Manuell:</strong> Ist <code>make</code> nicht vorhanden, so kann das Programm manuell kompiliert werden.<br/>
+  Dazu müssen in einem Terminal im Implementierungsverzeichnis folgende Befehle eingegeben werden:<br/>
+<ul>
+  <li><code>nasm -f elf32 -g -F dwarf -o dgbmv.o dgbmv.asm</code></li>
+  <li><code>gcc -Wall -g -m32 -O0 -o dgbmv dgbmv.o main.c</code></li>
+</ul>
+  Der erste Befehl übersetzt dabei den eigentlichen Assembler Code der Funktion DGBMV (<code>dgbmv.asm</code>) in Objektcode, der zweite Befehl übersetzt das Wrapper-Programm (<code>main.c</code>) und linkt es mit dem aus der Assembler-Datei erzeugten Objektcode zu einer Ausführbaren Datei (<code>dgbmv</code>).</p>
+<br>
+<br>
+
+<hr width="100%" size="1">
+<h4><a name="ausfuehren">Ausführen</a></h4><p>
+  Nachdem das Programm erfolgreich kompiliert wurde, existiert im Implementierungsverzeichnis eine ausführbare Datei namens: <code>dgbmv</code>.<br/>
+  Diese kann in einem Terminal, welches sich im Implementierungsverzeichnis befinden mit folgendem Befehl ausgeführt werden:
+<ul>
+<li><code>./dgbmv</code></li>
+</ul>
+  Das Programm gibt seine Eingabeparamter und das Ergebnis (Y) dann nach folgendem beispielhaften Schema aus:
+<code><pre>********************************************************************************
+*                                    DGBMV                                     *
+********************************************************************************
+INPUT Parameters:
+TRANS: T
+M    : 9
+N    : 9
+KL   : 1
+KU   : 3
+ALPHA: 2.000000
+A    : (   -0.000000,     0.000000,     0.000000,     1.400000,     2.500000,     3.600000,     6.500000,    -4.300000,     3.200000,    -0.000000, 
+           -0.000000,     1.300000,     2.400000,    -3.500000,     4.600000,     6.500000,     4.200000,    -0.000000,     0.000000,     1.200000, 
+           12.300000,    -3.400000,     4.500000,    -1.600000,     7.700000,    -5.100000,     9.800000,    -1.100000,     2.200000,   -13.300000, 
+            4.400000,     5.500000,    -9.600000,    -1.800000,     0.000000,     3.600000,     2.100000,     3.200000,     4.300000,     5.100000, 
+            6.500000,     4.130000,    -0.000000,     5.100000,     0.000000,     1.100000,     2.200000,     3.300000,    -4.400000,    55.500000
+        )
+LDA  : 5
+X    : (    1.000000,     0.000000,     2.000000,     0.000000,     3.000000,     0.000000,     4.000000,     0.000000,     5.000000,     0.000000, 
+            6.000000,     0.000000,     7.000000,     0.000000,     8.000000,     0.000000,     9.000000,     0.000000,     1.100000,     2.200000, 
+            3.300000,     4.400000,     5.500000,     6.600000)
+INCX : 2
+BETA : -3.000000
+Y    : (   -1.000000,     0.000000,    -4.000000,     0.000000,    15.000000,     0.000000,   -19.300000,     0.000000,     0.000000,     0.000000, 
+           -3.000000,     0.000000,     3.500000,     0.000000,     5.100000,     0.000000,    -7.100000,     0.000000,     0.000000,     3.000000, 
+            2.300000,     3.200000)
+INCY : 2
+
+OUTPUT Result:
+Y    : (    9.400000,     0.000000,    90.200000,     0.000000,   113.000000,     0.000000,    42.920000,     0.000000,   184.200000,     0.000000, 
+           36.800000,     0.000000,   249.500000,     0.000000,   -15.300000,     0.000000,    21.300000,     0.000000,     0.000000,     3.000000, 
+            2.300000,     3.200000)
+</pre></code></p>
+<br>
+<br>
+
+<hr width="100%" size="1">
+<h4><a name="eingabewerte_aendern">Eingabewerte ändern</a></h4><p>
+  Will man die Eingabeparamter des Programms verändern, so kann diese Änderung im Wrapper-Programm (<code>main.c</code>) vorgenommen werden.<br/>
+  Direkt am Beginn der main-Funktion gib es dort einen Kommentar: <code>/* define INPUT parameters here */</code><br/>
+  Ab dieser Stelle sind alle Eingabeparamter mit ihren aktuellen Werten aufgelistet. Die Werte können dort nach belieben verändert werden.<br/><br/>
+  Nach einer Änderung muss das Programm neu kompiliert und ausgeführt werden, um das Ergebnis zu berechnen.</p>
+</body>
+</html>
