@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Entwickler Dokumentation 2 ss11-g07</title>
+</head>
+<body>
+<div align="Center">
+<h3><a name="Entwickler_Doku"></a><strong>Entwickler Dokumentation zum Projekt Nr. 2 der Gruppe 7 (ss11-g07)</strong></h3>
+<i>Tutor: Steffen Bauereiss</i><br>
+</div>
+<ul>
+<li>
+  <a href="#abhaengigkeiten">Abhänigkeiten</a>
+</li>
+<li>
+  <a href="#kompilieren">Kompilieren</a>
+</li>
+<li>
+  <a href="#dateiuebersicht">Dateiübersicht</a>
+</li>
+<li>
+  <a href="#macros_subroutines">Macros und Subroutines</a>
+</li>
+<li>
+  <a href="#struktur">Struktur</a>
+</li>
+</ul>
+<br>
+
+<hr width="100%" size="1">
+<h4><a name="abhaengigkeiten">Abhängigkeiten</a></h4><p>
+  Um das Programm <code>dgbmv</code> benutzen zu können benötigt man folgende Tools:
+<ul>
+  <li>Gnu Compiler Collection (gcc) - Version 4.5.2</li>
+  <li>The Netwide Assembler (nasm) - Version 2.09.04</li>
+  <li>Embedded GNU C Library (libc6) - Version 2.13</li>
+  <li>GNU Make (make) - Version 3.81 (Optional)</li>
+</ul>
+  Als Referenzplattform dient eine aktuelle Linux Distribution (Ubuntu 11.04) mit den o.g. Tools in den entsprechenden Versionen.<br/>
+  Dabei sollte das System entweder eine native 32-Bit Version sein, oder die entsprechenden 32-Bit Libraries installiert haben.<p>
+<br>
+<br>
+
+<hr width="100%" size="1">
+<h4><a name="kompilieren">Kompilieren</a></h4><p>
+  <strong>Automatisch (mit make):</strong> Im Verzeichnis der Implementierung gibt es ein <code>Makefile</code>, welches benutzt werden kann um das Programm zu kompilieren.<br/>
+  Gibt man in einem Terminal, welches sich im Implementierungsverzeichnis befindet den Befehl <code>make</code> ein, so wird das Programm automatisch kompiliert.<br/><br/>
+  <strong>Manuell:</strong> Ist <code>make</code> nicht vorhanden, so kann das Programm manuell kompiliert werden.<br/>
+  Dazu müssen in einem Terminal im Implementierungsverzeichnis folgende Befehle eingegeben werden:<br/>
+<ul>
+  <li><code>nasm -f elf32 -g -F dwarf -o dgbmv.o dgbmv.asm</code></li>
+  <li><code>gcc -Wall -g -m32 -O0 -o dgbmv dgbmv.o main.c</code></li>
+</ul>
+  Der erste Befehl übersetzt dabei den eigentlichen Assembler Code der Funktion DGBMV (<code>dgbmv.asm</code>) in Objektcode, der zweite Befehl übersetzt das Wrapper-Programm (<code>main.c</code>) und linkt es mit dem aus der Assembler-Datei erzeugten Objektcode zu einer Ausführbaren Datei (<code>dgbmv</code>).</p>
+<br>
+<br>
+
+<hr width="100%" size="1">
+<h4><a name="dateiuebersicht">Dateiübersicht</a></h4><p>
+  Im Implementierungsverzeichnis befinden sich folgende Dateien und Ordner:
+<ul>
+ <li>main.c</li>
+ <li>dgbmv.asm</li>
+ <li>Makefile</li>
+ <li>README</li>
+ <li>aux/</li>
+</ul>
+  <strong>main.c</strong> ist ein C Wrapper-Programm, in welchem die Eingabeparameter definiert werden, weiter kümmert es sich um die Ausgabe der Paramter, des Ergebnises und ggf. Fehlermeldungen und um das aufrufen der eigentlichen Assembler Funktion (dgbmv(...)). Es beinhaltet auch den Haupteinstiegspunkt (die main Funktion) des Hauptprogramms.<br/><br/>
+  <strong>dgbmv.asm</strong> ist ein Assembler-Programm, welches hauptsächlich die Funktion dgbmv(...) definiert. Weiter definiert es einige Macros und Subroutines, welche später genauer erläutert werden.<br/><br/>
+  <strong>Makefile</strong> ist eine Datei, welche das automatische kompilieren mit Hilfe des Programmes "make" ermöglicht. Es bietet folgende Targes: all, dgbmv.o, dgbmv, clean<br/><br/>
+  <strong>README</strong> ist eine Datei, welche grundlegende Informationen über das Projekt zur Verfügung stellt.<br/><br/>
+  <strong>aux/</strong> ist ein Verzeichnis, das verschiedene Python-Testprogramme beinhaltet, welche zur Verifizierung des Hauptprogramms genutzt werden könne. Die Python-Programme sind Teilweise veraltet oder unvollständig - also mit Vorsicht zu genießen.<p>
+<br/>
+<br/>
+
+<hr width="100%" size="1">
+<h4><a name="macros_subroutines">Macros und Subroutines</a></h4><p>
+Die Datei dgbmv.asm beinhaltet folgende Macros und Subroutines:<br/><br/>
+<strong>TRANS</strong> definiert die Speicherstelle [EBP+8], an der eine Kopie des Eigabeparameters TRANS steht.<br/>
+<strong>M</strong> definiert die Speicherstelle [EBP+12], an der eine Kopie des Eingabeparameters M steht.<br/>
+<strong>N</strong> definiert die Speicherstelle [EBP+16], an der eine Kopie des Eingabeparameters N steht.<br/>
+<strong>KL</strong> definiert die Speicherstelle [EBP+20], an der eine Kopie des Eingabeparameters KL steht.<br/>
+<strong>KU</strong> definiert die Speicherstelle [EBP+24], an der eine Kopie des Eingabeparameters KU steht.<br/>
+<strong>_ALPHA</strong> definiert die Speicherstelle [EBP+28], an der ein Pointer auf den originalen Eingabeparameter ALPHA steht.<br/>
+<strong>_A</strong> definiert die Speicherstelle [EBP+32], an zu Beginn ein Pointer auf den originalen Eingabeparameter A steht. Dieser wird jedoch auf eine transformierte oder untransformierte Kopie der Matrix A umgelenkt, sobald diese verfügbar ist.<br/>
+<strong>LDA</strong> definiert die Speicherstelle [EBP+36], an der eine Kopie des Eingabeparameters LDA steht.<br/>
+<strong>_X</strong> definiert die Speicherstelle [EBP+40], an der ein Pointer auf den originalen Eingabeparameter X steht.<br/>
+<strong>INCX</strong> definiert die Speicherstelle [EBP+44], an der eine Kopie des Eingabeparameters INCX steht.<br/>
+<strong>_BETA</strong> definiert die Speicherstelle [EBP+48], an der ein Pointer auf den originalen Eingabeparameter BETA steht.<br/>
+<strong>_Y</strong> definiert die Speicherstelle [EBP+52], an der ein Pointer auf den originalen Eingabeparameter Y steht.<br/>
+<strong>INCY</strong> definiert die Speicherstelle [EBP+56], an der eine Kopie des Eingabeparameters INCY steht.<br/><br/>
+
+<strong>scalarmult</strong> definiert ein Codefragment, welches einen inkrementierten Vektor mit einem Skalar multipliziert. Es erwartet, dass ECX als Zähler mit 0 initialisiert ist, EDX einen Pointer auf einen inkrementierten Vektor, EAX einen Pointer auf einen Skalar, EBX das Inkrement des Vektors und ESI die Länge des Vektors beinhaltet. Weiter muss scalarmult mit einem Parameter aufgerufen werden, welcher ein internes Label definiert - er muss also einmalig sein.<br/><br/>
+
+<strong>neginc</strong> definiert ein Codefragment, welches einen Vektor mit negativem Inkrement in einen Vektor mit positivem Inkrement des gleichen Betrages erstellt und auf dem Stack ablegt. Es erwartet, dass EAX mit dem Betrag des Inkrements des Vektors, ECX mit der Länge des Vektors und EDX mit einem Pointer zum originalen Vektor geladen wird. Weiter muss neginc mit zwei Parametern aufgerufen werden, welche zwei interne Label definieren - sie müssen also einmalig sein. Nach einem Aufruf von neginc sollte der Pointer zum originalen Vektor auf die neu erstelle Kopie geändert werden; ESP zeigt auf den neuen Vektor. Außerdem muss dann natürlich auch das originale (negative) Inkrement mit dessen Betrag aktuallisiert werden.<br/><br/>
+
+<strong>saveregs</strong> definiert ein Codefragment, welches die Register EAX, EBX, ECX, EDX, ESI und EDI zur Sicherung auf den Stack pusht.<br/>
+<strong>unsaveregs</strong> definiert ein Codefragment, welches die Register EAX, EBX, ECX, EDX, ESI und EDI zur Wiederherstellung wieder vom Stack popt.<br/><br/>
+
+<strong>memcpy</strong> definiert eine Subroutine, welche Speicherbereiche 1 zu 1  von einer Stelle zu einer anderen kopiert. Sie erwartet, dass ESI mit einem Pointer zur Quelle, EDI mit einem Pointer zum Ziel und EBX mit der Anzahl der zu kopierenden 8-byte Fragmente geladen ist.<p>
+<br/>
+<br/>
+
+<hr width="100%" size="1">
+<h4><a name="struktur">Struktur</a></h4><p>
+  Das Assembler-Programm besteht aus mehreren, logisch getrennten, Teilen, welche jeweils duch einen Linie, wie die folgende, von einander abgetrennt sind:<br/>
+  <code>; ==============================================================================</code><br/><br/>
+  Im <strong>ersten Teil</strong> befindet sich dich .data section, in der ein Format für und einen Referenz auf die Standard C-Funktion printf definiert sind, welche zu Testzwecken benutzt werden kann.<br/>
+  Im <strong>zweiten Teil</strong> werden die o.g. Macros definiert.<br/>
+  Im <strong>dritten Teil</strong> wird die o.g. Subroutine definiert.<br/>
+  Im <strong>vierten Teil</strong> beginnt die Funktion dgbmv(...). Es werden alle Register gesichert und die Eingabeparameter werden auf Korrektheit geprüft.<br/>
+  Im <strong>fünften Teil</strong> wird Speicherplatz für eine Kopie der originalen Matrix allokiert und die Matrix wird, je nach Definition des Eingabeparameters TRANS, entweder transponiert oder nicht-transponiert an diese neue Stelle kopiert. Der Pointer _A zur Matrix zeigt ab jetzt auf die Kopie der Matrix.<br/>
+  Im <strong>sechsten Teil</strong> wird die vorher kopierte Matrix mit dem Eingabeparameter (Skalar) ALPHA multipliziert. Dabei überschreibt das Ergebnis die kopierte Matrix.<br/>
+  Im <strong>siebten Teil</strong> wird der Eingabeparameter (Vektor) Y mit dem Eingabeparameter (Skalar) BETA multipliziert. Dabei überschreibt das Ergebnis den Eingabeparameter (Vektor) Y.<br/>
+  Im <strong>achten Teil</strong> wird eine Kopie des Eingabeparameters (Vektor) X angelegt, welche dann mit der nun kopierten und multiplizierten Matrix A multipliziert wird. Dabei überschreibt das Ergebnis den kopierten Vektor X. Außerdem wird der Pointer, welcher auf den Eingabeparameter X zeigte aktuallisiert, so dass er auf dessen Kopie zeigt.<br/>
+  Im <strong>neunten Teil</strong> wird der kopierte und mit A multiplizierte Vektor X auf den Eingabeparameter (Vektor) Y addiert. Das Ergebnis überschreibt dabei den Eingabeparameter (Vektor) Y.<br/>
+  Im <strong>zehnten Teil</strong> wird entweder der Rückgabewert 0 in EAX geladen, falls alles erfolgreich abgearbeitet wurde. Andernfalls wird EAX mit dem entsprechenden Fehler-Code geladen.<br/>
+  Im <strong>elften Teil</strong> wird der in der Funktion allokierte Speicherplatz wieder freigegeben, es werden die zu Beginn gesicherten Register wiederhergestellt und die Funktion wird verlassen.<p>
+</body>
+</html>
