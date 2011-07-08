@@ -38,7 +38,7 @@
   <li>GNU Make (make) - Version 3.81 (Optional)</li>
 </ul>
   Als Referenzplattform dient eine aktuelle Linux Distribution (Ubuntu 11.04) mit den o.g. Tools in den entsprechenden Versionen.<br/>
-  Dabei sollte das System entweder eine native 32-Bit Version sein, oder die entsprechenden 32-Bit Libraries installiert haben.<p>
+  Dabei sollte das System entweder eine native 32-Bit Version sein, oder die entsprechenden 32-Bit Libraries installiert haben.</p>
 <br>
 <br>
 
@@ -70,7 +70,7 @@
   <strong>dgbmv.asm</strong> ist ein Assembler-Programm, welches hauptsächlich die Funktion dgbmv(...) definiert. Weiter definiert es einige Macros und Subroutines, welche später genauer erläutert werden.<br/><br/>
   <strong>Makefile</strong> ist eine Datei, welche das automatische kompilieren mit Hilfe des Programmes "make" ermöglicht. Es bietet folgende Targes: all, dgbmv.o, dgbmv, clean<br/><br/>
   <strong>README</strong> ist eine Datei, welche grundlegende Informationen über das Projekt zur Verfügung stellt.<br/><br/>
-  <strong>aux/</strong> ist ein Verzeichnis, das verschiedene Python-Testprogramme beinhaltet, welche zur Verifizierung des Hauptprogramms genutzt werden könne. Die Python-Programme sind Teilweise veraltet oder unvollständig - also mit Vorsicht zu genießen.<p>
+  <strong>aux/</strong> ist ein Verzeichnis, das verschiedene Python-Testprogramme beinhaltet, welche zur Verifizierung des Hauptprogramms genutzt werden könne. Die Python-Programme sind Teilweise veraltet oder unvollständig - also mit Vorsicht zu genießen.</p>
 <br/>
 <br/>
 
@@ -98,7 +98,7 @@ Die Datei dgbmv.asm beinhaltet folgende Macros und Subroutines:<br/><br/>
 <strong>saveregs</strong> definiert ein Codefragment, welches die Register EAX, EBX, ECX, EDX, ESI und EDI zur Sicherung auf den Stack pusht.<br/>
 <strong>unsaveregs</strong> definiert ein Codefragment, welches die Register EAX, EBX, ECX, EDX, ESI und EDI zur Wiederherstellung wieder vom Stack popt.<br/><br/>
 
-<strong>memcpy</strong> definiert eine Subroutine, welche Speicherbereiche 1 zu 1  von einer Stelle zu einer anderen kopiert. Sie erwartet, dass ESI mit einem Pointer zur Quelle, EDI mit einem Pointer zum Ziel und EBX mit der Anzahl der zu kopierenden 8-byte Fragmente geladen ist.<p>
+<strong>memcpy</strong> definiert eine Subroutine, welche Speicherbereiche 1 zu 1  von einer Stelle zu einer anderen kopiert. Sie erwartet, dass ESI mit einem Pointer zur Quelle, EDI mit einem Pointer zum Ziel und EBX mit der Anzahl der zu kopierenden 8-byte Fragmente geladen ist.</p>
 <br/>
 <br/>
 
@@ -116,6 +116,6 @@ Die Datei dgbmv.asm beinhaltet folgende Macros und Subroutines:<br/><br/>
   Im <strong>achten Teil</strong> wird eine Kopie des Eingabeparameters (Vektor) X angelegt, welche dann mit der nun kopierten und multiplizierten Matrix A multipliziert wird. Dabei überschreibt das Ergebnis den kopierten Vektor X. Außerdem wird der Pointer, welcher auf den Eingabeparameter X zeigte aktuallisiert, so dass er auf dessen Kopie zeigt.<br/>
   Im <strong>neunten Teil</strong> wird der kopierte und mit A multiplizierte Vektor X auf den Eingabeparameter (Vektor) Y addiert. Das Ergebnis überschreibt dabei den Eingabeparameter (Vektor) Y.<br/>
   Im <strong>zehnten Teil</strong> wird entweder der Rückgabewert 0 in EAX geladen, falls alles erfolgreich abgearbeitet wurde. Andernfalls wird EAX mit dem entsprechenden Fehler-Code geladen.<br/>
-  Im <strong>elften Teil</strong> wird der in der Funktion allokierte Speicherplatz wieder freigegeben, es werden die zu Beginn gesicherten Register wiederhergestellt und die Funktion wird verlassen.<p>
+  Im <strong>elften Teil</strong> wird der in der Funktion allokierte Speicherplatz wieder freigegeben, es werden die zu Beginn gesicherten Register wiederhergestellt und die Funktion wird verlassen.</p>
 </body>
 </html>
