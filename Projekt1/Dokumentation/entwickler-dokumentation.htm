@@ -66,15 +66,15 @@
 </ul>
   <strong>implementierung1.vhd</strong> ist die VHDL Implementierung unseres Binär-Zahl zu BCD-Zahl Konverters, auf Basis des Double-Dabble-Algorithmus.<br/><br/>
 
-  <strong>testbench.vhd</strong> ist eine VHDL Testumgebung für <code>implementierung1.vhd</code>. Hier wird der Eingabeparameter (<code>bin_input</code>) definiert und der Takt des <code>clk</code>-Signals gesteuert. Dies ist der Einstiegspunkt beim testen der Schaltung.<br/><br/>
+  <strong>testbench.vhd</strong> ist eine VHDL Testumgebung für <code>implementierung1.vhd</code>. Hier wird der Eingabeparameter (<code>bin_input</code>) definiert und der Takt des <code>clk</code>-Signals gesteuert. Dies ist der Einstiegspunkt beim Testen der Schaltung.<br/><br/>
 
-  <strong>Makefile</strong> ist eine Datei, welche das automatische analysieren, simulieren, testen und anzeigen des Ergebnises in GTKWave mit Hilfe des Programmes "make" ermöglicht. Es bietet folgende Targets: all, compile, simulate, run, clean<br/><br/>
+  <strong>Makefile</strong> ist eine Datei, welche das automatische Analysieren, Simulieren, Testen und Anzeigen des Ergebnises in GTKWave mit Hilfe des Programmes "make" ermöglicht. Es bietet folgende Targets: all, compile, simulate, run, clean<br/><br/>
 
-  <strong>MakefileWIN.bat</strong> ist eine (nicht offiziel unterstützte) Batch-Datei für Windows-Betriebssysteme, die das automatische analysieren, simulieren, testen und anzeigen des Ergebnises in GTKWave ermöglicht.<br/><br/>
+  <strong>MakefileWIN.bat</strong> ist eine (nicht offiziel unterstützte) Batch-Datei für Windows-Betriebssysteme, die das automatische Analysieren, Simulieren, Testen und Anzeigen des Ergebnises in GTKWave ermöglicht.<br/><br/>
 
   <strong>README</strong> ist eine Datei, welche grundlegende Informationen über das Projekt zur Verfügung stellt.<br/><br/>
 
-  <strong>Test_Versions/</strong> ist ein Verzeichnis, das alte Versionen und Test-Versionen der Schaltung beinhaltet. Diese Versionen sind nicht offiziel unterstützt und dienen ausschließlich zu Testzwecken.</p>
+  <strong>Test_Versions/</strong> ist ein Verzeichnis, das alte Versionen und Test-Versionen der Schaltung beinhaltet. Diese Versionen sind nicht offiziell unterstützt und dienen ausschließlich zu Testzwecken.</p>
 <br/>
 <br/>
 
@@ -82,11 +82,14 @@
 <h4><a name="struktur">Struktur</a></h4><p>
   Die Schaltung <code>implementierung1.vhd</code> beginnt mit der Definition der Entity <code>BINBCD</code>. Darin werden die Eingabeparameter <code>clk</code> und <code>bin_input</code> und die Ausgaben <code>overflow</code>, <code>einer</code>, <code>zehner</code>, <code>hunderter</code>, <code>tausender</code> und <code>zehntausender</code> definiert.<br/><br/>
 
-  Danach beginnt die Architecture von <code>BINBCD</code>, welche zuerst einige lokale Signale, die zur Berechnung der BCD-Zahlen benötigt werden, definiert.<br/><br/>
+  Danach beginnt die Architecture von <code>BINBCD</code>, welche zuerst einige lokale Signale, die zur Berechnung der BCD-Zahlen benötigt werden, definiert. Dazu gehören interne Repräsentanten aller Output-Ports, da diese während der Ausführung nicht ausgelesen werden können, sowie eine Kopie der Eingabe <code>bin_input</code>, auf der gearbeitet werden kann, ein Zähler, der in jedem Durchlauf des Processes inkrementiert wird und die Konstante <code>drei</code>, die stets die Binärzahl "0011" beinhaltet.<br/><br/>
 
   Im Rumpf der Architecture gibt es einen Process, welcher sich in drei logisch getrennte Fälle unterteilen lässt:<br/>
-  Der <strong>erste Fall</strong> tritt ein, wenn <code>clk</code> eine steigende Flanke erzeugt, der Process bisher max. 17 mal ausgeführt wurde und der Eingabeparameter <code>bin_input</code> im Definitionsbereich liegt. In ihm wird der zusammengesetzte Vektor, welcher alle lokalen Repräsentanten der BCD-Ausgabeziffern beinhaltet um 1 Bit nach links geshiftet und der Zähler, welcher zählt wie oft der Process bisher ausgeführt wurde, wird erhöht.<br/><br/>
-  Der <strong>zweite Fall</strong> tritt ein, wenn <code>clk</code> eine fallende Flanke erzeugt, der Process bisher max. 17 mal ausgeführt wurde und der Eingabeparameter <code>bin_input</code> im Definitionsbereich liegt. In ihm werden alle lokalen Repräsentanten der BCD-Ausgabeziffern auf ihre Größe überprüft, hat einer einen Wert von 5 oder mehr, wird er entsprechend der Spezifikation um den Wert 3 erhöht. Nach den Überprüfungen und ggf. addition(en) wird das jeweils aktuelle Signal der lokalen Repräsentanten auf die BCD-Ziffer Ausgaben gelegt. Außerdem wird das Overflow-Signal auf '0' gesetzt, da wir uns im Definitionsbereich befinden.<br/><br/>
-  <strong>Anderenfalls</strong> bleibt das Overflow-Signal auf '1' und alle BCD-Ausgabeziffern werden auf '0000' gesetzt.</p>
+  Der <strong>erste Fall</strong> tritt ein, wenn <code>clk</code> eine steigende Flanke erzeugt, der Process bisher max. 17 mal ausgeführt wurde und der Eingabeparameter <code>bin_input</code> im Definitionsbereich liegt. In ihm wird der zusammengesetzte Vektor, welcher alle lokalen Repräsentanten der BCD-Ausgabeziffern beinhaltet um 1 Bit nach links geshiftet und der Zähler, welcher die Anzahl der bisher durchlaufenen Processes enthält, wird erhöht. Der Linksshift durch alle Repräsentanten der BCD-Ziffern und die Eingabe wird folgendermaßen realisiert:<br/>
+  Alle Teilvektoren werden der Reihe nach - angefangen mit <code>lzehntausender</code> - neu definiert als die rechten drei Bits des derzeitigen Inhalts des Repräsentanten in Bearbeitung konkatiniert mit dem Bit ganz links des nachfolgenden Repräsentanten; im ersten Fall <code>ltausender</code>. Den Schluss bildet der Eingabevektor <code>linput</code>, der jedes Mal mit einer '0' konkatiniert wird, sodass der Inhalt dieses Teilvektors nach 17 Durchläufen "00000000000000000" ist. Dies spielt allerdings nur eine untergeordnete Rolle, da nur die BCD-Vektoren am Ende ausgegeben werden.<br/><br/>
+  Der <strong>zweite Fall</strong> tritt ein, wenn <code>clk</code> eine fallende Flanke erzeugt, der Process bisher max. 17 mal ausgeführt wurde und der Eingabeparameter <code>bin_input</code> im Definitionsbereich liegt. In ihm werden alle lokalen Repräsentanten der BCD-Ausgabeziffern auf ihre Größe überprüft. Jeder, der einen Wert von 5, oder höher hat, wird entsprechend der Spezifikation um den Wert 3 erhöht. Nach den Überprüfungen und ggf. Addition(en) wird das jeweils aktuelle Signal der lokalen Repräsentanten auf die BCD-Ziffer Ausgaben gelegt. Außerdem wird das Overflow-Signal auf '0' gesetzt, da wir uns im Definitionsbereich befinden.<br/><br/>
+  <strong>Anderenfalls</strong> bleibt das Overflow-Signal auf '1' und alle BCD-Ausgabeziffern werden auf '0000' gesetzt.<br/><br/>
+  
+  Ganz am Ende wird dann der Output-Port <code>overflow</code> mit dem Inhalt seines internen Repräsentanten <code>overflw</code> überschrieben.</p>
 </body>
 </html>
