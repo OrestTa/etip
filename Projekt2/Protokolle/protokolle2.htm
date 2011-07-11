@@ -44,20 +44,27 @@
 <hr width="100%" size="1">
 <h4><a name="1">Kurzfassung</a></h4>
 <p>
-Das vorliegende VHDL-System konvertiert eine Binärzahl mit 17 Stellen in eine BCD-Zahl mit 5 x 4 Stellen. Der Definitionsbereich ist [0, 99999]. Es wurde ghdl und gtkwave sowie eine VHDL-Testbench verwendet.</p>
-<p>
-Begegnete Probleme:
+Das vorliegende Programm ist eine Implementierung der Funktion DGBMV, welche Matrix-Vektor-Operationen nach einer der folgenden Formeln durchführt:<br><br>
+<code>Y := ALPHA * A * X + BETA * Y<br>
+Y := ALPHA * A' * X + BETA * Y</code><br><br>
+ALPHA, BETA seien Skalare; X, Y seien Vektoren; A sei eine Matrix; A' sei transponiertes A.
+</p>
+<p>Es wurde nasm und gcc sowie ein C-Wrapper verwendet.</p>
+<p>Begegnete Probleme:
 <ul>
-<li>Testumgebung nicht komplett, Kompilation unmöglich &rarr; Testumgebung vervollständigt;
-<li>Umwandlung von <code>integer</code> nach <code>std_logic_vector</code> klappte nicht &rarr; es wurden <code>unsigned</code> verwendet;</li>
-<li>Kompilation klappte nicht mit Variablen &rarr; es wurden Signale verwendet;</li>
-<li>Kompilation klappte nicht mit for/loop Concurrent Statements &rarr; es wurde ein auf <code>clk</code> reagierender Process mit entsprechendem <code>clk</code> verwendet;</li>
-<li>Mehrere Signalzuweisungen auf einem großen Vektor &rarr; großen Vektor aus Teilvektoren zusammensetzen.</li>
+<li>Wie rufe ich eine ASM-Funktion aus C auf? &rarr; Recherche erfolgreich;</li>
+<li>Wie rechne ich mit Floating-Point-Zahlen in ASM? &rarr; Recherche erfolgreich;</li>
+<li>MUL nicht flexibel genug, zu eingeschränkt &rarr; IMUL verwenden;</li>
+<li>Stackspeicherallokation mit ESP führt zu Segfaults &rarr; eine bestimme Anzahl an dword pushen;</li>
+<li>Bandmatrix-Vektor-Multiplikation sehr fehleranfällig &rarr; nach viel Arbeit erfolgreich;</li>
+<li>Extraktion des Vektors aus einem negativ inkrementierten Array &rarr; die Vektoreingabe dem Code so anpassen, als wäre INC positiv gewesen;</li>
+<li>Transponiertenberechnung sehr fehleranfälligi auf Grund verschachtelter Schleifen &rarr; mehrfaches manuelles Schritt-für-Schritt-Durchlaufen auf Papier;</li>
+<li>Spät implementierte Rettung/Wiederherstellung der Register zerstört die statischen Stackspeicherpointer (EBP-n) &rarr; Verwendung von Pointern, die direkt nach dem Pushen erstellt und gespeichert werden</li>
 </ul>
 Das Projekt wurde erfolgreich abgeschlossen.
 </p>
 <p>
-Ausblick: die VHDL-Schaltung auf einem FPGA testen.
+Ausblick: XXXXXXXX.
 </p>
 <br/>
 <br/>

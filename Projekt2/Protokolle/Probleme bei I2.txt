@@ -5,10 +5,12 @@ C-Datei, Makefile, Unterscheidung Trans/nicht Trans: keine Probleme
 
 Skalarmult: Algebra mit floating-points
 	Lösung: Internetrecherche (Tutorials)
+
 Skalarmultiplikation: keine Probleme
 
 Matrix kopieren: MUL: geringe Flexibilität, starke Einschränkungen
 	Lösung: IMUL
+
 Speicherallokation: Stackpointer verschoben -> Speicherzugriffsfehler
 	Lösung: Pushen von einer best. Anz. Nullen
 
