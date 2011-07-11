@@ -71,7 +71,7 @@ global dgbmv
 %endmacro
 
 ; Store a negatively incremented vector as a positively incremented vector on the stack
-; Z_new[i-1] =Z[|INCZ| * N - |INCZ| * (i)], N be the length of the incremented array
+; Z_new[i-1] =Z[|INCZ| * N_ttl - |INCZ| * (i)], N_ttl be the length of the incremented array
 ; Initialisation:
 ;                MOV EAX, INCZ           ; abs(increment of the vector), has to be positive!
 ;                MOV ECX, N              ; element count
