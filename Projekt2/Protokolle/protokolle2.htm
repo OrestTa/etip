@@ -59,12 +59,13 @@ ALPHA, BETA seien Skalare; X, Y seien Vektoren; A sei eine Matrix; A' sei transp
 <li>Bandmatrix-Vektor-Multiplikation sehr fehleranfällig &rarr; nach viel Arbeit erfolgreich;</li>
 <li>Extraktion des Vektors aus einem negativ inkrementierten Array &rarr; die Vektoreingabe dem Code so anpassen, als wäre INC positiv gewesen;</li>
 <li>Transponiertenberechnung sehr fehleranfälligi auf Grund verschachtelter Schleifen &rarr; mehrfaches manuelles Schritt-für-Schritt-Durchlaufen auf Papier;</li>
-<li>Spät implementierte Rettung/Wiederherstellung der Register zerstört die statischen Stackspeicherpointer (EBP-n) &rarr; Verwendung von Pointern, die direkt nach dem Pushen erstellt und gespeichert werden</li>
+<li>Spät implementierte Rettung/Wiederherstellung der Register zerstört die statischen Stackspeicherpointer (EBP-n) &rarr; Verwendung von Pointern, die direkt nach dem Pushen erstellt und gespeichert werden;</li>
+<li>Sehr aufwändige manuelle Korrektur von Ergebnissen für Testeingaben &rarr; Erstellung von Python-Skripts mit äquivalenter Funktionalität.</li>
 </ul>
 Das Projekt wurde erfolgreich abgeschlossen.
 </p>
 <p>
-Ausblick: XXXXXXXX.
+Ausblick: empirische Effizienzuntersuchung in Vergleich mit Implementierungen in anderen Sprachen (sowie mit automatisch aus C generiertem NASM-Code); bei Bedarf: Migration zu einer 64-Bit-Architektur bzw. Erweiterung der Präzision oder des Definitionsbereiches.
 </p>
 <br/>
 <br/>
@@ -87,6 +88,7 @@ Ausblick: XXXXXXXX.
 <li>Verteilung der Aufgabenbereiche</li>
 <li>Erstellung des Gerüstes für das Pflichtenheft (HTML)</li>
 <li>Recherche zur Projektaufgabe</li>
+<li>Fragen an den Tutor zur Klärung der Aufgabe</li>
 </ul>
 </p>
 <br/>
@@ -123,9 +125,9 @@ Ausblick: XXXXXXXX.
 <h4><a name="6">Protokoll 30.05.2011</a></h4>
 <p>Vervollständigung der Spezifikation:
 <ul>
-<li>Kurzbeschreibung mit einer VHDL Entity</li>
-<li>Beschreibung der Alternative 2 (Bin-Dec-BCD)</li>
-<li>Recherche zur Alternative 1</li>
+<li>Kurzbeschreibung</li>
+<li>Beschreibung der Alternative 1 (Berechnung in Normalform)</li>
+<li>Recherche zur Alternative 2 (Berechnung in Normalform)</li>
 </ul>
 </p>
 <br/>
