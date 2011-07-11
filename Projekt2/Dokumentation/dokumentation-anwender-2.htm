@@ -2,14 +2,19 @@
 <html>
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
-  <title>Benutzer Dokumentation 2 ss11-g07</title>
-  <style>
-    body { width: 800px; margin: 0 auto; }
+  <title>Anwenderdokumentation 2 ss11-g07</title>
+  <style type="text/css">
+    body {
+    width: 800;
+    margin: 0 auto;
+    }
   </style>
 </head>
+
 <body>
+
 <div align="Center">
-<h3><a name="Benutzer_Doku"></a><strong>Benutzer Dokumentation zum Projekt Nr. 2 der Gruppe 7 (ss11-g07)</strong></h3>
+<h3><a name="Benutzer_Doku"></a><strong>Anwenderdokumentation zum Projekt Nr. 2 der Gruppe 7 (ss11-g07)</strong></h3>
 <i>Tutor: Steffen Bauereiss</i><br/>
 </div>
 <ul>
@@ -17,7 +22,7 @@
   <a href="#kurzbeschreibung">Kurzbeschreibung</a>
 </li>
 <li>
-  <a href="#abhaengigkeiten">Abhänigkeiten</a>
+  <a href="#abhaengigkeiten">Abhängigkeiten</a>
 </li>
 <li>
   <a href="#kompilieren">Kompilieren</a>
@@ -33,7 +38,7 @@
 
 <hr width="100%" size="1">
 <h4><a name="kurzbeschreibung">Kurzbeschreibung</a></h4><p>
-  Es ist eine Funktion DGBMV zu entwickeln, welche Matrix-Vektor-Operationen nach einer der folgenden Formeln durchführt.<br/><br/>
+  Das vorliegende Programm ist eine Implementierung der Funktion DGBMV, welche Matrix-Vektor-Operationen nach einer der folgenden Formeln durchführt:<br/><br/>
   <code>Y := ALPHA * A * X + BETA * Y<br/>
   Y := ALPHA * A' * X + BETA * Y</code><br/><br/>
   ALPHA, BETA seien Skalare; X, Y seien Vektoren; A sei eine Matrix; A' sei transponiertes A.</p>
@@ -42,28 +47,27 @@
 
 <hr width="100%" size="1">
 <h4><a name="abhaengigkeiten">Abhängigkeiten</a></h4><p>
-  Um das Programm <code>dgbmv</code> benutzen zu können, werden folgende Tools benötigt:
+  Um das Programm <code>dgbmv</code> benutzen zu können, benötigt man folgende Software:
 <ul>
-  <li>Gnu Compiler Collection (gcc) - Version 4.5.2</li>
-  <li>The Netwide Assembler (nasm) - Version 2.09.04</li>
-  <li>Embedded GNU C Library (libc6) - Version 2.13</li>
-  <li>GNU Make (make) - Version 3.81 (Optional)</li>
+  <li>GNU Compiler Collection (gcc) - Version 4.5.2;</li>
+  <li>The Netwide Assembler (nasm) - Version 2.09.04;</li>
+  <li>Embedded GNU C Library (libc6) - Version 2.13;</li>
+  <li>GNU Make (make) - Version 3.81 (Optional).</li>
 </ul>
-  Als Referenzplattform dient eine aktuelle Linux Distribution (Ubuntu 11.04) mit den o.g. Tools in den entsprechenden Versionen.<br/>
-  Dabei sollte das System entweder eine native 32-Bit Version sein, oder die entsprechenden 32-Bit Libraries installiert haben.</p>
-<br/>
+  Als Referenzplattform dient eine aktuelle Linux Distribution (Ubuntu 11.04 x86-64) mit der o. g. Software sowie den entsprechenden 32-Bit-Libraries.<br/>
 <br/>
 
 <hr width="100%" size="1">
 <h4><a name="kompilieren">Kompilieren</a></h4><p>
-  <strong>Automatisch (mit make):</strong> Im Verzeichnis der Implementierung existiert ein <code>Makefile</code>, welches benutzt werden kann um das Programm zu kompilieren.<br/>
-  Wird in einem Terminal, welches sich im Implementierungsverzeichnis befindet den Befehl <code>make</code> eingegeben, so wird das Programm automatisch kompiliert.<br/><br/>
-  <strong>Manuell:</strong> Ist <code>make</code> nicht vorhanden, so kann das Programm manuell kompiliert werden.<br/>
-  Dazu müssen in einem Terminal im Implementierungsverzeichnis folgende Befehle eingegeben werden:<br/>
+  Automatisch (mit make): Im Verzeichnis der Implementierung existiert ein <code>Makefile</code>, welches benutzt werden kann, um das Programm zu kompilieren. Gibt man in einem Terminal im Implementierungsverzeichnis den Befehl <code>make</code> ein, so das Programm automatisch kompiliert.<br/><br/>
+
+  Manuell: Ist <code>make</code> nicht vorhanden, so kann das Programm manuell kompiliert werden. Dazu müssen in einem Terminal im Implementierungsverzeichnis folgende Befehle eingegeben werden:<br/>
+
 <ul>
   <li><code>nasm -f elf32 -g -F dwarf -o dgbmv.o dgbmv.asm</code></li>
   <li><code>gcc -Wall -g -m32 -O0 -o dgbmv dgbmv.o main.c</code></li>
 </ul>
+
   Der erste Befehl übersetzt dabei den eigentlichen Assembler-Code der Funktion DGBMV (<code>dgbmv.asm</code>) in Objektcode, der zweite Befehl übersetzt das Wrapper-Programm (<code>main.c</code>) und linkt es mit dem aus der Assembler-Datei erzeugten Objektcode zu einer ausführbaren Datei (<code>dgbmv</code>).</p>
 <br/>
 <br/>
@@ -73,17 +77,16 @@
   Sollen die Eingabeparameter des Programms verändert werden, so kann diese Änderung im Wrapper-Programm (<code>main.c</code>) vorgenommen werden.<br/>
   Direkt zu Beginn der main-Funktion gib es den Kommentar: <code>/* define INPUT parameters here */</code><br/>
   Ab dieser Stelle sind alle Eingabeparameter mit ihren aktuellen Werten aufgelistet. Die Werte können dort nach belieben verändert werden.<br/><br/>
-  Nach einer Änderung muss das Programm neu kompiliert und ausgeführt werden, um das Ergebnis zu berechnen.</p>
+  Nach einer Änderung muss das Programm neu kompiliert und ausgeführt werden, damit es das Ergebnis berechnen kann.</p>
 <br/>
 <br/>
 
 <hr width="100%" size="1">
 <h4><a name="ausgabe">Ausgabe</a></h4><p>
   Nachdem das Programm erfolgreich kompiliert wurde, existiert im Implementierungsverzeichnis die ausführbare Datei <code>dgbmv</code>.<br/>
-  Diese kann in einem Terminal, welches sich im Implementierungsverzeichnis befindet, mit folgendem Befehl ausgeführt werden:
-<ul>
-<li><code>./dgbmv</code></li>
-</ul>
+  Diese kann in einem Terminal im Implementierungsverzeichnis mit folgendem Befehl ausgeführt werden:<br/><br/>
+<code>./dgbmv</code><br/><br/>
+
   Das Programm gibt seine Eingabeparameter und das Ergebnis (Y) dann nach folgendem, beispielhaftem Schema aus:
 <code><pre>********************************************************************************
 *                                    DGBMV                                     *
