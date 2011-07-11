@@ -54,9 +54,10 @@
 
 <hr width="100%" size="1">
 <h4><a name="eingabe">Eingabe</a></h4><p>
-Die Eingabe der Schaltung kann in der Testbench (<code>testbench.vhd</code>) verändert werden. Zu Beginn der Architecture <code>BINBCD_test</code> wird der Eingabeparameter <code>bin_input</code> definiert, welcher ein 17-Bit-langer std_logic_vector (MSB first) ist. Alle 17 Bits dieses Vektors können nach Belieben verändert werden.<br/><br/>
-
-  Nach jeder Änderung muss die Schaltung neu analysiert, elaboriert, gestestet und das Ergebnis in GTKWave angezeigt werden.</p>
+Die Eingabe der Schaltung kann in der Testbench (<code>testbench.vhd</code>) verändert werden. Zu Beginn der Architecture <code>BINBCD_test</code> wird der Eingabeparameter <code>bin_input</code> definiert, welcher ein 17-Bit-langer std_logic_vector (MSB first) ist. Alle 17 Bits dieses Vektors können nach Belieben verändert werden.<br/>
+Beispiel:<br/>
+<code><pre>    SIGNAL bin_input: std_logic_vector(16 DOWNTO 0) := "00000001101000100";     -- 00836</pre></code><br/>
+Nach jeder Änderung muss die Schaltung neu analysiert, elaboriert, gestestet und das Ergebnis in GTKWave angezeigt werden.</p>
 <br/>
 <br/>
 
@@ -73,7 +74,9 @@ Die Eingabe der Schaltung kann in der Testbench (<code>testbench.vhd</code>) ver
 </ul>
   Der erste Befehl analysiert dabei die eigentliche VHDL-Schaltung (<code>implementierung1.vhd</code>) und dessen Testbench (<code>testbench.vhd</code>); der zweite Befehl elaboriert die zuvor analysierte Schaltung; der dritte Befehl startet einen 20-sekündigen Testdurchlauf; der vierte Befehl zeigt diesen Testdurchlauf in GTKWave an.</br></br>
 
-<u>Ausgabewerte auslesen</u>: Nachdem GTKWave die Testdatei gelesen hat, kann man die interessanten Signale aus der Liste in die Anzeige einfügen, den erwünschten Zeitpunkt anklicken und den aktuellen Wert auslesen. Die Ausgabezahl steht im aus den Vektoren <code>einer</code>, <code>zehner</code>, <code>hunderter</code>, <code>tausender</code> und <code>zehntausender</code> zusammengesetzten Vektor (MSB first). Das OF-Flag steht in <code>overflow</code>. Alle relevanten Signale sind nach ca. 1,7 s errechnet.
+<u>Ausgabewerte auslesen</u>: Nachdem GTKWave die Testdatei gelesen hat, kann man die interessanten Signale aus der Liste in die Anzeige einfügen, den erwünschten Zeitpunkt anklicken und den aktuellen Wert auslesen. Die Ausgabezahl steht im aus den Vektoren <code>einer</code>, <code>zehner</code>, <code>hunderter</code>, <code>tausender</code> und <code>zehntausender</code> zusammengesetzten Vektor (MSB first). Das OF-Flag steht in <code>overflow</code>. Alle relevanten Signale sind nach ca. 1,7 s errechnet.<br/>
+Beispiel:
+<img src=testbench.w.png alt="Beispielscreenshot" title="Beispielscreenshot" />
 </p>
 
 </body>
