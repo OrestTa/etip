@@ -1,0 +1,31 @@
+Aufrufen einer Assembler-Funktion aus C
+	Lösung: Internetrecherche
+
+C-Datei, Makefile, Unterscheidung Trans/nicht Trans: keine Probleme
+
+Skalarmult: Algebra mit floating-points
+	Lösung: Internetrecherche (Tutorials)
+Skalarmultiplikation: keine Probleme
+
+Matrix kopieren: MUL: geringe Flexibilität, starke Einschränkungen
+	Lösung: IMUL
+Speicherallokation: Stackpointer verschoben -> Speicherzugriffsfehler
+	Lösung: Pushen von einer best. Anz. Nullen
+
+Bandmatrix-Vektor-Multiplikation: kein großes Problem, aber viele kleine -> 1,5 Tage Arbeit
+
+Addition aAx + by
+
+Extraktion des Vektors X/Y aus den Arrays: Negative INCX/INCY
+	Lösung: Statt Anpassung des ganzen Codes für den Fall neg INC, INC spiegeln (mit Stack), Shiften und aus INC |INC| machen
+
+Transponiertenberechnung: Fehlende Vorstellungskraft für viele verschachtelte Schleifen
+	Lösung: mehrfaches Schritt für Schritt Durchlaufen auf Papier
+
+Sicherung/Wiederherstellung der Register vor allem: Erforderliche Platzreservierung am Anfang des Stacks führte dazu, dass die statischen Pointer (EBP-x) nicht mehr auf die richtigen Stellen im Stack verwiesen
+	Lösung: Verwendung von dynamischen Pointern, die direkt nach dem Kopieren verschiedener Objekte auf den Stack erstellt werden
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+Gültigkeitsprüfung der Eingaben der Eingaben
