@@ -39,12 +39,15 @@
 <hr width="100%" size="1">
 <h4><a name="1">Kurzfassung</a></h4>
 <p>
-Das vorliegende VHDL-System konvertiert eine Binärzahl mit 17 Stellen in eine BCD-Zahl mit 5 x 4 Stellen. Der Definitionsbereich ist [0, 99999].</p>
+Das vorliegende VHDL-System konvertiert eine Binärzahl mit 17 Stellen in eine BCD-Zahl mit 5 x 4 Stellen. Der Definitionsbereich ist [0, 99999]. Es wurde ghdl und gtkwave sowie eine VHDL-Testbench verwendet.</p>
 <p>
-Entstandenen Probleme:
-<li>Kompilation klappte nicht mit Variablen -&gt; es wurden Signale verwendet;</li>
-<li>Kompilation klappte nicht mit for/loop Concurrent Statements -&gt; es wurde ein auf <code>clk</code> reagierender Process verwendet;</li>
-<li>Umwandlung von <code>integer</code> nach <code>std_logic_vector</code> klappten nicht -&gt; es wurden <code>unsigned</code> verwendet.</li>
+Begegnete Probleme:
+<ul>
+<li>Testumgebung nicht komplett, Kompilation unmöglich &rarr; Testumgebung vervollständigt;
+<li>Umwandlung von <code>integer</code> nach <code>std_logic_vector</code> klappte nicht &rarr; es wurden <code>unsigned</code> verwendet;</li>
+<li>Kompilation klappte nicht mit Variablen &rarr; es wurden Signale verwendet;</li>
+<li>Kompilation klappte nicht mit for/loop Concurrent Statements &rarr; es wurde ein auf <code>clk</code> reagierender Process mit entsprechendem <code>clk</code> verwendet.</li>
+</ul>
 </p>
 
 <br/>
@@ -55,7 +58,7 @@ Entstandenen Probleme:
 <p>
 <ul>
 <li>Einleitendes Treffen mit dem Tutor</li>
-<li>kurze Besprechung</li>
+<li>Kurze Besprechung der Aufgabe</li>
 </ul>
 </p>
 <br/>
@@ -66,7 +69,8 @@ Entstandenen Probleme:
 <p>
 <ul>
 <li>Verteilung der Aufgabenbereiche</li>
-<li>Erstellung des Gerüstes für das Pflichtenheft</li>
+<li>Erstellung des Gerüstes für das Pflichtenheft (HTML)</li>
+<li>Recherche zur Projektaufgabe</li>
 </ul>
 </p>
 <br/>
@@ -74,7 +78,7 @@ Entstandenen Probleme:
 
 <hr width="100%" size="1">
 <h4><a name="4">Protokoll 17.05.2011</a></h4>
-<p>Vervollständigung der Pflichtenhefte:
+<p>Vervollständigung des Pflichtenheftes:
 <ul>
 <li>Aufgabenkurzbeschreibung</li>
 <li>Hilfsmittel</li>
@@ -92,8 +96,8 @@ Entstandenen Probleme:
 <p>
 <ul>
 <li>Pflichtenheft: Zeitplanung etwas aufgelockert</li>
-<li>Besprechung zu potentiellen Lösungswegen</li>
-<li>Erstellung des Gerüstes für die Spezifikation</li>
+<li>Recherche und Besprechung zu potentiellen Lösungswegen</li>
+<li>Erstellung des Gerüstes für die Spezifikation (HTML)</li>
 </ul>
 </p>
 <br/>
@@ -101,10 +105,11 @@ Entstandenen Probleme:
 
 <hr width="100%" size="1">
 <h4><a name="6">Protokoll 30.05.2011</a></h4>
-<p>Spezifikation:
+<p>Vervollständigung der Spezifikation:
 <ul>
-<li>VHDL Entity</li>
+<li>Kurzbeschreibung mit einer VHDL Entity</li>
 <li>Beschreibung der Alternative 2 (Bin-Dec-BCD)</li>
+<li>Recherche zur Alternative 1</li>
 </ul>
 </p>
 <br/>
@@ -112,11 +117,13 @@ Entstandenen Probleme:
 
 <hr width="100%" size="1">
 <h4><a name="7">Protokoll 31.05.2011</a></h4>
-<p>
-Spezifikation:
+<p>Vervollständigung der Spezifikation:
 <ul>
-<li>Double-Dabble und Bin-Dec-BCD als alternative Algorithmen (Beschreibung)</li>
-<li>Entscheidung für Double-Dabble nach einleitenden Tests</li>
+<li>Beschreibung der Alternative 1 (Double-Dabble)</li>
+<li>Abwägung der beiden Alternativen</li>
+<li>Erste einleitenden Tests</li>
+<li>Entscheidung für Double-Dabble</li>
+<li>Recherche zur Implementierung</li>
 </ul>
 </p>
 <br/>
@@ -128,7 +135,9 @@ Spezifikation:
 <ul>
 <li>Double-Dabble: Algorithmusbeschreibung etwas verdeutlicht</li>
 <li>Erster Entwurf, nicht kompilierbar auf Grund unvollständiger Testumgebung</li>
-<li>Zweiter Entwurf, nicht kompilierbar auf Grund unvollständiger Testumgebung</li>
+<li>Testumgebung vervollständigt</li>
+<li>Zweiter Entwurf, nicht kompilierbar auf Grund der Codekonstrukte (variable, for) in Zusammenhang mit der Testumgebung</li>
+<li>Weitere Recherche zu GHDL</li>
 </ul>
 </p>
 <br/>
@@ -138,8 +147,10 @@ Spezifikation:
 <h4><a name="9">Protokoll 27.06.2011</a></h4>
 <p>
 <ul>
-<li>Erste VHDL-Testbench</li>
-<li>Dritter Entwurf, kompilierbar (jetzt mit Process)</li>
+<li>Testumgebung weiter verbessert</li>
+<li>VHDL-Testbench erstellt und funktionabel</li>
+<li>Makefile erstellt</li>
+<li>Dritter Entwurf, kompilierbar (mit Process)</li>
 </ul>
 </p>
 <br/>
@@ -149,8 +160,9 @@ Spezifikation:
 <h4><a name="10">Protokoll 01.07.2011</a></h4>
 <p>
 <ul>
-<li>Erste erfolgreiche Implementierung</li>
+<li>Eine erfolgreiche Implementierung fertiggestellt</li>
 <li>Code kommentiert</li>
+<li>Tests</li>
 </ul>
 </p>
 <br/>
@@ -180,8 +192,361 @@ Spezifikation:
 <h4><a name="99">Mailverkehr</a></h4>
 <p>
 <ul>
-<li>Spezifikation 2: Entdeckung passender Bandspeicherformalgorithmen und endgültige Entscheidung für die schnellere und einfachere Bandspeicherformberechnung</li>
+
+<li>Dokumentation auf Deutsch
+<pre>
+from    Steffen Bauereiss
+to      Orest Tarasiuk
+date    4 July 2011 11:29
+subject Re: ETI Praktikum - Sprache der Dokumentation?
+    
+hide details 4 Jul (7 days ago)
+    
+Dokus, naja eigtl. alles auf Deutsch, wollt ihr es unbedingt auf Englisch machen?
+Comments und Commits auf E ist kein Problem...
+
+Am 04.07.2011 um 00:26 schrieb Orest Tarasiuk:
+
+    Lieber Steffen!
+
+    Wir hätten noch eine Frage zum ETI-Praktikum - in welcher Sprache sollen
+    wir die Dokus unserer zwei Projekte verfassen? Wird Englisch oder Deutsch
+    bevorzugt? (Die Inline-Kommentare haben wir natürlich auf Englisch geschrieben;
+    die allermeisten Commits wurden auf Englisch zusammengefasst).
+
+    Gruß
+
+    Orest
+
+
+</pre></li>
+
+<li>Parameter beliebig übergeben, keine Binaries abgeben, keine Plattformvorgabe
+<pre>
+from    Steffen Bauereiss
+to      Lukas Märdian
+date    Sat, 25 Jun 2011 12:59:55 +0200
+subject Re: [ETI-Projekt] Gruppe 07
+
+Am 24.06.2011 um 12:37 schrieb Lukas Märdian:
+
+    Hallo Steffen,
+
+    wir haben noch weitere Fragen zu unserem Assembler Projekt:
+
+    1.: Wie genau bekommen wir die Parameter unserer Funktion übergeben?
+    Fest einprogrammiert im ASM Code?
+    Call-by-Value, per Stack?
+    Call-by-Reference, also die Pointer zu den entsprechenden Speicherbereichen per Stack?
+
+
+So etwas hätte durchaus in der Spezifikation ein Thema sein können/sollen, ihr könnt das
+festlegen, wie es euch am besten gefällt.
+
+    2.: Wie genau soll die Aufgabe technisch umgesetzt werden?
+    Sollen wir ein C-Wrapper Programm schreiben, welches die Übergabe der Parameter und
+    die Ausgabe des return Parameters übernimmt, oder alles rein in Assembler?
+    Oder sollen wir den Code in Jasmin (dem ETI ASM Simulator) schreiben?
+
+
+Jasmin kann erstaunlich viel, ob ihr damit aber glücklich werdet, ich fürchte nicht
+unbedingt, dort würde es aber reichen zu sagen, die Werte (Frage 1) sollen einfach
+genau "dort" oder "dort" eingetragen werden und dann funktioniert das. Ihr könnt für
+das Projekt gerne ein Wrapper-C schreiben, das wäre das Optimum, oder aber, wenn ihr
+in C vllt. nicht ganz so fit seit, einfach Werte im ASM reincoden .
+
+
+    Gibt es eine Vorgabe, bzgl. der Werkzeuge oder Binarys, die wir verwenden sollen?
+    Also NASM/GCC, 64-Bit/32-Bit? Linux, Windows, OSX?
+
+Nein gibt es keine, im Pflichtenheft hattet ihr Jasmin stehen, wenn ihr nun NASM oder
+was auch immer nehmt schreibt in ein Protokoll, das es geändert wurde. Sonst weiß ich
+am Ende ja auch nicht, wenn iwas nicht klappt, womit ihr gearbeitet habt.
+Binaries für OSX würden mir durchaus gefallen aber NEIN, ich muss ja eh den Code anschaun
+und bewerten und am besten auch compilen um zu sehen ob alles perfekt klappt und dann
+erstell ich die binarys ja sowieso nochmal - also nein, Binaries müsst ihr nicht abgeben.
+Und nochmal: schreibt bitte in Protokollen und der EndDoku was ihr letztendlich genommen
+und gemacht habt damit das bissl transparent wird, ok.
+
+    Müssen überhaupt Binarys abgegeben werden?
+
+
+Schon beantwortet ;)
+
+
+    Grüße, Lukas Märdian
+
+
+</pre></li>
+
+<li>Spezifikation in Ordnung, Implementierung kann anfangen
+<pre>
+from    Steffen Bauereiss
+to      Lukas Märdian
+date    Mon, 20 Jun 2011 19:50:18 +0200
+subject ETI Gruppe 7
+
+Hallo,
+
+ja, komisch, ihr seit nun schon die zweite Gruppe die mich das fragt dabei hab ich
+bereits Sonntag vor über einer Woche geschrieben gehabt.
+Da muss ich mal schaun was mit meinen eMails passiert ist....
+
+Folgendes hatte ich eigentlich gedacht geschickt zu haben:
+
+Hallo zusammen,
+
+euer Algorithmus in (1) hab ich einfach mal angenommen, wird funktioniern (und den
+habt ihr euch ja nicht selbst ausgedacht?!...), ansonsten war das okay und auch bei
+(2) gibts eigentlich nichts einzuwenden.
+Go.
+
+Gruß Steffen
+
+
+Am 20.06.2011 um 19:42 schrieb Lukas Märdian:
+
+    Hallo Steffen,
+
+
+    hast du dir unsere Spezifikation schon angeschaut (Gruppe 7)?
+    In der Praktikumsordnung steht, dass man sich die Spezifikation (und auch alle
+    anderen Schritte) immer erst von dem Tutor absegnen lassen soll.
+
+    Wir würde jetzt gerne mit der Implementierung beginnen und bitten deshalb um
+    eine Rückmeldung von dir.
+
+
+    Mit freundlichen Grüßen
+
+    Lukas Märdian i.A.
+    Gruppe 7
+
+
+</pre></li>
+
+<li>Temporärer Ausfall des SVN-Servers, github als Ersatz; Frist jeweils vor Mitternacht
+<pre>
+from    Steffen Bauereiss
+to      Orest Tarasiuk
+date    5 June 2011 14:49
+subject Re: VPN-/SVN-Server
+
+Ja, der Server scheint derzeit down zu sein oder iwas nicht zu klappen.
+
+Abgabetermin ist ja erst morgen, wartet doch am besten noch ab, ob jemand am Lehrstuhl
+das Problem morgen beheben kann (wovon ich ausgehe).
+Wenns nicht passieren sollte oder wenn ihr morgen iwie im Urlaub seid(??) und das
+deshalb heute abgeben MÜSST, dann halt per eMail. Ladet es dann aber sobald der SVN
+geht dort auch hoch und schreibt im Commit-Log, dass es die selbe Version wie die
+pünktlich per eMail abgegebene ist!
+
+Gruß,
+Steffen
+
+P.S: arbeitet doch nicht so viel am WE ;)
+
+
+Am 05.06.2011 um 14:30 schrieb Orest Tarasiuk:
+
+    Lieber Steffen!
+    Kann es sein, dass etwas nicht in Ordnung ist mit dem TUM-VPN- oder ETI-SVN-Server?
+    Seit einigen Stunden kann ich in beliebiger Kombination von IPSEC, Anyconnect, svn
+    und git nicht mehr auf den SVN-Server zugreifen. Besteht eine alternative Möglichkeit
+    zur Abgabe der aktuellsten Spezifikationen?
+
+    Gruß
+    Orest
+
+
+</pre></li>
+
+<li>Inkrementierte Vektoren wie in einer erweiterten Dokumentation definiert
+<pre>
+from    Steffen Bauereiss
+to      maximilianstaab
+date    Mi., 1. Jun. 2011, 22:21
+subject Re: Frage zu Projekt 2
+
+Hallo,
+
+ja eure Aufgabe erfordert wirklich etwas mehr Recherche als einige der anderen 
+Aufgaben und auch ich hab das noch nicht implementiert und auch keine MuLö in 
+der ich nachschaun kann. Hartnäckiges googeln hat mir aber ne Seite aufgezeigt, 
+auf der alles mögliche implementiert ist und eine schön ausführliche 
+Textbeschreibung von DGBMV zu finden ist:
+
+     In addition to the argument n, each vector argument also has
+     an  increment  argument  that immediately follows the vector
+     argument, and whose name consists of  the  three  characters
+     inc, followed by the name of the vector. For example, a vec-
+     tor x will be represented by the two arguments x, incx.  The
+     increment  argument is the spacing (stride) in the array for
+     which the elements of the vector  occur.  For  instance,  if
+     incx  =  2,  then  the  elements of x are in locations x[0],
+     x[2],..., x[2*n-2] of the array x and the intermediate loca-
+     tions x[1], x[3],..., x[2*n-3] are not referenced.
+
+Das folgende ist schon wieder verwirrend und die Bedeutung wird eigentlich oben 
+schon klar - nur der Vollständigkeit halber:
+
+     Zero increments are not permitted. When incx&gt;0,  the  vector
+     element  x_i  is  in the array element xncx[(i-1)*incx], and
+     when incx &lt; 0 the elements are stored in the  reverse  order
+     so  that  the  vector  element  x_i  is in the array element
+     xncx[-(n-i)*incx] and hence, in particular, the element  x_n
+     is  in  x[0]. The declared length of the array x in the cal-
+     ling (sub)program must be at least (1+(n-1)*|incx|).
+
+Hlift euch das denn so weiter, dass INCX und INCY mehr oder weniger angeben, wie 
+X und Y durchlaufen werden müssen, um den entsprechenden Vektor für die Rechnung 
+zu erhalten? Weitere Informationen müsste ich auch erst noch recherchieren aber 
+für mich ist die Bedeutung dieser beiden Variablen damit recht klar. Euch eine 
+Beispielrechnung aufzustellen finde ich etwas sehr viel Hilfe und sowas solln 
+wir ja auch in die Bewertung einfließen lassen - das bekommt ihr doch bestimmt 
+hin das mal durchzuspieln -&gt; Ich meine damit, wenn klar ist welche Informationen 
+hinter welchen Variablen stehen, könnt ihr doch bestimmt "euren Algorithmus" für 
+die gegebene Formel entwerfen?!
+
+Gruß, Steffen
+
+
+Am 01.06.2011 um 20:29 schrieb maximilianstaab@aol.de:
+
+    Hallo Steffen,
+
+    in der Funktion DGBMV ist die Rede von einer Integervariablen INCX, die bei 
+    der Berechnung vom Vektor X Verwendung findet.
+    Als Beschreibung ist angegeben, dass sie das Inkrement der Elemente des 
+    Vektors X beinhaltet.
+    wörtlich: "INCX specifies the increment for the elements of X".
+    Was genau ist das Inkrement der Elemente eines Vektors?
+    Wir steigen da nicht ganz durch. Könntest du uns mal bitte einen Tipp geben?
+    Ein aussagekräftiges, durchgerechnetes Beispiel wäre auf jeden Fall auch 
+    hilfreich. Etwas derartiges war bisher noch nicht aufzutreiben.
+    Die Aufgabe von INCY wird sich dann wohl analog dazu klären.
+
+    Mit freundlichen Grüßen
+    Maximilian Staab
+
+
+</pre></li>
+
+
+<li>Pflichtenhefte in Ordnung, aber Zeitplanung knapp
+<pre>
+from    Steffen Bauereiss
+to      lukas.maerdian@mytum.de,
+        mstaab@mytum.de,
+        orest@mytum.de
+date    22 May 2011 17:59
+subject Pflichtenhefte
+    
+Hallo,
+
+Okay, zu Gruppe 7:
+Mit euren Beiden Pflichtenheften seid ihr auf einem guten Weg, hab mir beide
+angeschaut und zwei Dinge sind mir aufgefallen:
+- die Zeitplanung finde ich etwas sehr knapp
+- Blackbox-sichten sind je ja quasi nur die Aufgabenstellung sehr ähnlich
+wiedergegeben, es sind auch wirklich keine Impl-Details dabei aber vllt hättet
+ihr das ein bisschen schöner Ausdrücken können. (Ist aber nicht weiters schlimm)
+
+Alles in allem dürft ihr aber, wenn Spezifikation und Implementierung auch so
+werden, schonmal auf ein ordentliches Ergebnis hoffen, also weiter so!
+
+Gruß,
+Steffen
+
+
+</pre></li>
+
+<li>A' steht für die Transponierte von A (nach der erweiterten Dokumentation)
+<pre>
+from    Steffen Bauereiss
+to      Lukas Märdian
+date    Tue, 17 May 2011 14:25:34 +0200
+subject Re: ETI Praktikum SS11, Gruppe 7
+
+Hallo,
+
+in eurem Fall steht A' für die TRANSPONIERTE MATRIX
+
+Hier kann mans auch rauslesen:
+ TRANS - CHARACTER*1.
+* On entry, TRANS specifies the operation to be performed as
+* follows:
+* TRANS = 'N' or 'n' y := alpha*A*x + beta*y.
+* TRANS = 'T' or 't' y := alpha*A'*x + beta*y.
+* TRANS = 'C' or 'c' y := alpha*A'*x + beta*y.
+-&gt; TRANS gibt an ob mit der Transponierten gearbeitet werden soll und wenn ja,
+(T oder C) dann ist da A' im Spiel und steht somit wohl für A transponiert.
+Diese Manual-Dokumente sind immer Plaintext und A^T würde da einfach nur seltsam
+aussehen aber hier gäbe es ein formatiertes Deokument:
+http://publib.boulder.ibm.com/infocenter/clresctr/vxrx/index.jsp?
+topic=%2Fcom.ibm.cluster.essl43.guideref.doc%2Fam501_hsgbmv.html
+(Das mit den A^H aus dem Link braucht ihr nicht, bleibt da bei eurer Aufgabe)
+
+Gruß,
+Steffen
+
+
+Am 17.05.2011 um 13:28 schrieb Lukas Märdian:
+
+    Hallo Steffen,
+
+    wir haben eine Frage bzgl. unserem 2. Projekt. (ss11-g07/Projekt2)
+    Es geht in der Aufgabe um eine Matrix A. In bestimmten fällen wird aber auch
+    eine Matrix A' benötigt, welche nicht näher definiert ist.
+
+    Wir haben nun etwas gesucht und haben verschiedenen Möglichkeiten gefunden,
+    so dass A' entweder die transponierte, oder die abgeleitete Matrix von A sein
+    kann.
+    Was ist es denn jetzt wirklich?
+
+    Liebe Grüße,
+
+    Lukas Märdian, Gruppe 7
+
+
+</pre></li>
+
+<li>Das Praktikum beginnt!
+<pre>
+from    Steffen Bauereiss
+date    7 May 2011 16:34
+subject ETI Praktikum SS11
+
+Hallo zusammen,
+
+nun endlich haben wir Tutoren die endgültige Gruppenzuteilung erfahren, SVN-Zugriff
+(und somit auch mal Einblick in eure Aufgaben) und unsre Anwesenheitszeiten im
+ETI-Multimedia-Raum 01.08.11 festgelegt.
+
+Meine Anwesenheit im Raum 01.08.11:
+Montags 10-12 und
+Donnerstags 9-11
+
+Ansonsten ist aber zu fast allen Zeiten ein anderer Tutor vor Ort um auf Fragen zu
+antworten und wenn es ausnahmsweise mal eine Woche garnicht anders geht, könnten wir
+per eMail etwas vereinbaren oder wir klären die Fragen direkt per eMail, ihr könnt
+mir jederzeit schreiben!
+
+Um euch nochmals ein paar Informationen zum Praktikum zukommen zu lassen und euch
+kennenzulernen (evtl. auch um euch gegenseitig in den Gruppen kennenzulernen) sowie
+etwaige Fragen gleich vorneweg zu beantworten, möchte ich euch bitten, in der
+kommenden Woche in einer meiner Sprechstunden als komplettes Team vorbeizukommen.
+Wenn es euer Stundenplan erlaubt und ihr vllt. am Montag auch noch ausschlafen wollt,
+würde ich Montag 11 Uhr für alle Teams vorschlagen, dann muss ich auch alles nur
+einmal erzählen. Sollte das nicht gehen, kommt einfach während der Zeiten oben zu
+einem anderen Zeitpunkt kurz vorbei!
+
+Gruß,
+Steffen
+</pre></li>
+
 </ul>
 </p>
+
 </body>
 </html>
