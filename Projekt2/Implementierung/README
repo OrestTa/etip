@@ -15,9 +15,9 @@ Files:
 * dgbmv.asm                       -- contains assembler code calculating dgbmv
 * main.c                          -- C wrapper, contains input parameters and manages output
 * Makefile                        -- Makefile, type "make" in order to compile, then execute dgbmv
-* aux/DGBMV.py                    -- a python script with similar functionality, for testing purposes only
-* aux/bandmatrix-vector-mult.py   -- an early multiplication test script, deprecated
-* aux/matrix-2-bandmatrix.py      -- an early conversion test script, deprecated
+* auxiliary/DGBMV.py                    -- a python script with similar functionality, for testing purposes only
+* auxiliary/bandmatrix-vector-mult.py   -- an early multiplication test script, deprecated
+* auxiliary/matrix-2-bandmatrix.py      -- an early conversion test script, deprecated
 
 
 Platform:
