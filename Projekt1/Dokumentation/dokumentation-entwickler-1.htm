@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>Entwicklerdokumentation 1 ss11-g07</title>
+  <style type="text/css">
+    body {
+    width: 800;
+    margin: 0 auto;
+    }
+  </style>
+</head>
+
+<body>
+
+<div align="Center">
+<h3><a name="Entwickler_Doku"></a><strong>Entwicklerdokumentation zum Projekt Nr. 1 der Gruppe 7 (ss11-g07)</strong></h3>
+<i>Tutor: Steffen Bauereiss</i><br/>
+</div>
+<ul>
+<li>
+  <a href="#kurzbeschreibung">Kurzbeschreibung</a>
+</li>
+<li>
+  <a href="#abhaengigkeiten">Abhängigkeiten</a>
+</li>
+<li>
+  <a href="#eingabe">Eingabe</a>
+</li>
+<li>
+  <a href="#ausgabe">Ausgabe</a>
+</li>
+<li>
+  <a href="#dateien">Dateien</a>
+</li>
+<li>
+  <a href="#struktur">Codestruktur</a>
+</li>
+</ul>
+<br/>
+<br/>
+
+<hr width="100%" size="1">
+<h4><a name="kurzbeschreibung">Kurzbeschreibung</a></h4>
+<p>Das vorliegende VHDL-System konvertiert eine Binärzahl mit 17 Stellen in eine BCD-Zahl mit 5 x 4 Stellen. Der Definitionsbereich ist [0, 99999].</p>
+<br/>
+<br/>
+
+<hr width="100%" size="1">
+<h4><a name="abhaengigkeiten">Abhängigkeiten</a></h4><p>
+  Um die Schaltung <code>BINBCD</code> testen zu können, benötigt man folgende Software:
+<ul>
+  <li>GHDL (ghdl) - Version 0.29;</li>
+  <li>GTKWave Analyzer (gtkwave) - Version 3.3.19;</li>
+  <li>GNU Make (make) - Version 3.81 (optional).</li>
+</ul>
+  Als Referenzplattform dient eine aktuelle Linuxdistribution (Ubuntu 11.04) mit der o. g. Software.</p>
+<br/>
+<br/>
+
+<hr width="100%" size="1">
+<h4><a name="eingabe">Eingabe</a></h4><p>
+Die Eingabe der Schaltung kann in der Testbench (<code>testbench.vhd</code>) verändert werden. Zu Beginn der Architecture <code>BINBCD_test</code> wird der Eingabeparameter <code>bin_input</code> definiert, welcher ein 17-Bit-langer std_logic_vector (MSB first) ist. Alle 17 Bits dieses Vektors können nach Belieben verändert werden.<br/><br/>
+
+  Nach jeder Änderung muss die Schaltung neu analysiert, elaboriert, gestestet und das Ergebnis in GTKWave angezeigt werden.</p>
+<br/>
+<br/>
+
+<hr width="100%" size="1">
+<h4><a name="ausgabe">Ausgabe</a></h4><p>
+  Automatisch: Im Verzeichnis der Implementierung gibt es ein <code>Makefile</code>, welches benutzt werden kann, um die Schaltung zu testen. Gibt man in einem Terminal im Implementierungsverzeichnis den Befehl <code>make</code> ein, so wird die Schaltung automatisch analysiert, elaboriert und getestet; das Ergebnis wird in GTKWave angezeigt.<br/><br/>
+
+  Manuell: Ist <code>make</code> nicht vorhanden, so kann die Schaltung manuell getestet werden. Dazu müssen in einem Terminal im Implementierungsverzeichnis folgende Befehle eingegeben werden:<br/></div>
+<ul>
+  <li><code>ghdl -a implementierung1.vhd testbench.vhd</code></li>
+  <li><code>ghdl -e testbench</code></li>
+  <li><code>./testbench --stop-time=20000ms --vcd=testbench.w</code></li>
+  <li><code>gtkwave testbench.w</code></li>
+</ul>
+  Der erste Befehl analysiert dabei die eigentliche VHDL-Schaltung (<code>implementierung1.vhd</code>) und dessen Testbench (<code>testbench.vhd</code>); der zweite Befehl elaboriert die zuvor analysierte Schaltung; der dritte Befehl startet einen 20-sekündigen Testdurchlauf; der vierte Befehl zeigt diesen Testdurchlauf in GTKWave an.</br></br>
+
+<u>Ausgabewerte auslesen</u>: Nachdem GTKWave die Testdatei gelesen hat, kann man die interessanten Signale aus der Liste in die Anzeige einfügen, den erwünschten Zeitpunkt anklicken und den aktuellen Wert auslesen. Die Ausgabezahl steht im aus den Vektoren <code>einer</code>, <code>zehner</code>, <code>hunderter</code>, <code>tausender</code> und <code>zehntausender</code> zusammengesetzten Vektor (MSB first). Das OF-Flag steht in <code>overflow</code>. Alle relevanten Signale sind nach ca. 1,7 s errechnet.
+</p>
+<br/>
+<br/>
+
+<hr width="100%" size="1">
+<h4><a name="dateien">Dateien</a></h4><p>
+  Im Implementierungsverzeichnis befinden sich folgende Dateien und Unterverzeichnisse:
+<ul>
+ <li>implementierung1.vhd</li>
+ <li>testbench.vhd</li>
+ <li>Makefile</li>
+ <li>MakefileWIN.bat</li>
+ <li>README</li>
+ <li>Test_Versions/</li>
+</ul>
+  <strong>implementierung1.vhd</strong> ist die VHDL Implementierung unseres Binär-zu-BCD-Konverters, auf Basis des Double-Dabble-Algorithmus.<br/><br/>
+
+  <strong>testbench.vhd</strong> ist eine VHDL Testumgebung für <code>implementierung1.vhd</code>. Hier wird der Eingabeparameter (<code>bin_input</code>) definiert und der Takt (<code>clk</code>) gesteuert. Dies ist der Einstiegspunkt beim Testen der Schaltung.<br/><br/>
+
+  <strong>Makefile</strong> ist eine Datei, welche das automatische Analysieren, Elaborieren, Testen und Anzeigen des Ergebnises mit Hilfe des Programmes "make" ermöglicht. Es bietet folgende Targets: all, compile, simulate, run, clean.<br/><br/>
+
+  <strong>MakefileWIN.bat</strong> ist eine (nicht unterstützte) Batch-Datei für Windows-Betriebssysteme, welche das automatische Analysieren, Elaborieren, Testen und Anzeigen des Ergebnises in GTKWave ermöglichen sollte.<br/><br/>
+
+  <strong>README</strong> ist eine Textdatei, welche grundlegende Informationen über das Projekt zur Verfügung stellt.<br/><br/>
+
+  <strong>Test_Versions/</strong> ist ein Verzeichnis, welches alte Test-Versionen der Schaltung beinhaltet. Diese Versionen sind nicht unterstützt und dienen ausschließlich Testzwecken.</p>
+<br/>
+<br/>
+
+<hr width="100%" size="1">
+<h4><a name="struktur">Codestruktur</a></h4><p>
+Die Schaltungsdatei <code>implementierung1.vhd</code> beginnt mit der Definition der Entity <code>BINBCD</code>. Darin werden die Eingabeports <code>clk</code> und <code>bin_input</code> sowie die Ausgabeports <code>overflow</code>, <code>einer</code>, <code>zehner</code>, <code>hunderter</code>, <code>tausender</code> und <code>zehntausender</code> definiert.</p>
+
+<p>Danach beginnt die Architecture von <code>BINBCD</code>, welche zuerst einige lokalen Signale definiert, die zur Berechnung der BCD benötigt werden. Dazu gehören:
+<li>interne Repräsentanten aller Output-Ports, da diese während der Ausführung nicht ausgelesen werden können;</li>
+<li>eine Kopie der Eingabe <code>bin_input</code>, auf der gearbeitet werden kann;</li>
+<li>ein Zähler, der in jedem Durchlauf des Processes inkrementiert wird;</li>
+<li>die Konstante <code>drei</code>, die stets die Binärzahl "0011" beinhaltet.</li><br/></p>
+
+<p>Der Rumpf der Architecture besteht aus einem auf <code>clk</code> reagierenden Process, welcher sich in drei logisch getrennte Fälle unterteilen lässt:</p>
+
+<p>Der <strong>erste Fall</strong> tritt ein, wenn <code>clk</code> eine steigende Flanke erzeugt, der Zähler maximal 17 beträgt und der Eingabeparameter <code>bin_input</code> im Definitionsbereich liegt. Der zusammengesetzte Vektor, welcher alle lokalen Repräsentanten der BCD-Ausgabeziffern beinhaltet, wird dann um 1 Bit nach links geshiftet und der Zähler, welcher die Anzahl der bisher durchlaufenen effektiven Processes enthält, wird erhöht. Der Linksshift durch alle Repräsentanten der BCD-Ziffern und die Eingabe wird folgendermaßen realisiert:<br/>
+  Alle Teilvektoren werden der Reihe nach - angefangen mit <code>lzehntausender</code> - neu definiert als die rechten drei Bits des derzeitigen Inhalts des Repräsentanten in Bearbeitung konkateniert mit dem Bit ganz links des nachfolgenden Repräsentanten; im ersten Fall <code>ltausender</code>. Den Schluss bildet der Eingabevektor <code>linput</code>, der jedes Mal mit einer <code>0</code> konkateniert wird, sodass der Inhalt dieses Teilvektors nach 17 Durchläufen <code>00000000000000000</code> beträgt. Dies spielt allerdings nur eine untergeordnete Rolle, da nur die BCD-Vektoren am Ende ausgegeben werden.</p>
+
+<p>Der <strong>zweite Fall</strong> tritt ein, wenn <code>clk</code> eine fallende Flanke erzeugt, der Zähler maximal 17 beträgt und der Eingabeparameter <code>bin_input</code> im Definitionsbereich liegt. Alle lokalen Repräsentanten der BCD-Ausgabeziffern werden dann auf ihre Größe überprüft. Jeder, der einen Wert <code>5</code> oder mehr aufweist, wird entsprechend der Spezifikation um den Wert <code>3</code> erhöht. Nach den Überprüfungen und ggf. Addition(en) wird das jeweils aktuelle Signal der lokalen Repräsentanten auf die jeweilige BCD-Ausgabe gelegt. Außerdem wird das Overflow-Signal auf <code>0</code> gesetzt, da wir uns im Definitionsbereich befinden.</p>
+
+<p>Der <strong>dritte Fall</strong> tritt ein, wenn <code>clk</code> eine fallende Flanke erzeugt, der Zähler maximal 17 beträgt und der Eingabeparameter <code>bin_input</code> nicht im Definitionsbereich liegt. Das Overflow-Signal bleibt dann <code>1</code> und alle BCD-Ausgabeziffern werden auf <code>0000</code> gesetzt.</p>
+
+<p>Effektiv wird der Process-Rumpf also 17 mal ausgeführt.</p>
+
+<p>Abschließend wird der Output-Port <code>overflow</code> mit dem Inhalt seines internen Repräsentanten <code>overflw</code> überschrieben.</p>
+
+<p>Die Testdatei <code>testbench.vhd</code> stellt die Eingabe zur Verfügung, inkl. des 200 mal wechselnden, insgesamt 20 s lang laufenden Taktsignals <code>clk</code>.</p>
+
+</body>
+</html>
