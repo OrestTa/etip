@@ -15,7 +15,7 @@
 
 <div align="Center">
 <h3><a name="Pflichtenheft"></a><strong>Protokolle zum Projekt Nr. 1 der Gruppe 7 (ss11-g07)</strong></h3>
-<i>Tutor: Steffen Bauereiss</i><br>
+<i>Tutor: Steffen Bauereiss</i><br/>
 </div>
 
 <ul>
@@ -26,15 +26,11 @@
 <li><a href="#5">Protokoll 23.05.2011</a></li>
 <li><a href="#6">Protokoll 30.05.2011</a></li>
 <li><a href="#7">Protokoll 31.05.2011</a></li>
-<li><a href="#8">Protokoll 02.06.2011</a></li>
-<li><a href="#9">Protokoll 03.06.2011</a></li>
-<li><a href="#10">Protokoll 15.06.2011</a></li>
-<li><a href="#11">Protokoll 21.06.2011</a></li>
-<li><a href="#12">Protokoll 26.06.2011</a></li>
-<li><a href="#13">Protokoll 27.06.2011</a></li>
-<li><a href="#14">Protokoll 01.07.2011</a></li>
-<li><a href="#15">Protokoll 10.07.2011</a></li>
-<li><a href="#16">Protokoll 11.07.2011</a></li>
+<li><a href="#8">Protokoll 26.06.2011</a></li>
+<li><a href="#9">Protokoll 27.06.2011</a></li>
+<li><a href="#10">Protokoll 01.07.2011</a></li>
+<li><a href="#11">Protokoll 10.07.2011</a></li>
+<li><a href="#12">Protokoll 11.07.2011</a></li>
 <li><a href="#99">Mailverkehr</a></li>
 </ul>
 <br/>
@@ -45,26 +41,36 @@
 <p>
 Das vorliegende VHDL-System konvertiert eine Binärzahl mit 17 Stellen in eine BCD-Zahl mit 5 x 4 Stellen. Der Definitionsbereich ist [0, 99999].</p>
 <p>
-Aufgetroffene Probleme:
-<li>Kompilation klappte nicht mit Variablen -> es wurden Signale verwendet;</li>
-<li>Kompilation klappte nicht mit for loop Concurrent Statements -> es wurde ein auf <code>clk</code> reagierender Process verwendet;</li>
-<li>Casts integer nach std_logic_vector klappten nicht -> es wurden unsigneds verwendet.</li>
+Entstandenen Probleme:
+<li>Kompilation klappte nicht mit Variablen -&gt; es wurden Signale verwendet;</li>
+<li>Kompilation klappte nicht mit for/loop Concurrent Statements -&gt; es wurde ein auf <code>clk</code> reagierender Process verwendet;</li>
+<li>Umwandlung von <code>integer</code> nach <code>std_logic_vector</code> klappten nicht -&gt; es wurden <code>unsigned</code> verwendet.</li>
 </p>
 
-<br>
-<br>
+<br/>
+<br/>
 
 <hr width="100%" size="1">
 <h4><a name="2">Protokoll 12.05.2011</a></h4>
-<p>Einleitendes Treffen mit Tutor, anschließend kurze Besprechung</p>
-<br>
-<br>
+<p>
+<ul>
+<li>Einleitendes Treffen mit dem Tutor</li>
+<li>kurze Besprechung</li>
+</ul>
+</p>
+<br/>
+<br/>
 
 <hr width="100%" size="1">
 <h4><a name="3">Protokoll 16.05.2011</a></h4>
-<p>Verteilung der Aufgabenbereiche, erstellung des Gerüstes für das Pflichtenheft</p>
-<br>
-<br>
+<p>
+<ul>
+<li>Verteilung der Aufgabenbereiche</li>
+<li>Erstellung des Gerüstes für das Pflichtenheft</li>
+</ul>
+</p>
+<br/>
+<br/>
 
 <hr width="100%" size="1">
 <h4><a name="4">Protokoll 17.05.2011</a></h4>
@@ -77,104 +83,105 @@ Aufgetroffene Probleme:
 <li>Projektverpflichtungen</li>
 </ul>
 </p>
-<br>
-<br>
+<br/>
+<br/>
 
 <hr width="100%" size="1">
 <h4><a name="5">Protokoll 23.05.2011</a>
 </h4>
 <p>
 <ul>
-<li>Pflichtenheft-Zeitplanung etwas aufgelockert</li>
-<li>Besprechung zur potentiellen Lösungswegen</li>
+<li>Pflichtenheft: Zeitplanung etwas aufgelockert</li>
+<li>Besprechung zu potentiellen Lösungswegen</li>
 <li>Erstellung des Gerüstes für die Spezifikation</li>
-</ul></p>
-<br>
-<br>
+</ul>
+</p>
+<br/>
+<br/>
 
 <hr width="100%" size="1">
 <h4><a name="6">Protokoll 30.05.2011</a></h4>
 <p>Spezifikation:
 <ul>
 <li>VHDL Entity</li>
-<li>Beschreibung Alternative 2 (Bin-Dec-BCD)</li>
+<li>Beschreibung der Alternative 2 (Bin-Dec-BCD)</li>
 </ul>
 </p>
-<br>
-<br>
+<br/>
+<br/>
 
 <hr width="100%" size="1">
 <h4><a name="7">Protokoll 31.05.2011</a></h4>
 <p>
 Spezifikation:
 <ul>
-<li>Double Dabble oder standard Bin-Dec-BCD als alternative Algorithmen (Beschreibung)</li>
-<li>Entscheidung für Double Dabble nach einleitenden Tests</li>
+<li>Double-Dabble und Bin-Dec-BCD als alternative Algorithmen (Beschreibung)</li>
+<li>Entscheidung für Double-Dabble nach einleitenden Tests</li>
 </ul>
 </p>
-<br>
-<br>
+<br/>
+<br/>
 
 <hr width="100%" size="1">
-<h4><a name="12">Protokoll 26.06.2011</a></h4>
+<h4><a name="8">Protokoll 26.06.2011</a></h4>
 <p>Implementierung:
 <ul>
-<li>DD-Algorithmusbeschreibung etwas verdeutlicht</li>
+<li>Double-Dabble: Algorithmusbeschreibung etwas verdeutlicht</li>
 <li>Erster Entwurf, nicht kompilierbar auf Grund unvollständiger Testumgebung</li>
 <li>Zweiter Entwurf, nicht kompilierbar auf Grund unvollständiger Testumgebung</li>
 </ul>
 </p>
-<br>
-<br>
+<br/>
+<br/>
 
 <hr width="100%" size="1">
-<h4><a name="13">Protokoll 27.06.2011</a></h4>
+<h4><a name="9">Protokoll 27.06.2011</a></h4>
 <p>
 <ul>
 <li>Erste VHDL-Testbench</li>
-<li>Dritter Entwurf, kompilierbar mit Process</li>
+<li>Dritter Entwurf, kompilierbar (jetzt mit Process)</li>
 </ul>
 </p>
-<br>
-<br>
+<br/>
+<br/>
 
 <hr width="100%" size="1">
-<h4><a name="14">Protokoll 01.07.2011</a></h4>
+<h4><a name="10">Protokoll 01.07.2011</a></h4>
 <p>
 <ul>
 <li>Erste erfolgreiche Implementierung</li>
 <li>Code kommentiert</li>
 </ul>
 </p>
-<br>
-<br>
+<br/>
+<br/>
 
 <hr width="100%" size="1">
-<h4><a name="15">Protokoll 10.07.2011</a></h4>
+<h4><a name="11">Protokoll 10.07.2011</a></h4>
 <p>
 <ul>
-<li>Dokumentation fertig</li>
+<li>Dokumentation fertiggestellt</li>
 </ul>
 </p>
-<br>
-<br>
+<br/>
+<br/>
 
 <hr width="100%" size="1">
-<h4><a name="16">Protokoll 11.07.2011</a></h4>
+<h4><a name="12">Protokoll 11.07.2011</a></h4>
 <p>
 <ul>
-<li>Vortrag fertig</li>
+<li>Vortrag fertiggestellt</li>
 </ul>
 </p>
-<br>
-<br>
+<br/>
+<br/>
 
 <hr width="100%" size="1">
 <h4><a name="99">Mailverkehr</a></h4>
 <p>
-<li>Spezifikation 2: Entdeckung passender Bandspeicherformalgorithmen und endgültige Entscheidung für die schnellere und einfachere Bandspeicherformberechnung</li></p>
-<br>
-<br>
-
+<ul>
+<li>Spezifikation 2: Entdeckung passender Bandspeicherformalgorithmen und endgültige Entscheidung für die schnellere und einfachere Bandspeicherformberechnung</li>
+</ul>
+</p>
 </body>
 </html>
