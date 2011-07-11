@@ -3,8 +3,16 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <title>Protokolle 2 ss11-g07</title>
+  <style type="text/css">
+    body {
+    width: 800;
+    margin: 0 auto;
+    }
+  </style>
 </head>
+
 <body>
+
 <div align="Center">
 <h3><a name="Pflichtenheft"></a><strong>Protokolle zum Projekt Nr. 2 der Gruppe 7 (ss11-g07)</strong></h3>
 <i>Tutor: Steffen Bauereiss</i><br>
@@ -25,49 +33,24 @@
 <li><a href="#12">Protokoll 26.06.2011</a></li>
 <li><a href="#13">Protokoll 27.06.2011</a></li>
 <li><a href="#14">Protokoll 01.07.2011</a></li>
-<li><a href="#15">Protokoll XX.07.2011</a></li>
-<li><a href="#16">Protokoll XX.07.2011</a></li>
+<li><a href="#15">Protokoll 10.07.2011</a></li>
+<li><a href="#16">Protokoll 11.07.2011</a></li>
 <li><a href="#99">Mailverkehr</a></li>
 </ul>
-<br>
+<br/>
+<br/>
 
 <hr width="100%" size="1">
 <h4><a name="1">Kurzfassung</a></h4>
 <p>
-  Orest Tarasiuk - Projektmanagement<br>
-  Lukas Märdian - Vortrag<br>
-  Maximilian Staab - Dokumentation
-
-<pre>
-2.5.1 Projektmanager
-Der Projektmanager organisiert Treffen und Termine, erstellt
-Besprechungsprotokolle, garantiert die Einhaltung der Termine und hält einen
-Abschlussvortrag von ca. 5 Minuten über den Projektverlauf.
-Aus dem Bericht des Projektmanagers muss eindeutig hervorgehen, wie das
-Projekt abgewickelt wurde. Alle negativen und positiven Ereignisse sind zu
-dokumentieren. Die Form dieser Dokumentation ist zunächst frei wählbar, sollte
-aber klar und übersichtlich sein.
-
-
-
-Darstellung des Projektverlaufes durch eine Person in Form eines
-Kurzvortrages von maximal 5 Minuten Dauer.
-
-
-
-Darstellung des
-Projektverlaufs
-
-Vortragsgestaltung
-
-Projektverlauf
-
-Protokolle
-
-</pre>
-zwischen wöchentlichen terminen: stets detailsarbeiten/-änderungen
-
+Das vorliegende VHDL-System konvertiert eine Binärzahl mit 17 Stellen in eine BCD-Zahl mit 5 x 4 Stellen. Der Definitionsbereich ist [0, 99999].</p>
+<p>
+Aufgetroffene Probleme:
+<li>Kompilation klappte nicht mit Variablen -> es wurden Signale verwendet;</li>
+<li>Kompilation klappte nicht mit for loop Concurrent Statements -> es wurde ein auf <code>clk</code> reagierender Process verwendet;</li>
+<li>Casts integer nach std_logic_vector klappten nicht -> es wurden unsigneds verwendet.</li>
 </p>
+
 <br>
 <br>
 
@@ -79,28 +62,89 @@ zwischen wöchentlichen terminen: stets detailsarbeiten/-änderungen
 
 <hr width="100%" size="1">
 <h4><a name="3">Protokoll 16.05.2011</a></h4>
-<p>Verteilung der Aufgabenbereiche, Pflichtenheft</p>
+<p>Verteilung der Aufgabenbereiche, erstellung des Gerüstes für die Pflichtenhefte</p>
 <br>
 <br>
 
 <hr width="100%" size="1">
 <h4><a name="4">Protokoll 17.05.2011</a></h4>
-<p>Pflichtenheft; Zeitplanung</p>
+<p>Vervollständigung der Pflichtenhefte:
+<li>Aufgabenkurzbeschreibung</li>
+<li>Hilfsmittel</li>
+<li>Black-Box-Sicht</li>
+<li>Zeitplanung</li>
+<li>Projektverpflichtungen</li>
+</p>
 <br>
 <br>
 
 <hr width="100%" size="1">
 <h4><a name="5">Protokoll 23.05.2011</a>
 </h4>
-<p>asdf</p>
+<p>Besprechung zur potentiellen Lösungswegen; Erstellung des Gerüstes für die Spezifikationen</p>
 <br>
 <br>
 
 <hr width="100%" size="1">
 <h4><a name="6">Protokoll 30.05.2011</a></h4>
 <p>
-<li>Pflichtenheft</li></p>
+<li>Spezifikation 1: Double Dabble oder standard Bin-Dec-BCD als alternative Algorithmen</li>
+<li>Spezifikation 2: Normalform- oder Bandspeicherformberechnung als alternative Vorgehensweisen</li></p>
+
+<hr width="100%" size="1">
+<h4><a name="7">Protokoll 31.05.2011</a></h4>
+<p>
+Spezifikation 1: Entscheidung für Double Dabble nach einleitenden Tests
+
+<hr width="100%" size="1">
+<h4><a name="8">Protokoll 02.06.2011</a></h4>
+<p>
+Spezifikation 2: erste Tests und vorläufige Entscheidung für die Normalformberechnung auf Grund fehlender Algorithmen für die Bandspeicherform-Vektor-Multiplikation sowie Bandspeicherform-Transpose</p>
+
+<hr width="100%" size="1">
+<h4><a name="9">Protokoll 03.06.2011</a></h4>
+<p>
+<li>Spezifikation 2: Entdeckung passender Bandspeicherformalgorithmen und endgültige Entscheidung für die schnellere und einfachere Bandspeicherformberechnung</li></p>
+
+<hr width="100%" size="1">
+<h4><a name="10">Protokoll 15.06.2011</a></h4>
+<p>
+<li>Spezifikation 2: Entdeckung passender Bandspeicherformalgorithmen und endgültige Entscheidung für die schnellere und einfachere Bandspeicherformberechnung</li></p>
+
+<hr width="100%" size="1">
+<h4><a name="11">Protokoll 21.06.2011</a></h4>
+<p>
+<li>Spezifikation 2: Entdeckung passender Bandspeicherformalgorithmen und endgültige Entscheidung für die schnellere und einfachere Bandspeicherformberechnung</li></p>
+
+<hr width="100%" size="1">
+<h4><a name="12">Protokoll 26.06.2011</a></h4>
+<p>
+<li>Spezifikation 2: Entdeckung passender Bandspeicherformalgorithmen und endgültige Entscheidung für die schnellere und einfachere Bandspeicherformberechnung</li></p>
+
+<hr width="100%" size="1">
+<h4><a name="13">Protokoll 27.06.2011</a></h4>
+<p>
+<li>Spezifikation 2: Entdeckung passender Bandspeicherformalgorithmen und endgültige Entscheidung für die schnellere und einfachere Bandspeicherformberechnung</li></p>
+
+<hr width="100%" size="1">
+<h4><a name="14">Protokoll 01.07.2011</a></h4>
+<p>
+<li>Spezifikation 2: Entdeckung passender Bandspeicherformalgorithmen und endgültige Entscheidung für die schnellere und einfachere Bandspeicherformberechnung</li></p>
+
+<hr width="100%" size="1">
+<h4><a name="15">Protokoll 10.07.2011</a></h4>
+<p>
+<li>Spezifikation 2: Entdeckung passender Bandspeicherformalgorithmen und endgültige Entscheidung für die schnellere und einfachere Bandspeicherformberechnung</li></p>
+
+<hr width="100%" size="1">
+<h4><a name="16">Protokoll 11.07.2011</a></h4>
+<p>
+<li>Spezifikation 2: Entdeckung passender Bandspeicherformalgorithmen und endgültige Entscheidung für die schnellere und einfachere Bandspeicherformberechnung</li></p>
+
+<hr width="100%" size="1">
+<h4><a name="99">Mailverkehr</a></h4>
+<p>
+<li>Spezifikation 2: Entdeckung passender Bandspeicherformalgorithmen und endgültige Entscheidung für die schnellere und einfachere Bandspeicherformberechnung</li></p>
 
 </body>
 </html>
-
