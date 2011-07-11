@@ -100,7 +100,7 @@ Es werden nur diejenigen mit durch drei ganzzahlig teilbaren Indizes ausgewählt
                 0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
                (1,       2,       3,       4,       5,       6)     =>     X = (1,2,3,4,5,6)
 </pre></code>
-Bei negativem Inkrement wird von Hinten angefangen:
+Bei negativem Inkrement wird von hinten angefangen:
 <code><pre>
                 10 9  8  7  6  5  4  3  2  1  0
                (9, 0, 8, 0, 7, 0, 6, 0, 5, 0, 4)
@@ -152,7 +152,7 @@ Alle genannten Schritte können mit dem Skript <a href="dokumentation-DGBMV-beis
 
 <hr width="100%" size="1">
 <h4><a name="kompilieren">Kompilieren</a></h4><p>
-  Automatisch (mit make): Im Verzeichnis der Implementierung existiert ein <code>Makefile</code>, welches benutzt werden kann, um das Programm zu kompilieren. Gibt man in einem Terminal im Implementierungsverzeichnis den Befehl <code>make</code> ein, so das Programm automatisch kompiliert.<br/><br/>
+  Automatisch (mit make): Im Verzeichnis der Implementierung existiert ein <code>Makefile</code>, welches benutzt werden kann, um das Programm zu kompilieren. Gibt man in einem Terminal im Implementierungsverzeichnis den Befehl <code>make</code> ein, dann kompiliert das Programm automatisch.<br/><br/>
 
   Manuell: Ist <code>make</code> nicht vorhanden, so kann das Programm manuell kompiliert werden. Dazu müssen in einem Terminal im Implementierungsverzeichnis folgende Befehle eingegeben werden:<br/>
 
@@ -241,7 +241,7 @@ Die Datei dgbmv.asm beinhaltet folgende Macros und Subroutines:<br/><br/>
 <strong>KL</strong> definiert die Speicherstelle [EBP+20], an der eine Kopie des Eingabeparameters <code>KL</code> steht.<br/>
 <strong>KU</strong> definiert die Speicherstelle [EBP+24], an der eine Kopie des Eingabeparameters <code>KU</code> steht.<br/>
 <strong>_ALPHA</strong> definiert die Speicherstelle [EBP+28], an der ein Pointer auf den originalen Eingabeparameter <code>ALPHA</code> steht.<br/>
-<strong>_A</strong> definiert die Speicherstelle [EBP+32], an zu Beginn ein Pointer auf den originalen Eingabeparameter <code>A</code> steht. Dieser wird jedoch mit einem auf eine (zur Transponierten von A transformierte oder auch nicht) Kopie der Matrix A überschrieben, sobald diese verfügbar ist.<br/>
+<strong>_A</strong> definiert die Speicherstelle [EBP+32], an der zu Beginn ein Pointer auf den originalen Eingabeparameter <code>A</code> steht. Dieser wird jedoch mit einem auf eine (zur Transponierten von A transformierte oder auch nicht) Kopie der Matrix A zeigenden Pointer überschrieben, sobald jene verfügbar ist.<br/>
 <strong>LDA</strong> definiert die Speicherstelle [EBP+36], an der eine Kopie des Eingabeparameters <code>LDA</code> steht.<br/>
 <strong>_X</strong> definiert die Speicherstelle [EBP+40], an der ein Pointer auf den originalen Eingabeparameter <code>X</code> steht.<br/>
 <strong>INCX</strong> definiert die Speicherstelle [EBP+44], an der eine Kopie des Eingabeparameters <code>INCX</code> steht.<br/>
@@ -255,7 +255,7 @@ Die Datei dgbmv.asm beinhaltet folgende Macros und Subroutines:<br/><br/>
 
 <strong>saveregs</strong> definiert ein Codefragment, welches die Register EAX, EBX, ECX, EDX, ESI und EDI zur Sicherung auf den Stack pusht.<br/>
 
-<strong>unsaveregs</strong> definiert ein Codefragment, welches die Register EAX, EBX, ECX, EDX, ESI und EDI zur Wiederherstellung in inverser Reihenfolge vom Stack popt.<br/><br/>
+<strong>unsaveregs</strong> definiert ein Codefragment, welches die Register EAX, EBX, ECX, EDX, ESI und EDI zur Wiederherstellung in inverser Reihenfolge vom Stack poppt.<br/><br/>
 
 <strong>memcpy</strong> definiert eine Subroutine, welche Speicherbereiche eins zu eins von einer Stelle zu einer anderen kopiert. Sie erwartet, dass ESI mit einem Pointer zur Quelle, EDI mit einem Pointer zum Ziel und EBX mit der Anzahl der zu kopierenden 8-Byte-Fragmente geladen ist.</p>
 <br/>
