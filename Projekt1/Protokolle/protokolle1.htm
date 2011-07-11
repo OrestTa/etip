@@ -16,6 +16,7 @@
 <div align="Center">
 <h3><a name="Pflichtenheft"></a><strong>Protokolle zum Projekt Nr. 1 der Gruppe 7 (ss11-g07)</strong></h3>
 <i>Tutor: Steffen Bauereiss</i><br/>
+<i>Autor: Orest Tarasiuk</i><br/>
 </div>
 
 <ul>
@@ -46,10 +47,14 @@ Begegnete Probleme:
 <li>Testumgebung nicht komplett, Kompilation unmöglich &rarr; Testumgebung vervollständigt;
 <li>Umwandlung von <code>integer</code> nach <code>std_logic_vector</code> klappte nicht &rarr; es wurden <code>unsigned</code> verwendet;</li>
 <li>Kompilation klappte nicht mit Variablen &rarr; es wurden Signale verwendet;</li>
-<li>Kompilation klappte nicht mit for/loop Concurrent Statements &rarr; es wurde ein auf <code>clk</code> reagierender Process mit entsprechendem <code>clk</code> verwendet.</li>
+<li>Kompilation klappte nicht mit for/loop Concurrent Statements &rarr; es wurde ein auf <code>clk</code> reagierender Process mit entsprechendem <code>clk</code> verwendet;</li>
+<li>Mehrere Signalzuweisungen auf einem großen Vektor &rarr; großen Vektor aus Teilvektoren zusammensetzen.</li>
 </ul>
+Das Projekt wurde erfolgreich abgeschlossen.
 </p>
-
+<p>
+Ausblick: die VHDL-Schaltung auf einem FPGA testen.
+</p>
 <br/>
 <br/>
 
@@ -122,7 +127,7 @@ Begegnete Probleme:
 <li>Beschreibung der Alternative 1 (Double-Dabble)</li>
 <li>Abwägung der beiden Alternativen</li>
 <li>Erste einleitenden Tests</li>
-<li>Entscheidung für Double-Dabble</li>
+<li>Entscheidung für Double-Dabble (Effizienz anstatt Anschaulichkeit)</li>
 <li>Recherche zur Implementierung</li>
 </ul>
 </p>
@@ -221,64 +226,6 @@ Am 04.07.2011 um 00:26 schrieb Orest Tarasiuk:
 
 </pre></li>
 
-<li>Parameter beliebig übergeben, keine Binaries abgeben, keine Plattformvorgabe
-<pre>
-from    Steffen Bauereiss
-to      Lukas Märdian
-date    Sat, 25 Jun 2011 12:59:55 +0200
-subject Re: [ETI-Projekt] Gruppe 07
-
-Am 24.06.2011 um 12:37 schrieb Lukas Märdian:
-
-    Hallo Steffen,
-
-    wir haben noch weitere Fragen zu unserem Assembler Projekt:
-
-    1.: Wie genau bekommen wir die Parameter unserer Funktion übergeben?
-    Fest einprogrammiert im ASM Code?
-    Call-by-Value, per Stack?
-    Call-by-Reference, also die Pointer zu den entsprechenden Speicherbereichen per Stack?
-
-
-So etwas hätte durchaus in der Spezifikation ein Thema sein können/sollen, ihr könnt das
-festlegen, wie es euch am besten gefällt.
-
-    2.: Wie genau soll die Aufgabe technisch umgesetzt werden?
-    Sollen wir ein C-Wrapper Programm schreiben, welches die Übergabe der Parameter und
-    die Ausgabe des return Parameters übernimmt, oder alles rein in Assembler?
-    Oder sollen wir den Code in Jasmin (dem ETI ASM Simulator) schreiben?
-
-
-Jasmin kann erstaunlich viel, ob ihr damit aber glücklich werdet, ich fürchte nicht
-unbedingt, dort würde es aber reichen zu sagen, die Werte (Frage 1) sollen einfach
-genau "dort" oder "dort" eingetragen werden und dann funktioniert das. Ihr könnt für
-das Projekt gerne ein Wrapper-C schreiben, das wäre das Optimum, oder aber, wenn ihr
-in C vllt. nicht ganz so fit seit, einfach Werte im ASM reincoden .
-
-
-    Gibt es eine Vorgabe, bzgl. der Werkzeuge oder Binarys, die wir verwenden sollen?
-    Also NASM/GCC, 64-Bit/32-Bit? Linux, Windows, OSX?
-
-Nein gibt es keine, im Pflichtenheft hattet ihr Jasmin stehen, wenn ihr nun NASM oder
-was auch immer nehmt schreibt in ein Protokoll, das es geändert wurde. Sonst weiß ich
-am Ende ja auch nicht, wenn iwas nicht klappt, womit ihr gearbeitet habt.
-Binaries für OSX würden mir durchaus gefallen aber NEIN, ich muss ja eh den Code anschaun
-und bewerten und am besten auch compilen um zu sehen ob alles perfekt klappt und dann
-erstell ich die binarys ja sowieso nochmal - also nein, Binaries müsst ihr nicht abgeben.
-Und nochmal: schreibt bitte in Protokollen und der EndDoku was ihr letztendlich genommen
-und gemacht habt damit das bissl transparent wird, ok.
-
-    Müssen überhaupt Binarys abgegeben werden?
-
-
-Schon beantwortet ;)
-
-
-    Grüße, Lukas Märdian
-
-
-</pre></li>
-
 <li>Spezifikation in Ordnung, Implementierung kann anfangen
 <pre>
 from    Steffen Bauereiss
@@ -361,78 +308,6 @@ Am 05.06.2011 um 14:30 schrieb Orest Tarasiuk:
 
 </pre></li>
 
-<li>Inkrementierte Vektoren wie in einer erweiterten Dokumentation definiert
-<pre>
-from    Steffen Bauereiss
-to      maximilianstaab
-date    Mi., 1. Jun. 2011, 22:21
-subject Re: Frage zu Projekt 2
-
-Hallo,
-
-ja eure Aufgabe erfordert wirklich etwas mehr Recherche als einige der anderen 
-Aufgaben und auch ich hab das noch nicht implementiert und auch keine MuLö in 
-der ich nachschaun kann. Hartnäckiges googeln hat mir aber ne Seite aufgezeigt, 
-auf der alles mögliche implementiert ist und eine schön ausführliche 
-Textbeschreibung von DGBMV zu finden ist:
-
-     In addition to the argument n, each vector argument also has
-     an  increment  argument  that immediately follows the vector
-     argument, and whose name consists of  the  three  characters
-     inc, followed by the name of the vector. For example, a vec-
-     tor x will be represented by the two arguments x, incx.  The
-     increment  argument is the spacing (stride) in the array for
-     which the elements of the vector  occur.  For  instance,  if
-     incx  =  2,  then  the  elements of x are in locations x[0],
-     x[2],..., x[2*n-2] of the array x and the intermediate loca-
-     tions x[1], x[3],..., x[2*n-3] are not referenced.
-
-Das folgende ist schon wieder verwirrend und die Bedeutung wird eigentlich oben 
-schon klar - nur der Vollständigkeit halber:
-
-     Zero increments are not permitted. When incx&gt;0,  the  vector
-     element  x_i  is  in the array element xncx[(i-1)*incx], and
-     when incx &lt; 0 the elements are stored in the  reverse  order
-     so  that  the  vector  element  x_i  is in the array element
-     xncx[-(n-i)*incx] and hence, in particular, the element  x_n
-     is  in  x[0]. The declared length of the array x in the cal-
-     ling (sub)program must be at least (1+(n-1)*|incx|).
-
-Hlift euch das denn so weiter, dass INCX und INCY mehr oder weniger angeben, wie 
-X und Y durchlaufen werden müssen, um den entsprechenden Vektor für die Rechnung 
-zu erhalten? Weitere Informationen müsste ich auch erst noch recherchieren aber 
-für mich ist die Bedeutung dieser beiden Variablen damit recht klar. Euch eine 
-Beispielrechnung aufzustellen finde ich etwas sehr viel Hilfe und sowas solln 
-wir ja auch in die Bewertung einfließen lassen - das bekommt ihr doch bestimmt 
-hin das mal durchzuspieln -&gt; Ich meine damit, wenn klar ist welche Informationen 
-hinter welchen Variablen stehen, könnt ihr doch bestimmt "euren Algorithmus" für 
-die gegebene Formel entwerfen?!
-
-Gruß, Steffen
-
-
-Am 01.06.2011 um 20:29 schrieb maximilianstaab@aol.de:
-
-    Hallo Steffen,
-
-    in der Funktion DGBMV ist die Rede von einer Integervariablen INCX, die bei 
-    der Berechnung vom Vektor X Verwendung findet.
-    Als Beschreibung ist angegeben, dass sie das Inkrement der Elemente des 
-    Vektors X beinhaltet.
-    wörtlich: "INCX specifies the increment for the elements of X".
-    Was genau ist das Inkrement der Elemente eines Vektors?
-    Wir steigen da nicht ganz durch. Könntest du uns mal bitte einen Tipp geben?
-    Ein aussagekräftiges, durchgerechnetes Beispiel wäre auf jeden Fall auch 
-    hilfreich. Etwas derartiges war bisher noch nicht aufzutreiben.
-    Die Aufgabe von INCY wird sich dann wohl analog dazu klären.
-
-    Mit freundlichen Grüßen
-    Maximilian Staab
-
-
-</pre></li>
-
-
 <li>Pflichtenhefte in Ordnung, aber Zeitplanung knapp
 <pre>
 from    Steffen Bauereiss
@@ -461,55 +336,6 @@ Steffen
 
 </pre></li>
 
-<li>A' steht für die Transponierte von A (nach der erweiterten Dokumentation)
-<pre>
-from    Steffen Bauereiss
-to      Lukas Märdian
-date    Tue, 17 May 2011 14:25:34 +0200
-subject Re: ETI Praktikum SS11, Gruppe 7
-
-Hallo,
-
-in eurem Fall steht A' für die TRANSPONIERTE MATRIX
-
-Hier kann mans auch rauslesen:
- TRANS - CHARACTER*1.
-* On entry, TRANS specifies the operation to be performed as
-* follows:
-* TRANS = 'N' or 'n' y := alpha*A*x + beta*y.
-* TRANS = 'T' or 't' y := alpha*A'*x + beta*y.
-* TRANS = 'C' or 'c' y := alpha*A'*x + beta*y.
--&gt; TRANS gibt an ob mit der Transponierten gearbeitet werden soll und wenn ja,
-(T oder C) dann ist da A' im Spiel und steht somit wohl für A transponiert.
-Diese Manual-Dokumente sind immer Plaintext und A^T würde da einfach nur seltsam
-aussehen aber hier gäbe es ein formatiertes Deokument:
-http://publib.boulder.ibm.com/infocenter/clresctr/vxrx/index.jsp?
-topic=%2Fcom.ibm.cluster.essl43.guideref.doc%2Fam501_hsgbmv.html
-(Das mit den A^H aus dem Link braucht ihr nicht, bleibt da bei eurer Aufgabe)
-
-Gruß,
-Steffen
-
-
-Am 17.05.2011 um 13:28 schrieb Lukas Märdian:
-
-    Hallo Steffen,
-
-    wir haben eine Frage bzgl. unserem 2. Projekt. (ss11-g07/Projekt2)
-    Es geht in der Aufgabe um eine Matrix A. In bestimmten fällen wird aber auch
-    eine Matrix A' benötigt, welche nicht näher definiert ist.
-
-    Wir haben nun etwas gesucht und haben verschiedenen Möglichkeiten gefunden,
-    so dass A' entweder die transponierte, oder die abgeleitete Matrix von A sein
-    kann.
-    Was ist es denn jetzt wirklich?
-
-    Liebe Grüße,
-
-    Lukas Märdian, Gruppe 7
-
-
-</pre></li>
 
 <li>Das Praktikum beginnt!
 <pre>
