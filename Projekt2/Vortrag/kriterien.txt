@@ -1,6 +1,4 @@
-Vortrag 1 Notizen
-
-
+Kriterien Vortrag
 
 
 Darstellung des Projekts durch eine Person in Form eines Kurzvortrages von
@@ -13,8 +11,7 @@ warum gerade diese Lösung gewählt wurde, präsentieren. Für die Präsentation
 stehen jeweils Whiteboards, Overheadprojektor und Beamer zur Verfügung.
 
 
-Darstellung der
-Herleitung
+Darstellung der Herleitung
 
 Darstellung der Lösung
 
