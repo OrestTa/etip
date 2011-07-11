@@ -3,13 +3,19 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <title>Benutzer Dokumentation 2 ss11-g07</title>
+  <style>
+    body { width: 800px; margin: 0 auto; }
+  </style>
 </head>
 <body>
 <div align="Center">
 <h3><a name="Benutzer_Doku"></a><strong>Benutzer Dokumentation zum Projekt Nr. 2 der Gruppe 7 (ss11-g07)</strong></h3>
-<i>Tutor: Steffen Bauereiss</i><br>
+<i>Tutor: Steffen Bauereiss</i><br/>
 </div>
 <ul>
+<li>
+  <a href="#kurzbeschreibung">Kurzbeschreibung</a>
+</li>
 <li>
   <a href="#abhaengigkeiten">Abhänigkeiten</a>
 </li>
@@ -17,13 +23,22 @@
   <a href="#kompilieren">Kompilieren</a>
 </li>
 <li>
-  <a href="#ausfuehren">Ausführen</a>
+  <a href="#eingabe">Eingabe</a>
 </li>
 <li>
-  <a href="#eingabewerte_aendern">Eingabewerte ändern</a>
+  <a href="#ausgabe">Ausgabe</a>
 </li>
 </ul>
-<br>
+<br/><br/>
+
+<hr width="100%" size="1">
+<h4><a name="kurzbeschreibung">Kurzbeschreibung</a></h4><p>
+  Es ist eine Funktion DGBMV zu entwickeln, welche Matrix-Vektor-Operationen nach einer der folgenden Formeln durchführt.<br/><br/>
+  <code>Y := ALPHA * A * X + BETA * Y<br/>
+  Y := ALPHA * A' * X + BETA * Y</code><br/><br/>
+  ALPHA, BETA seien Skalare; X, Y seien Vektoren; A sei eine Matrix; A' sei transponiertes A.</p>
+<br/>
+<br/>
 
 <hr width="100%" size="1">
 <h4><a name="abhaengigkeiten">Abhängigkeiten</a></h4><p>
@@ -36,8 +51,8 @@
 </ul>
   Als Referenzplattform dient eine aktuelle Linux Distribution (Ubuntu 11.04) mit den o.g. Tools in den entsprechenden Versionen.<br/>
   Dabei sollte das System entweder eine native 32-Bit Version sein, oder die entsprechenden 32-Bit Libraries installiert haben.</p>
-<br>
-<br>
+<br/>
+<br/>
 
 <hr width="100%" size="1">
 <h4><a name="kompilieren">Kompilieren</a></h4><p>
@@ -50,11 +65,20 @@
   <li><code>gcc -Wall -g -m32 -O0 -o dgbmv dgbmv.o main.c</code></li>
 </ul>
   Der erste Befehl übersetzt dabei den eigentlichen Assembler Code der Funktion DGBMV (<code>dgbmv.asm</code>) in Objektcode, der zweite Befehl übersetzt das Wrapper-Programm (<code>main.c</code>) und linkt es mit dem aus der Assembler-Datei erzeugten Objektcode zu einer Ausführbaren Datei (<code>dgbmv</code>).</p>
-<br>
-<br>
+<br/>
+<br/>
 
 <hr width="100%" size="1">
-<h4><a name="ausfuehren">Ausführen</a></h4><p>
+<h4><a name="eingabe">Eingabe</a></h4><p>
+  Will man die Eingabeparamter des Programms verändern, so kann diese Änderung im Wrapper-Programm (<code>main.c</code>) vorgenommen werden.<br/>
+  Direkt am Beginn der main-Funktion gib es dort einen Kommentar: <code>/* define INPUT parameters here */</code><br/>
+  Ab dieser Stelle sind alle Eingabeparamter mit ihren aktuellen Werten aufgelistet. Die Werte können dort nach belieben verändert werden.<br/><br/>
+  Nach einer Änderung muss das Programm neu kompiliert und ausgeführt werden, um das Ergebnis zu berechnen.</p>
+<br/>
+<br/>
+
+<hr width="100%" size="1">
+<h4><a name="ausgabe">Ausgabe</a></h4><p>
   Nachdem das Programm erfolgreich kompiliert wurde, existiert im Implementierungsverzeichnis eine ausführbare Datei namens: <code>dgbmv</code>.<br/>
   Diese kann in einem Terminal, welches sich im Implementierungsverzeichnis befinden mit folgendem Befehl ausgeführt werden:
 <ul>
@@ -93,14 +117,5 @@ Y    : (    9.400000,     0.000000,    90.200000,     0.000000,   113.000000,   
            36.800000,     0.000000,   249.500000,     0.000000,   -15.300000,     0.000000,    21.300000,     0.000000,     0.000000,     3.000000, 
             2.300000,     3.200000)
 </pre></code></p>
-<br>
-<br>
-
-<hr width="100%" size="1">
-<h4><a name="eingabewerte_aendern">Eingabewerte ändern</a></h4><p>
-  Will man die Eingabeparamter des Programms verändern, so kann diese Änderung im Wrapper-Programm (<code>main.c</code>) vorgenommen werden.<br/>
-  Direkt am Beginn der main-Funktion gib es dort einen Kommentar: <code>/* define INPUT parameters here */</code><br/>
-  Ab dieser Stelle sind alle Eingabeparamter mit ihren aktuellen Werten aufgelistet. Die Werte können dort nach belieben verändert werden.<br/><br/>
-  Nach einer Änderung muss das Programm neu kompiliert und ausgeführt werden, um das Ergebnis zu berechnen.</p>
 </body>
 </html>
