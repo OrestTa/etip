@@ -22,6 +22,9 @@
   <a href="#kurzbeschreibung">Kurzbeschreibung</a>
 </li>
 <li>
+  <a href="#beispiel">Beispiel</a>
+</li>
+<li>
   <a href="#abhaengigkeiten">Abhängigkeiten</a>
 </li>
 <li>
@@ -48,10 +51,89 @@
 
 <hr width="100%" size="1">
 <h4><a name="kurzbeschreibung">Kurzbeschreibung</a></h4><p>
-  Das vorliegende Programm ist eine Implementierung der Funktion DGBMV, welche Matrix-Vektor-Operationen nach einer der folgenden Formeln durchführt:<br/><br/>
-  <code>Y := ALPHA * A * X + BETA * Y<br/>
-  Y := ALPHA * A' * X + BETA * Y</code><br/><br/>
-  ALPHA, BETA seien Skalare; X, Y seien Vektoren; A sei eine Matrix; A' sei transponiertes A.</p>
+Das vorliegende Programm ist eine Implementierung der Funktion DGBMV, welche Matrix-Vektor-Operationen nach einer der folgenden Formeln durchführt:<br/><br/>
+<code>Y := ALPHA * A * X + BETA * Y<br/>
+Y := ALPHA * A' * X + BETA * Y</code><br/><br/>
+ALPHA, BETA seien Skalare; X, Y seien Vektoren; A sei eine Matrix; A' sei transponiertes A.
+</p>
+<p>
+DGBMV stellt eine fundamentale Operation aus der linearen Algebra dar, die zur Softwarebibliothek der Basic Linear Algebra Subprograms (BLAS) gehört. Die in dieser Bibliothek enthaltenen Unterprogramme führen essentielle, universelle Operationen aus, die beim Programmieren häufig benötigt werden, weshalb sie in einer Vielzahl von Programmiersprachen implementiert werden. DGBMV gehört zu den Level-2-BLAS-Routinen.
+</p>
+<p>
+Die Funktion <code>DGBMV</code> benötigt neben den bereits genannten Parametern noch <code>M</code>, <code>N</code>, <code>KL</code> und <code>KU</code> (die Zeilen- bzw. Spaltenanzahl (gleich, da die Matrix quadratisch sein muss) sowie die Anzahl der Sub- bzw. Superdiagonalen in der normalen Speicherform von A), <code>LDA</code> (die Zeilenanzahl der Bandspeicherform von A, in der die Eingabe <code>A</code> vorliegt), <code>INCX</code> und <code>INCY</code> (die den regelmäßigen Abstand der Elemente (das Inkrement) der Vektoren X und Y in den inkrementierten Arrays <code>X</code> und <code>Y</code> enthalten) und <code>TRANS</code> (eine Variable, die angibt, ob die Matrix A so wie sie ist, transponiert oder auch adjungiert (conjugated) verwendet wird; die Funktionalität, die Matrix zu adjungieren, ist jedoch in der vorliegenden Implementierung nicht gegeben).
+</p>
+<p>
+Die einzige Ausgabe ist das modifizierte Array <code>Y</code>.
+</p>
+<br/>
+<br/>
+
+<hr width="100%" size="1">
+<h4><a name="beispiel">Beispiel</a></h4><p>
+Die Funktionsweise von <code>DGBMV( TRANS, M, N, KL, KU, ALPHA, A, LDA, X, INCX, BETA, Y, INCY )</code> wird im Folgenden anhand eines Beispieles verdeutlicht:
+</p>
+<p>
+<code>
+TRANS = 'N'<br/>
+M = N = 6<br/>
+KL = 1<br/>
+KU = 3<br/>
+ALPHA = 7<br/>
+A = (000936|001893|073958|264855|823740)<br/>
+LDA = 5<br/>
+X = (1,0,0,2,0,0,3,0,0,4,0,0,5,0,0,6)<br/>
+INCX = 3<br/>
+BETA = 4<br/>
+Y = (9,0,8,0,7,0,6,0,5,0,4)<br/>
+INCY = -2
+</code>
+</p>
+<p>
+Zur Vorbereitung müssen die Vektoren X und Y aus ihren Arrays X und Y extrahiert werden, indem nur jedes INCX-te bzw. INCY-te Element in ein neues Vektorarray übertragen wird. Im Fall von X ist es jedes dritte Element, wobei immer mit dem nullten begonnen wird:
+<code><pre>
+                0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
+               (1, 0, 0, 2, 0, 0, 3, 0, 0, 4, 0, 0, 5, 0, 0, 6)
+</pre></code>
+Es werden nur diejenigen mit durch drei ganzzahlig teilbaren Indizes ausgewählt:
+<code><pre>
+                0  1  2  3  4  5  6  7  8  9  10 11 12 13 14 15
+               (1,       2,       3,       4,       5,       6)     =>     X = (1,2,3,4,5,6)
+</pre></code>
+Bei negativem Inkrement wird von Hinten angefangen:
+<code><pre>
+                10 9  8  7  6  5  4  3  2  1  0
+               (9, 0, 8, 0, 7, 0, 6, 0, 5, 0, 4)
+
+                10    8     6     4     2     0
+               (9,    8,    7,    6,    5,    4)                    =>     Y = (4,5,6,7,8,9)
+</pre></code>
+</p>
+<p>
+Danach kann das Produkt Y' = BETA * Y sowie A' = ALPHA * A berechnet werden:
+<code><pre>
+               Y' = (4,5,6,7,8,9) * 4 = (16,20,24,28,32,36)
+               A' = 0.0 0.0 0.0 63.0 21.0 42.0
+                    0.0 0.0 7.0 56.0 63.0 21.0
+                    0.0 49.0 21.0 63.0 35.0 56.0
+                    14.0 42.0 28.0 56.0 35.0 35.0
+                    56.0 14.0 21.0 49.0 28.0 0.0
+</pre></code>
+</p>
+<p>
+Als kompliziertester Schritt folgt die eigentliche Matrix-Vektor-Multiplikation AAX = A' * X nach der Formel aus der <a href="../Spezifikation/spezifikation2.htm#Alternative2">Spezifikation 2</a>:
+<code><pre>
+               AAX = 385.0 532.0 931.0 588.0 707.0 350.0
+</pre></code>
+</p>
+<p>
+Zum Schluss wird AAX auf Y' zu Y'' addiert:
+<code><pre>
+               Y'' = 401.0 552.0 955.0 616.0 739.0 386.0
+</pre></code>
+</p>
+<p>
+Alle genannten Schritte können mit dem Skript <a href="dokumentation-DGBMV-beispiel.py">dokumentation-DGBMV-beispiel.py</a> durchgerechnet werden.
+</p>
 <br/>
 <br/>
 
@@ -141,7 +223,7 @@ Y    : (    9.400000,     0.000000,    90.200000,     0.000000,   113.000000,   
  <li>README</li>
  <li>auxiliary/</li>
 </ul>
-  <strong>main.c</strong> ist ein C-Wrapper-Programm, in welchem die Eingabeparameter definiert werden. Weiter kümmert es sich um die Ausgabe der Parameter und des Ergebnises bzw. der Fehlermeldungen sowie um das Aufrufen der eigentlichen Assembler-Funktion (dgbmv(...)). Es beinhaltet auch den Haupteinstiegspunkt (die main-Funktion) des Hauptprogrammes.<br/><br/>
+  <strong>main.c</strong> ist ein C-Wrapper-Programm, in welchem die Eingabeparameter definiert und über den Stack der ASM-Funktion übergeben werden. Weiter kümmert es sich um die Ausgabe der Parameter und des Ergebnises bzw. der Fehlermeldungen sowie um das Aufrufen der eigentlichen Assembler-Funktion (dgbmv(...)). Es beinhaltet auch den Haupteinstiegspunkt (die main-Funktion) des Hauptprogrammes.<br/><br/>
   <strong>dgbmv.asm</strong> ist ein Assembler-Programm, welches hauptsächlich die Funktion dgbmv(...) definiert. Weiter definiert es einige Macros und Subroutines, welche später genauer erläutert werden.<br/><br/>
   <strong>Makefile</strong> ist eine Datei, welche das automatische Kompilieren mit Hilfe des Programmes "make" ermöglicht. Es bietet folgende Targets: all, dgbmv.o, dgbmv, clean.<br/><br/>
   <strong>README</strong> ist eine Datei, welche grundlegende Informationen über das Projekt zur Verfügung stellt.<br/><br/>
@@ -193,5 +275,6 @@ Die Datei dgbmv.asm beinhaltet folgende Macros und Subroutines:<br/><br/>
   Im <strong>neunten Teil</strong> wird der kopierte und mit A multiplizierte Vektor X auf den mit BETA multiplizierten Eingabeparameter (Vektor) Y addiert. Das Ergebnis überschreibt dabei den Eingabeparameter (Vektor) Y.<br/>
   Im <strong>zehnten Teil</strong> wird in EAX entweder der Rückgabewert <code>0</code> (falls alle Operationen erfolgreich abgearbeitet wurden) oder der entsprechende Fehler-Code geladen.<br/>
   Im <strong>elften Teil</strong> wird der in der Funktion allozierte Speicherplatz freigegeben, die zu Beginn gesicherten Register wiederhergestellt und die Funktion verlassen.</p>
+
 </body>
 </html>
