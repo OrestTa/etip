@@ -58,7 +58,7 @@ ALPHA, BETA seien Skalare; X, Y seien Vektoren; A sei eine Matrix; A' sei transp
 <li>Stackspeicherallokation mit ESP führt zu Segfaults &rarr; eine bestimme Anzahl an dword pushen;</li>
 <li>Bandmatrix-Vektor-Multiplikation sehr fehleranfällig &rarr; nach viel Arbeit erfolgreich;</li>
 <li>Extraktion des Vektors aus einem negativ inkrementierten Array &rarr; die Vektoreingabe dem Code so anpassen, als wäre INC positiv gewesen;</li>
-<li>Transponiertenberechnung sehr fehleranfälligi auf Grund verschachtelter Schleifen &rarr; mehrfaches manuelles Schritt-für-Schritt-Durchlaufen auf Papier;</li>
+<li>Transponiertenberechnung sehr fehleranfällig auf Grund verschachtelter Schleifen &rarr; mehrfaches manuelles Schritt-für-Schritt-Durchlaufen auf Papier;</li>
 <li>Spät implementierte Rettung/Wiederherstellung der Register zerstört die statischen Stackspeicherpointer (EBP-n) &rarr; Verwendung von Pointern, die direkt nach dem Pushen erstellt und gespeichert werden;</li>
 <li>Sehr aufwändige manuelle Korrektur von Ergebnissen für Testeingaben &rarr; Erstellung von Python-Skripts mit äquivalenter Funktionalität.</li>
 </ul>
