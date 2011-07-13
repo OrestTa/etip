@@ -43,7 +43,7 @@ BEGIN
             counter <= counter+1;                                           -- 17 times
         END IF;
 
-        IF (falling_edge(clk)) AND (counter <= 17) THEN                          -- if falling edge
+        IF (falling_edge(clk)) AND (counter <= 17) THEN                     -- if falling edge
         IF (unsigned(bin_input) <= 99999) THEN                              -- if input within domain
             overflw <= '0';                                                 -- set "overflw" to 0
             IF (unsigned(leiner) >= 5) THEN                                 -- check which BCD vectors' values are equal to or bigger than 5
