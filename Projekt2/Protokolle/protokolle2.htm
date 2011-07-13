@@ -55,8 +55,8 @@ ALPHA, BETA seien Skalare; X, Y seien Vektoren; A sei eine Matrix; A' sei transp
 <li>Wie rufe ich eine ASM-Funktion aus C auf? &rarr; Recherche erfolgreich;</li>
 <li>Wie rechne ich mit Floating-Point-Zahlen in ASM? &rarr; Recherche erfolgreich;</li>
 <li>MUL nicht flexibel genug, zu eingeschränkt &rarr; IMUL verwenden;</li>
-<li>Stackspeicherallokation mit ESP führt zu Segfaults &rarr; eine bestimme Anzahl an dword pushen;</li>
-<li>Bandmatrix-Vektor-Multiplikation sehr fehleranfällig &rarr; nach viel Arbeit erfolgreich;</li>
+<li>Stackspeicherallokation mit ESP führt zu Segfaults &rarr; eine bestimme Anzahl an Dwords/Qwords pushen;</li>
+<li>Bandmatrix-Vektor-Multiplikation sehr fehleranfällig &rarr; nach vielen Tests erfolgreich;</li>
 <li>Extraktion des Vektors aus einem negativ inkrementierten Array &rarr; die Vektoreingabe dem Code so anpassen, als wäre INC positiv gewesen;</li>
 <li>Transponiertenberechnung sehr fehleranfällig auf Grund verschachtelter Schleifen &rarr; mehrfaches manuelles Schritt-für-Schritt-Durchlaufen auf Papier;</li>
 <li>Spät implementierte Rettung/Wiederherstellung der Register zerstört die statischen Stackspeicherpointer (EBP-n) &rarr; Verwendung von Pointern, die direkt nach dem Pushen erstellt und gespeichert werden;</li>
@@ -85,7 +85,10 @@ Ausblick: empirische Effizienzuntersuchung in Vergleich mit Implementierungen in
 <h4><a name="3">Protokoll 16.05.2011</a></h4>
 <p>
 <ul>
-<li>Verteilung der Aufgabenbereiche</li>
+<li>Verteilung der Aufgabenbereiche<br>
+&nbsp;&nbsp;Maximilian Staab - Projektmanagement<br>
+&nbsp;&nbsp;Orest Tarasiuk - Vortrag<br>
+&nbsp;&nbsp;Lukas Märdian - Dokumentation</li>
 <li>Erstellung des Gerüstes für das Pflichtenheft (HTML)</li>
 <li>Recherche zur Projektaufgabe</li>
 <li>Frage an den Tutor bzgl. A' (Transponierte)</li>
