@@ -3,6 +3,12 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   <title>Spezifikation 2 ss11-g07</title>
+  <style type="text/css">
+    body {
+    width: 800;
+    margin: 0 auto;
+    }
+  </style>
 </head>
 <body>
 <div align="Center">
@@ -90,8 +96,10 @@ Dann wird nach folgendem Schema vorgegangen:<br/>
 <br/>
 
 <sup>1</sup> transponierte Matrix in Bandspeicherform:<br/>
-Die Zeile KU+1 wird in das neue Array in Zeile KL+1 eingefügt; die Zeilen 1..KU werden jeweils in das neue Array in Zeile KU+KL+1..KL+2 eingefügt, wobei sie erst einmal jeweils so lange nach links geshiftet werden, bis die erste Position der jeweiligen Zeile definiert (referenziert) ist; die Zeilen KU+KL+1..KU+2 werden jeweils in das neue Array in Zeile 1..KL eingefügt, wobei sie erst einmal so lange nach rechts geshiftet werden, bis die letzte Position der jeweiligen Zeile definiert (referenziert) ist. Abschließend wird das alte Array A mit dem neu errechneten überschrieben. <i>Die erste Zeile/Spalte des Arrays sei hier 1, nicht 0.</i>
-<br/><br/>
+Die Zeile KU+1 wird in das neue Array in Zeile KL+1 eingefügt; die Zeilen 1..KU werden jeweils in das neue Array in Zeile KU+KL+1..KL+2 eingefügt, wobei sie erst einmal jeweils so lange nach links geshiftet werden, bis die erste Position der jeweiligen Zeile definiert (referenziert) ist; die Zeilen KU+KL+1..KU+2 werden jeweils in das neue Array in Zeile 1..KL eingefügt, wobei sie erst einmal so lange nach rechts geshiftet werden, bis die letzte Position der jeweiligen Zeile definiert (referenziert) ist. Abschließend wird das alte Array A mit dem neu errechneten überschrieben. <i>Die erste Zeile/Spalte des Arrays sei hier 1, nicht 0.</i><br/><br/>
+Beispielhaftes Schema:<br/>
+<img src="trans1.jpg"><img src="trans2.jpg"><img src="trans3.jpg"><br/><br/>
+<br/>
 <sup>2</sup> Skalarmultiplikation:<br/>
 AA: aa<sub>ij</sub> = (a<sub>ij</sub> &middot; ALPHA) <sub>i=1..M; j=1..N</sub>
 <br/><br/>
