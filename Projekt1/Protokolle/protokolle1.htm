@@ -31,7 +31,7 @@
 <li><a href="#9">Protokoll 27.06.2011</a></li>
 <li><a href="#10">Protokoll 01.07.2011</a></li>
 <li><a href="#11">Protokoll 10.07.2011</a></li>
-<li><a href="#12">Protokoll 11.07.2011</a></li>
+<li><a href="#12">Protokoll 13.07.2011</a></li>
 <li><a href="#99">Mailverkehr</a></li>
 </ul>
 <br/>
@@ -45,15 +45,15 @@ Das vorliegende VHDL-System konvertiert eine Binärzahl mit 17 Stellen in eine B
 Begegnete Probleme:
 <ul>
 <li>Testumgebung nicht komplett, Kompilation unmöglich &rarr; Testumgebung vervollständigt;
-<li>Umwandlung von <code>integer</code> nach <code>std_logic_vector</code> klappte nicht &rarr; es wurden <code>unsigned</code> verwendet;</li>
+<li>Umwandlung von <code>integer</code> nach <code>std_logic_vector</code> klappte nicht &rarr; es wurde <code>unsigned</code> verwendet, um arithmetische Operationen zu ermöglichen;</li>
 <li>Kompilation klappte nicht mit Variablen &rarr; es wurden Signale verwendet;</li>
 <li>Kompilation klappte nicht mit for/loop Concurrent Statements &rarr; es wurde ein auf <code>clk</code> reagierender Process mit entsprechendem <code>clk</code> verwendet;</li>
-<li>Mehrere Signalzuweisungen auf einem großen Vektor &rarr; großen Vektor aus Teilvektoren zusammensetzen.</li>
+<li>Mehrere Signalzuweisungen auf einem großen Vektor erforderlich &rarr; großen Vektor aus Teilvektoren zusammensetzen.</li>
 </ul>
 Das Projekt wurde erfolgreich abgeschlossen.
 </p>
 <p>
-Ausblick: die VHDL-Schaltung auf einem FPGA testen.
+Ausblick: die VHDL-Schaltung <i>in natura</i>, z. B. auf einem FPGA (Field-programmable Gate Array), testen, um ihre Hardwaretauglichkeit zu verifizieren (momentan aus Ausstattungsmängel leider nicht möglich).
 </p>
 <br/>
 <br/>
@@ -187,7 +187,7 @@ Ausblick: die VHDL-Schaltung auf einem FPGA testen.
 <br/>
 
 <hr width="100%" size="1">
-<h4><a name="12">Protokoll 11.07.2011</a></h4>
+<h4><a name="12">Protokoll 13.07.2011</a></h4>
 <p>
 <ul>
 <li>Vortrag fertiggestellt</li>
