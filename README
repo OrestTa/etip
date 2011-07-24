@@ -1,5 +1,14 @@
-These are two "Einführung in die Technische Informatik" projects of ss11-g07.
+These are two "Einführung in die Technische Informatik" projects of ss11-g07 at TUM.
 All HTML files were tested with FF5 under GNU/Linux.
 
-"Projekt1" is a VHDL project implementing a Bin-to-BCD converter.
-"Projekt2" is a Assembler (NASM) project implementing the DGBMV subroutine of the Basic-Linear-Algebra-Subroutines (BLAS) Level2 collection.
+
+Projects:
+
+* "P1" is a VHDL project implementing a Bin-to-BCD converter
+* "P2" is an Assembler (NASM) project implementing the DGBMV subroutine of BLAS Level 2
+
+Authors:
+
+* M. S.
+* Lukas Märdian
+* Orest Tarasiuk
