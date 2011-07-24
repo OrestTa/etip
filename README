@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 These are two "Einführung in die Technische Informatik" projects of ss11-g07 at TUM.
 All HTML files were tested with FF5 under GNU/Linux.
 
@@ -12,3 +13,10 @@ Authors:
 * M. S.
 * Lukas Märdian
 * Orest Tarasiuk
+=======
+These are two "Einführung in die Technische Informatik" projects of ss11-g07.
+All HTML files were tested with FF5 under GNU/Linux.
+
+"Projekt1" is a VHDL project implementing a Bin-to-BCD converter.
+"Projekt2" is a Assembler (NASM) project implementing the DGBMV subroutine of the Basic-Linear-Algebra-Subroutines (BLAS) Level2 collection.
+>>>>>>> 6fedb0363ec5a4d71a7250336c06b8d195fb2baa
